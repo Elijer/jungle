@@ -41,40 +41,37 @@ light.position.set(0, 100, 100).normalize();
 scene.add(light);
 
 // Create the grid of squares
-const gridSize = 100;
+const gridSize = 20;
 const squareSize = 1;
-const borderSize = 0.02;
+const geometry = new THREE.PlaneGeometry(squareSize, squareSize);
+const materials = [];
+
+
+// Create a material for each square
+for (let i = 0; i < gridSize * gridSize; i++) {
+  materials.push(new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+}
+
 const group = new THREE.Group();
 
+// Create a square with that mesh and add it to the scene
 for (let i = 0; i < gridSize; i++) {
   for (let j = 0; j < gridSize; j++) {
-    // Create the square geometry
-    const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
-
-    // Create the square material with borders
-    const squareMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
-
-    // Create the mesh
-    const square = new THREE.Mesh(squareGeometry, squareMaterial);
-
-    // Create the border geometry
-    const borderGeometry = new THREE.PlaneGeometry(squareSize + borderSize, squareSize + borderSize);
-    const borderMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
-    const border = new THREE.Mesh(borderGeometry, borderMaterial);
-
-    // Position the square and border
-    square.position.set(i * (squareSize + borderSize), 0, j * (squareSize + borderSize));
-    border.position.set(i * (squareSize + borderSize), 0.01, j * (squareSize + borderSize));
-
-    // Add square and border to the group
-    group.add(border);
+    const square = new THREE.Mesh(geometry, materials[i * gridSize + j]);
+    square.position.set(i * squareSize, 0, j * squareSize);
     group.add(square);
   }
 }
 
-// Rotate the group to lie flat on the xz-plane
 group.rotation.x = -Math.PI / 2;
 scene.add(group);
+
+for (let x = 0; x < gridSize; x++) {
+  for (let y = 0; y < gridSize; y++) {
+    const index = x * gridSize + y;
+    materials[index].color.setHex(Math.random() * 0xffffff);
+  }
+}
 
 // Animation loop
 function animate() {
