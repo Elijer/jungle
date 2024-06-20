@@ -25,6 +25,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const gridSize = 20;
 const squareSize = 1;
 const gapSize = 0.1;
+const verticalOffset = -9
 const materials = [];
 
 // Set up camera with a view from above
@@ -66,7 +67,7 @@ for (let i = 0; i < gridSize; i++) {
     const square = new THREE.Mesh(squareGeometry, materials[i * gridSize + j]);
     
     // Position the square with a gap
-    square.position.set(i * (squareSize + gapSize) - gridSize/2, 0, j * (squareSize + gapSize) - 7);
+    square.position.set(i * (squareSize + gapSize) - gridSize/2, 0, j * (squareSize + gapSize) + verticalOffset);
     
     // Rotate the square to lie flat on the xz-plane
     square.rotation.x = -Math.PI / 2;
