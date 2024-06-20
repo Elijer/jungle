@@ -15,6 +15,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.19.2",
+    "rgb-hex": "^4.1.0",
     "socket.io": "^4.7.5",
     "typescript": "^5.4.5",
     "vite": "^5.2.0"
