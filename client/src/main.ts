@@ -21,30 +21,32 @@ socket.on("player joined", (playerId: string) => {
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+// Create the grid of squares
+const gridSize = 20;
+const squareSize = 1;
+const gapSize = 0.1;
+const materials = [];
+
 // Set up camera with a view from above
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 ); // there ARE other cameras
-camera.position.set(0, 150, 0);
-camera.lookAt(0, 0, 0);
+camera.position.set(0, -20, 10);
+// camera.lookAt(gridSize / 2, 0, gridSize / 2);
 
 // Set up renderer and add it to the DOM
 const renderer = new THREE.WebGLRenderer(); // There are also other...renders?
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
-// Add orbit controls for moving around
-const controls = new OrbitControls( camera, renderer.domElement );
+// Set up orbit controls
+const controls = new OrbitControls(camera, renderer.domElement);
+// controls.target.set(gridSize / 2, 0, gridSize / 2);
+controls.update();
 
 // Add a directional light to the scene
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(0, 100, 100).normalize();
 scene.add(light);
-
-// Create the grid of squares
-const gridSize = 20;
-const squareSize = 1;
-const gapSize = 0.1;
-const materials = [];
 
 
 // Create a material for each square
@@ -64,7 +66,7 @@ for (let i = 0; i < gridSize; i++) {
     const square = new THREE.Mesh(squareGeometry, materials[i * gridSize + j]);
     
     // Position the square with a gap
-    square.position.set(i * (squareSize + gapSize), 0, j * (squareSize + gapSize));
+    square.position.set(i * (squareSize + gapSize) - gridSize/2, 0, j * (squareSize + gapSize) - 7);
     
     // Rotate the square to lie flat on the xz-plane
     square.rotation.x = -Math.PI / 2;
@@ -88,6 +90,8 @@ for (let x = 0; x < gridSize; x++) {
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  console.log("camera position is", camera.position)
+  console.log("camera rotation is", camera.rotation)
 }
 
 // Start the animation
