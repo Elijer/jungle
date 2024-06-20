@@ -3,7 +3,7 @@ import './style.css'
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
 
-const herokuUrl = "https://saskanupe-b0a033b8892a.herokuapp.com/"
+const herokuUrl = "https://thornberry-jungle-461255bc451e.herokuapp.com/"
 const socketAddress = window.location.hostname === "localhost" ? "ws://localhost:3000" : herokuUrl
 const socket = io(socketAddress)
 

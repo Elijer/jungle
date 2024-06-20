@@ -20,6 +20,7 @@ app.use(express.static(pathToBuild));
 
 // Heroku passes the PORT env into the environment
 let port = process.env.PORT || 3000;
+console.log("THE PORT IS", port)
 
 console.log("server started");
 
