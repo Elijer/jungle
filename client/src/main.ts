@@ -14,19 +14,15 @@ socket.on("connect", () => {
   socket.emit("player joined", playerId())
 });
 
-socket.on("player joined", (playerId: string) => {
-  console.log("Player joined", playerId)
-}) 
-
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Create the grid of squares
-const gridSize = 20;
+const gridSize = 50;
 const squareSize = 1;
-const gapSize = 0.1;
+const gapSize = 0.0;
 const verticalOffset = -9
-const materials = [];
+const materials: any = [];
 
 // Set up camera with a view from above
 const scene = new THREE.Scene();
@@ -83,7 +79,7 @@ scene.add(group);
 for (let x = 0; x < gridSize; x++) {
   for (let y = 0; y < gridSize; y++) {
     const index = x * gridSize + y;
-    materials[index].color.setHex(Math.random() * 0xffffff);
+    materials[index].color.setHex(0xffffff);
   }
 }
 
@@ -91,16 +87,24 @@ for (let x = 0; x < gridSize; x++) {
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  console.log("camera position is", camera.position)
-  console.log("camera rotation is", camera.rotation)
 }
 
-// Start the animation
-animate();
 
-// Handle window resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+socket.on("grid", (grid: string[][]) => {
+  console.log(grid)
+  for (let x = 0; x < gridSize; x++) {
+    for (let y = 0; y < gridSize; y++) {
+      const index = x * gridSize + y;
+      let color = "0x" + grid[x][y]
+      materials[index].color.setHex(color);
+    }
+  }
+
+  animate();
+}) 
