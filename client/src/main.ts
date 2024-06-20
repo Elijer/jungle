@@ -43,7 +43,7 @@ scene.add(light);
 // Create the grid of squares
 const gridSize = 20;
 const squareSize = 1;
-const geometry = new THREE.PlaneGeometry(squareSize, squareSize);
+const gapSize = 0.1;
 const materials = [];
 
 
@@ -54,11 +54,22 @@ for (let i = 0; i < gridSize * gridSize; i++) {
 
 const group = new THREE.Group();
 
-// Create a square with that mesh and add it to the scene
 for (let i = 0; i < gridSize; i++) {
   for (let j = 0; j < gridSize; j++) {
-    const square = new THREE.Mesh(geometry, materials[i * gridSize + j]);
-    square.position.set(i * squareSize, 0, j * squareSize);
+    
+    // Create the square geometry
+    const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
+
+    // Create the square mesh
+    const square = new THREE.Mesh(squareGeometry, materials[i * gridSize + j]);
+    
+    // Position the square with a gap
+    square.position.set(i * (squareSize + gapSize), 0, j * (squareSize + gapSize));
+    
+    // Rotate the square to lie flat on the xz-plane
+    square.rotation.x = -Math.PI / 2;
+    
+    // Add the square to the group
     group.add(square);
   }
 }
