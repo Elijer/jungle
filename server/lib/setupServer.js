@@ -12,7 +12,7 @@ const setupServer = () => {
 
   const app = express();
   const httpServer = createServer(app);
-  const pathToBuild = path.join(__dirname, '..', 'client', 'dist')
+  const pathToBuild = path.join(__dirname, '../../', 'client', 'dist')
   console.log("The path to build is", pathToBuild)
 
   // express.static is a built-in middleware function in Express. It serves static files and is based on serve-static.
