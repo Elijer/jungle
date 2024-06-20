@@ -1,6 +1,9 @@
 import setupServer from './lib/setupServer.js';
-
+import GameInstance from './lib/gameInstance.js';
 const { io, port, httpServer } = setupServer();
+
+let game = new GameInstance(20, 20)
+console.log(game.grid)
 
 io.on("connection", (socket) => {
   console.log("Websocket connected", `Socket id is ${socket.id}`);
