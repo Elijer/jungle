@@ -21,59 +21,73 @@ socket.on("player joined", (playerId: string) => {
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+// Set up camera with a view from above
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 ); // there ARE other cameras
+camera.position.set(0, 150, 0);
+camera.lookAt(0, 0, 0);
 
+// Set up renderer and add it to the DOM
 const renderer = new THREE.WebGLRenderer(); // There are also other...renders?
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 
+// Add orbit controls for moving around
 const controls = new OrbitControls( camera, renderer.domElement );
 
-const geometry = new THREE.BoxGeometry( 5, .2, 5 );
-const material = new THREE.LineBasicMaterial( { color: 0xF8FFff } );
-const cube = new THREE.Mesh( geometry, material );
-cube.rotation.x += .8
-cube.rotation.y += .1
-// scene.add( cube );
+// Add a directional light to the scene
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(0, 100, 100).normalize();
+scene.add(light);
 
-const points: THREE.Vector3[] = [];
+// Create the grid of squares
+const gridSize = 100;
+const squareSize = 1;
+const borderSize = 0.02;
+const group = new THREE.Group();
 
-let back = 0
-let interval = 2
-for (let i = 0; i < 10; i++) {
-  points.push( new THREE.Vector3( -10, 0, back ) );
-  points.push( new THREE.Vector3( 10, 0, back ) );
-  points.push( new THREE.Vector3( 10, 10, back ) );
-  points.push( new THREE.Vector3( -10, 10, back ) )
-  // points.push( new THREE.Vector3( -10, 0, back ) );
-  back -= interval
-}
+for (let i = 0; i < gridSize; i++) {
+  for (let j = 0; j < gridSize; j++) {
+    // Create the square geometry
+    const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
 
-const handlePoints = (points: THREE.Vector3[]) => {
-  points.forEach(point => {
-    point.y += 1
-  })
-}
+    // Create the square material with borders
+    const squareMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide });
 
-// points.push( new THREE.Vector3( 5, 5, 5 ) );
-const geometry2 = new THREE.BufferGeometry().setFromPoints( points );
-const line = new THREE.Line( geometry2, material );
-scene.add( line );
+    // Create the mesh
+    const square = new THREE.Mesh(squareGeometry, squareMaterial);
 
-camera.position.z = 100;
+    // Create the border geometry
+    const borderGeometry = new THREE.PlaneGeometry(squareSize + borderSize, squareSize + borderSize);
+    const borderMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+    const border = new THREE.Mesh(borderGeometry, borderMaterial);
 
-camera.position.set( 0, 20, 100 );
-controls.update();
+    // Position the square and border
+    square.position.set(i * (squareSize + borderSize), 0, j * (squareSize + borderSize));
+    border.position.set(i * (squareSize + borderSize), 0.01, j * (squareSize + borderSize));
 
-function animate() {
-  if (interval < 10){
-    interval++
+    // Add square and border to the group
+    group.add(border);
+    group.add(square);
   }
-  requestAnimationFrame( animate );
-  controls.update();
-  handlePoints(points)
-	renderer.render( scene, camera );
 }
 
-renderer.setAnimationLoop( animate );
+// Rotate the group to lie flat on the xz-plane
+group.rotation.x = -Math.PI / 2;
+scene.add(group);
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+
+// Start the animation
+animate();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
