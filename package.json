@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm run build-client && npm run server",
     "build-client": "cd client && npm i && npm run build",
-    "server": "cd server && npm i && node index.js"
+    "server": "cd server && npm i && node index.js",
+    "deploy": "git push heroku main"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +15,8 @@
   "description": "",
   "dependencies": {
     "express": "^4.19.2",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "typescript": "^5.4.5"
   },
   "engines": {
     "node": "v18.18.2"
