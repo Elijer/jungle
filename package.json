@@ -15,9 +15,7 @@
   "description": "",
   "dependencies": {
     "express": "^4.19.2",
-    "gsap": "^3.12.5",
     "socket.io": "^4.7.5",
-    "three": "^0.165.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.0"
   },
