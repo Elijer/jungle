@@ -10,7 +10,7 @@ io.on("connection", (socket) => {
 
   socket.on("player joined", (playerId) => {
     console.log("a player joined the game", playerId)
-    io.emit("grid", game.grid)
+    io.emit("grid", game.getGrid())
 
     socket.on("disconnecting", async(reason) => {
       console.log("Removed a player and now here is our game state")

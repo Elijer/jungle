@@ -1,5 +1,6 @@
 import { simplexPositive } from './simplex2.js';
 import rgbHex from 'rgb-hex';
+import Tile from './entities/tile.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -18,16 +19,24 @@ class GameInstance {
       const row = []
       for (let y = 0; y < this.cols; y++){
         let result = simplexPositive(x, y, 20)
-        let color = this.getColor(result)
-        row.push(color)
+        row.push(new Tile(result))
       }
       grid.push(row)
     }
     return grid
   }
 
-  getColor(noise){
-    return rgbHex(this.rgb[0] * noise, this.rgb[1] * noise, this.rgb[2] * noise)
+  getGrid(){
+    let tempGrid = []
+    for (let x = 0; x < this.rows; x++){
+      const row = []
+      for (let y = 0; y < this.cols; y++){
+        let tile = this.grid[x][y]
+        row.push(tile.getColor())
+      }
+      tempGrid.push(row)
+    }
+    return tempGrid
   }
 }
 
