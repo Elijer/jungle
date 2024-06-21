@@ -1,4 +1,5 @@
 import './style.css'
+import { TileState } from './interfaces.js'
 
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +19,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Create the grid of squares
-const gridSize = 50;
+const gridSize = 10;
 const squareSize = 1;
 const gapSize = 0.0;
 const verticalOffset = -9
@@ -96,13 +97,36 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-socket.on("grid", (grid: string[][]) => {
+const addCube = (x: number, y: number, color: number | undefined) => {
+  console.log(color)
+  // Define the coordinates where you want to place the green cube
+  // const greenCubeIndex = x * gridSize + y;
+  const greenCubeMaterial = new THREE.MeshBasicMaterial({ color: color });
+  const greenCubeGeometry = new THREE.BoxGeometry(squareSize, squareSize, squareSize);
+  const greenCube = new THREE.Mesh(greenCubeGeometry, greenCubeMaterial);
+
+  // Position the green cube
+  greenCube.position.set(
+    x * (squareSize + gapSize) - gridSize / 2,
+    y * (squareSize + gapSize) - gridSize + 1,
+    .5
+  );
+  scene.add(greenCube);
+}
+
+socket.on("grid", (grid: TileState[][]) => {
   console.log(grid)
   for (let x = 0; x < gridSize; x++) {
     for (let y = 0; y < gridSize; y++) {
       const index = x * gridSize + y;
-      let color = "0x" + grid[x][y]
+      let color = "0x" + grid[x][y].terrain
+      if (grid[x][y].spaceLayer){
+        console.log(grid[x][y].spaceLayer)
+      }
       materials[index].color.setHex(color);
+      if (grid[x][y].spaceLayer?.geometry === "square"){
+        addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color))
+      }
     }
   }
 
