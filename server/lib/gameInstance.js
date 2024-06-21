@@ -68,10 +68,25 @@ class GameInstance {
   }
 
   removePlayer(playerId){
-    let { x, y } = this.players[playerId]
-    console.log("Attempting to delete a player with the coords of", x, y)
-    this.grid[x][y].spaceLayer = null
-    delete this.players[playerId]
+    try {
+      if (!this.players || this.players[playerId]){
+        console.log(`Failed to remove player ${playerId}: they do not exist in the game`)
+      }
+
+      let { x, y } = this.players[playerId]
+      console.log("Attempting to delete a player with the coords of", x, y)
+
+      if (this.grid[x] && this.grid[x][y]){
+        this.grid[x][y].spaceLayer = null
+      } else {
+        console.log(`Invalid coordinates (${x}, ${y}) for player with ID ${playerId}`);
+      }
+
+      delete this.players[playerId];
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
