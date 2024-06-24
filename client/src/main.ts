@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CubeForHire } from './interfaces.js'
 
 import './style.css'
 import { TileState } from './interfaces.js'
@@ -9,6 +10,19 @@ import sceneSetup from './lib/sceneSetup.js'
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
+let cubesForHire: CubeForHire[] | null = []
+for (let i = 0; i < 10; i++) {
+  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
+  cubesForHire.push({
+    active: false,
+    geometry: newCubeGeometry,
+    material: newCubeMaterial,
+    cube: newCube
+  })
+}
+
 // Animation loop
 function animate() {
 
@@ -16,33 +30,33 @@ function animate() {
 
   renderer.render(scene, camera);
 
-  // while (ephemerals.children.length) {
-  //   ephemerals.remove(ephemerals.children[0]);
-  // }
 }
 
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
-  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: color });
-  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
-  if (opacity < 1.0) newCubeMaterial.transparent = true
-  newCubeMaterial.opacity = opacity
+  let c = cubesForHire.find(c => c.active === false)
+  if (c === undefined) return
+  c.active = true
+  c.material.visible = true
+  c.material.color.setHex(color)
+  if (opacity < 1.0) c.material.transparent = true
+  c.material.opacity = opacity
 
-  newCube.position.set(
+  c.cube.position.set(
     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
     y * (b.squareSize + b.gapSize) - b.gridSize + 1,
     .5
   );
-  ephemerals.add(newCube);
+  ephemerals.add(c.cube);
 }
 
 socket.on("grid", (grid: TileState[][]) => {
 
-  while (ephemerals.children.length) {
-    ephemerals.remove(ephemerals.children[0]);
+  for (let c in cubesForHire){
+    cubesForHire[c].active = false
+    cubesForHire[c].material.visible = false
   }
 
   for (let x = 0; x < b.gridSize; x++) {

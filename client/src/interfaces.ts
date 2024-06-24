@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 interface LayerState {
   color: string
   geometry: string
@@ -15,4 +17,11 @@ export interface BoardConfig {
   gapSize: number;
   verticalOffset: number;
   terrainTiles: any[];
+}
+
+export interface CubeForHire {
+  active: boolean;
+  geometry: THREE.BoxGeometry;
+  material: THREE.MeshBasicMaterial;
+  cube: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
 }
