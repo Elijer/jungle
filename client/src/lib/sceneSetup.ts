@@ -18,7 +18,7 @@ const sceneSetup = () => {
   camera.position.set(0, -20, 10);
 
   // Set up renderer and add it to the DOM
-  const renderer = new THREE.WebGLRenderer(); // There are also other...renders?
+  const renderer = new THREE.WebGLRenderer({powerPreference: "high-performance"}); // There are also other...renders?
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
