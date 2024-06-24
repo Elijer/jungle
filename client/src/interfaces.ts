@@ -21,7 +21,7 @@ export interface BoardConfig {
 
 export interface CubeForHire {
   active: boolean;
-  geometry: THREE.BoxGeometry;
-  material: THREE.MeshBasicMaterial;
-  cube: THREE.Mesh<THREE.BoxGeometry, THREE.MeshBasicMaterial>;
+  geometry: any;
+  material: any;
+  cube: any;
 }

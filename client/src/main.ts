@@ -27,7 +27,6 @@ for (let i = 0; i < 10; i++) {
 function animate() {
 
   requestAnimationFrame(animate);
-
   renderer.render(scene, camera);
 
 }
