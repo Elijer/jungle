@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 interface LayerState {
   color: string
   geometry: string
