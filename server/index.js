@@ -15,7 +15,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnecting", async(reason) => {
       game.removePlayer(playerId)
-      console.log("Removed a player and now here is our game state")
+      console.log("Removed a player")
     })
   })
 

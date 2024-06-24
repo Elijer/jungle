@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 import './style.css'
 import { TileState } from './interfaces.js'
 
@@ -14,9 +17,6 @@ socket.on("connect", () => {
   console.log("Connected")
   socket.emit("player joined", playerId())
 });
-
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // Create the grid of squares
 const gridSize = 10;
@@ -56,20 +56,10 @@ const group = new THREE.Group();
 
 for (let i = 0; i < gridSize; i++) {
   for (let j = 0; j < gridSize; j++) {
-    
-    // Create the square geometry
     const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
-
-    // Create the square mesh
     const square = new THREE.Mesh(squareGeometry, materials[i * gridSize + j]);
-    
-    // Position the square with a gap
     square.position.set(i * (squareSize + gapSize) - gridSize/2, 0, j * (squareSize + gapSize) + verticalOffset);
-    
-    // Rotate the square to lie flat on the xz-plane
     square.rotation.x = -Math.PI / 2;
-    
-    // Add the square to the group
     group.add(square);
   }
 }

@@ -4,6 +4,7 @@ export default class Tile {
   constructor(noise) {
     this.rgb = [50, 40, 40]
     this.spaceLayer = null
+    this.spiritLayer = null
     this.noise = noise
   }
 

@@ -1,6 +1,6 @@
 import { simplexPositive } from './simplex2.js';
 import Tile from './entities/tile.js';
-import Item from './entities/item.js';
+import Player from './entities/player.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -57,14 +57,34 @@ class GameInstance {
   // TODO: For add and remove players, it may be a good idea to add some safety with the playermap / grid connection.
   // The most common problems with probably be trying to access grid positions that don't exist
   addPlayer(playerId){
+
+    if (this.players[playerId]){
+      console.log("PLayer already exists")
+      this.players[playerId].online = true
+      let { x, y } = this.players[playerId]
+      let player = this.grid[x][y].spiritLayer
+      this.grid[x][y].spiritLayer = null
+
+      if (this.grid[x][y].spaceLayer){
+        let { x : newX, y : newY } = this.findRandomSpot()
+        this.grid[newX][newY].spaceLayer = player
+        return
+      }
+      
+      this.grid[x][y].spaceLayer = player
+      return
+    }
+
     try {
       let { x, y } = this.findRandomSpot()
-      let newPlayer = new Item(playerId)
+      let newPlayer = new Player(playerId)
       this.grid[x][y].spaceLayer = newPlayer
-      this.players[playerId] = { x, y }
+      this.players[playerId] = { x, y, online: true}
     } catch (error) {
       console.log(error)
     }
+
+    console.log("Players", this.players)
   }
 
   removePlayer(playerId){
@@ -77,12 +97,13 @@ class GameInstance {
       console.log("Attempting to delete a player with the coords of", x, y)
 
       if (this.grid[x] && this.grid[x][y]){
+        let player = this.grid[x][y].spaceLayer
         this.grid[x][y].spaceLayer = null
+        this.grid[x][y].spiritLayer = player
+        this.players[playerId].online = false
       } else {
         console.log(`Invalid coordinates (${x}, ${y}) for player with ID ${playerId}`);
       }
-
-      delete this.players[playerId];
 
     } catch (error) {
       console.log(error)

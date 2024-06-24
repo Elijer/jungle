@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build-client && npm run server",
     "build-client": "cd client && npm i && npm run build",
-    "server": "cd server && npm i && node index.js",
+    "server": "cd server && npm i && nodemon index.js",
     "deploy": "git push heroku main"
   },
   "keywords": [],
