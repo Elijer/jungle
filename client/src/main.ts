@@ -25,10 +25,7 @@ for (let i = 0; i < 10; i++) {
 
 // Animation loop
 function animate() {
-
-  requestAnimationFrame(animate);
   renderer.render(scene, camera);
-
 }
 
 let ephemerals = new THREE.Group();
@@ -74,7 +71,6 @@ socket.on("grid", (grid: TileState[][]) => {
 
     }
   }
-
   animate();
 })
 
