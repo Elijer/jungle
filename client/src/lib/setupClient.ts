@@ -13,7 +13,7 @@ const setupClient = () => {
     socket.emit("player joined", playerId())
   });
 
-  return socket
+  return { socket, playerId }
 }
 
 export default setupClient

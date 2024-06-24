@@ -109,6 +109,37 @@ class GameInstance {
       console.log(error)
     }
   }
+
+  tileExists(x, y){
+    return x >= 0 && x < this.rows && y >= 0 && y < this.cols
+  }
+
+  movePlayer(playerId, direction){
+    if(!this.players[playerId] || !this.players[playerId].online){
+      console.log("Player does not exist, or is offline")
+      return
+    }
+    
+    const moves = {
+      l: [-1, 0],
+      r: [1, 0],
+      u: [0, 1],
+      d: [0, -1]
+    }
+
+    let { x, y } = this.players[playerId]
+    let player = this.grid[x][y].spaceLayer
+    let [dx, dy] = moves[direction]
+    const newX = x + dx
+    const newY = y + dy
+    if (this.tileExists(newX, newY)){
+      this.grid[x][y].spaceLayer = null
+      this.grid[newX][newY].spaceLayer = player
+      this.players[playerId] = { x: newX, y: newY, online: true}
+    }
+
+  }
+
 }
 
 export default GameInstance

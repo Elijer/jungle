@@ -19,6 +19,11 @@ io.on("connection", (socket) => {
     })
   })
 
+  socket.on("input event", (e) => {
+    const { playerId, direction } = e
+    game.movePlayer(playerId, direction)
+    io.emit("grid", game.getGrid())
+  })
 
 });
 
