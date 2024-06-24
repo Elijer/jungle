@@ -15,7 +15,8 @@ export default class Tile {
   getPortableState(){
     return {
       terrain: this.getColor(),
-      spaceLayer: this.spaceLayer ? this.spaceLayer.portableState() : null
+      spaceLayer: this.spaceLayer ? this.spaceLayer.portableState() : null,
+      spiritLayer: this.spiritLayer ? this.spiritLayer.portableState() : null
     }
   }
   

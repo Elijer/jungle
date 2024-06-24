@@ -1,9 +1,10 @@
-interface SpaceLayerState {
+interface LayerState {
   color: string
   geometry: string
 }
 
 export interface TileState {
   terrain: string;
-  spaceLayer: SpaceLayerState | null;
+  spaceLayer: LayerState | null;
+  spiritLayer: LayerState | null;
 }

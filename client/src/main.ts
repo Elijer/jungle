@@ -23,7 +23,7 @@ const gridSize = 10;
 const squareSize = 1;
 const gapSize = 0.0;
 const verticalOffset = -9
-const materials: any = [];
+const terrainTiles: any = [];
 
 // Set up camera with a view from above
 const scene = new THREE.Scene();
@@ -49,7 +49,7 @@ scene.add(light);
 
 // Create a material for each square
 for (let i = 0; i < gridSize * gridSize; i++) {
-  materials.push(new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+  terrainTiles.push(new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
 }
 
 const group = new THREE.Group();
@@ -57,7 +57,7 @@ const group = new THREE.Group();
 for (let i = 0; i < gridSize; i++) {
   for (let j = 0; j < gridSize; j++) {
     const squareGeometry = new THREE.PlaneGeometry(squareSize, squareSize);
-    const square = new THREE.Mesh(squareGeometry, materials[i * gridSize + j]);
+    const square = new THREE.Mesh(squareGeometry, terrainTiles[i * gridSize + j]);
     square.position.set(i * (squareSize + gapSize) - gridSize/2, 0, j * (squareSize + gapSize) + verticalOffset);
     square.rotation.x = -Math.PI / 2;
     group.add(square);
@@ -70,7 +70,7 @@ scene.add(group);
 for (let x = 0; x < gridSize; x++) {
   for (let y = 0; y < gridSize; y++) {
     const index = x * gridSize + y;
-    materials[index].color.setHex(0xffffff);
+    terrainTiles[index].color.setHex(0xffffff);
   }
 }
 
@@ -87,15 +87,13 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-const addCube = (x: number, y: number, color: number | undefined) => {
-  console.log(color)
-  // Define the coordinates where you want to place the green cube
-  // const greenCubeIndex = x * gridSize + y;
+const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
   const greenCubeMaterial = new THREE.MeshBasicMaterial({ color: color });
   const greenCubeGeometry = new THREE.BoxGeometry(squareSize, squareSize, squareSize);
   const greenCube = new THREE.Mesh(greenCubeGeometry, greenCubeMaterial);
+  if (opacity < 1.0) greenCubeMaterial.transparent = true
+  greenCubeMaterial.opacity = opacity
 
-  // Position the green cube
   greenCube.position.set(
     x * (squareSize + gapSize) - gridSize / 2,
     y * (squareSize + gapSize) - gridSize + 1,
@@ -105,18 +103,21 @@ const addCube = (x: number, y: number, color: number | undefined) => {
 }
 
 socket.on("grid", (grid: TileState[][]) => {
-  console.log(grid)
   for (let x = 0; x < gridSize; x++) {
     for (let y = 0; y < gridSize; y++) {
       const index = x * gridSize + y;
       let color = "0x" + grid[x][y].terrain
-      if (grid[x][y].spaceLayer){
-        console.log(grid[x][y].spaceLayer)
-      }
-      materials[index].color.setHex(color);
-      if (grid[x][y].spaceLayer?.geometry === "square"){
+
+      terrainTiles[index].color.setHex(color);
+      if (grid[x][y].spaceLayer?.geometry === "cube"){
         addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color))
       }
+
+      if (grid[x][y].spiritLayer?.geometry === "cube"){
+        console.log("Yes")
+        addCube(x, y, parseInt("0x" + grid[x][y].spiritLayer?.color), .05)
+      }
+
     }
   }
 
