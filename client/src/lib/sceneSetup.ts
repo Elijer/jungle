@@ -37,7 +37,6 @@ const sceneSetup = () => {
   light.position.set(0, 100, 100).normalize();
   scene.add(light);
 
-
   // Create a material for each square
   for (let i = 0; i < b.gridSize * b.gridSize; i++) {
     b.terrainTiles.push(new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));

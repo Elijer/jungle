@@ -16,18 +16,18 @@ function animate() {
 }
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
-  const greenCubeMaterial = new THREE.MeshBasicMaterial({ color: color });
-  const greenCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const greenCube = new THREE.Mesh(greenCubeGeometry, greenCubeMaterial);
-  if (opacity < 1.0) greenCubeMaterial.transparent = true
-  greenCubeMaterial.opacity = opacity
+  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: color });
+  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
+  if (opacity < 1.0) newCubeMaterial.transparent = true
+  newCubeMaterial.opacity = opacity
 
-  greenCube.position.set(
+  newCube.position.set(
     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
     y * (b.squareSize + b.gapSize) - b.gridSize + 1,
     .5
   );
-  scene.add(greenCube);
+  scene.add(newCube);
 }
 
 socket.on("grid", (grid: TileState[][]) => {
@@ -42,7 +42,6 @@ socket.on("grid", (grid: TileState[][]) => {
       }
 
       if (grid[x][y].spiritLayer?.geometry === "cube"){
-        console.log("Yes")
         addCube(x, y, parseInt("0x" + grid[x][y].spiritLayer?.color), .05)
       }
 
