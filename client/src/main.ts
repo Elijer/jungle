@@ -9,6 +9,7 @@ import sceneSetup from './lib/sceneSetup.js'
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
+const cubesForHire: CubeForHire[] = []
 
 // Animation loop
 function animate() {
@@ -20,14 +21,25 @@ scene.add(ephemerals)
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
-  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
+  const recycledCube = cubesForHire.find(c => c.active === false)
+  let c;
 
-  let c = {
-    geometry: newCubeGeometry,
-    material: newCubeMaterial,
-    cube: newCube
+  if (!recycledCube) {
+    const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+    const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
+
+    c = {
+      active: true,
+      geometry: newCubeGeometry,
+      material: newCubeMaterial,
+      cube: newCube
+    }
+
+    cubesForHire.push(c)
+  } else {
+    c = recycledCube
+    c.active = true
   }
 
   c.material.color.setHex(color)
@@ -45,6 +57,7 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
 socket.on("grid", (grid: TileState[][]) => {
 
   ephemerals.remove(...ephemerals.children)
+  cubesForHire.forEach(c => c.active = false)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
