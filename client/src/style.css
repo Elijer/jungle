@@ -25,3 +25,7 @@ html {
   border: solid grey 1px;
   color: white
 }
+
+.arrow-key-interface button:hover {
+  background: pink;
+}
