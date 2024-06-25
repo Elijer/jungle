@@ -18,17 +18,21 @@ function animate() {
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 
-const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
-
+const createCube = () => {
   const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
   const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
 
-  let c = {
+  return {
+    active: true,
     geometry: newCubeGeometry,
     material: newCubeMaterial,
-    cube: newCube
+    cube: new THREE.Mesh(newCubeGeometry, newCubeMaterial)
   }
+}
+
+const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
+
+  let c = createCube()
 
   c.material.color.setHex(color)
   if (opacity < 1.0) c.material.transparent = true
