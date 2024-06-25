@@ -132,7 +132,7 @@ class GameInstance {
     let [dx, dy] = moves[direction]
     const newX = x + dx
     const newY = y + dy
-    if (this.tileExists(newX, newY)){
+    if (this.tileExists(newX, newY) && !this.grid[newX][newY].spaceLayer){
       this.grid[x][y].spaceLayer = null
       this.grid[newX][newY].spaceLayer = player
       this.players[playerId] = { x: newX, y: newY, online: true}
