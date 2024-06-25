@@ -30,7 +30,6 @@ const createCube = () => {
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
   let c = cubesForHire.find(c => c.active === false)
-  console.log(cubesForHire)
 
   if (c){
     c.active = true
@@ -45,7 +44,6 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
   c.material.color.setHex(color)
   c.material.transparent = true
   c.material.opacity = opacity
-  console.log(opacity)
 
   c.cube.position.set(
     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
