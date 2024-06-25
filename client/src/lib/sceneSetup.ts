@@ -16,8 +16,11 @@ const sceneSetup = () => {
 
   // Set up camera with a view from above
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 ); // there ARE other cameras
-  camera.position.set(0, -20, 10);
+  const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 100 ); // there ARE other cameras
+  // camera.position.set(0, -20, 10);
+  // camera.position.set(0, -10, 35); // aerial view
+  camera.position.set(0, -30, 10); 
+  camera.rotation.set(0.99,0,0);
 
   
   // Set up renderer and add it to the DOM
@@ -25,8 +28,8 @@ const sceneSetup = () => {
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
-  const controls = new OrbitControls( camera, renderer.domElement );
-  controls.addEventListener("change", () => renderer.render(scene, camera));
+  // const controls = new OrbitControls( camera, renderer.domElement );
+  // controls.addEventListener("change", () => renderer.render(scene, camera));
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;

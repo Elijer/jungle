@@ -10,11 +10,6 @@ import sceneSetup from './lib/sceneSetup.js'
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
-// Animation loop
-function animate() {
-  renderer.render(scene, camera);
-}
-
 let cubesForHire: CubeForHire[] = []
 
 let ephemerals = new THREE.Group();
@@ -38,7 +33,6 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
   console.log(cubesForHire)
 
   if (c){
-    console.log("Recucling")
     c.active = true
     ephemerals.add(c.cube)
   }
@@ -83,8 +77,7 @@ socket.on("grid", (grid: TileState[][]) => {
 
     }
   }
-  requestAnimationFrame(animate)
-  // animate();
+  renderer.render(scene, camera)
 })
 
 document.addEventListener('keydown', (event) => {
@@ -122,10 +115,24 @@ document.addEventListener('DOMContentLoaded', () => {
     "d": { element: document.getElementById('right-button')!, code: 'r' },
   };
 
-  for (const key of Object.keys(keyBindings)) {
-    const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('tap', () => {
-      socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
-    });
+  if(window.matchMedia("(pointer: coarse)").matches) {
+
+    // Touchscreens
+    for (const key of Object.keys(keyBindings)) {
+      const keyBinding = keyBindings[key];
+      keyBinding.element.addEventListener('tap', () => {
+        socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+      });
+    }
+  } else {
+    for (const key of Object.keys(keyBindings)) {
+      
+      // Mice
+      const keyBinding = keyBindings[key];
+      keyBinding.element.addEventListener('click', () => {
+        socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+      });
+    }
   }
+
 });

@@ -7,7 +7,7 @@ html {
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 20px;
+  bottom: 20px;
 }
 
 .arrow-key-interface button {
