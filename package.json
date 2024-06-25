@@ -8,7 +8,10 @@
     "build-client": "cd client && npm i && npm run build",
     "server": "cd server && npm i && node index.js",
     "serve": "cd server && npm i && nodemon index.js",
-    "deploy": "git push heroku main"
+    "deploy": "git push heroku main",
+    "tunnel1": "lt --port 5173 --subdomain thornberry2",
+    "tunnel2": "lt --port 3000 --subdomain thornberry",
+    "tunnel": "npm run tunnel1 & npm run tunnel2"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +29,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.165.0",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "localtunnel": "^2.0.2"
   }
 }
