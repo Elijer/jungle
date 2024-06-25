@@ -10,19 +10,6 @@ import sceneSetup from './lib/sceneSetup.js'
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
-let cubesForHire: CubeForHire[] | null = []
-for (let i = 0; i < 10; i++) {
-  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
-  cubesForHire.push({
-    active: false,
-    geometry: newCubeGeometry,
-    material: newCubeMaterial,
-    cube: newCube
-  })
-}
-
 // Animation loop
 function animate() {
   renderer.render(scene, camera);
@@ -32,10 +19,17 @@ let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
-  let c = cubesForHire.find(c => c.active === false)
-  if (c === undefined) return
-  c.active = true
-  c.material.visible = true
+
+  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+  const newCube = new THREE.Mesh(newCubeGeometry, newCubeMaterial);
+
+  let c = {
+    geometry: newCubeGeometry,
+    material: newCubeMaterial,
+    cube: newCube
+  }
+
   c.material.color.setHex(color)
   if (opacity < 1.0) c.material.transparent = true
   c.material.opacity = opacity
@@ -50,10 +44,7 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
 
 socket.on("grid", (grid: TileState[][]) => {
 
-  for (let c in cubesForHire){
-    cubesForHire[c].active = false
-    cubesForHire[c].material.visible = false
-  }
+  ephemerals.remove(...ephemerals.children)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
@@ -62,7 +53,7 @@ socket.on("grid", (grid: TileState[][]) => {
 
       b.terrainTiles[index].color.setHex(color);
       if (grid[x][y].spaceLayer?.geometry === "cube"){
-        addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color))
+        addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color), 1.0)
       }
 
       if (grid[x][y].spiritLayer?.geometry === "cube"){

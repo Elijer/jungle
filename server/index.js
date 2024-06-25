@@ -2,7 +2,7 @@ import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
 const { io, port, httpServer } = setupServer();
 
-let gridSize = 10
+let gridSize = 8
 let game = new GameInstance(gridSize, gridSize)
 
 io.on("connection", (socket) => {

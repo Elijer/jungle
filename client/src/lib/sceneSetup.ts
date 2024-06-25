@@ -4,11 +4,13 @@ import { BoardConfig } from '../interfaces.js';
 
 const sceneSetup = () => {
 
+  let gridSize = 8
+
   const b: BoardConfig = {
-    gridSize: 10,
+    gridSize: gridSize,
     squareSize: 1,
     gapSize: 0.0,
-    verticalOffset: -9,
+    verticalOffset: -(gridSize -1),
     terrainTiles: []
   }
 
