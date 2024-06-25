@@ -8,6 +8,7 @@ html {
   align-items: center;
   position: absolute;
   bottom: 20px;
+  z-index: 100;
 }
 
 .arrow-key-interface button {

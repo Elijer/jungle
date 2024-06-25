@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BoardConfig } from '../interfaces.js';
 
 const sceneSetup = () => {
@@ -27,15 +27,6 @@ const sceneSetup = () => {
   const renderer = new THREE.WebGLRenderer({powerPreference: "high-performance"}); // There are also other...renders?
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
-
-  // const controls = new OrbitControls( camera, renderer.domElement );
-  // controls.addEventListener("change", () => renderer.render(scene, camera));
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
 
   // Add a directional light to the scene
   const light = new THREE.DirectionalLight(0xffffff, 1);

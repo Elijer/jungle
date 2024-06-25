@@ -98,30 +98,28 @@ document.addEventListener('keydown', (event) => {
   
 });
 
-// interface ElementCodePair {
-//   element: HTMLElement;
-//   code: string;
-// }
+interface ElementCodePair {
+  element: HTMLElement;
+  code: string;
+}
 
-// interface KeyBindings {
-//   [key: string]: ElementCodePair;
-// }
+interface KeyBindings {
+  [key: string]: ElementCodePair;
+}
 
-// document.addEventListener('DOMContentLoaded', () => {
-
-//   const keyBindings: KeyBindings = {
-//     "w": { element: document.getElementById('up-button')!, code: 'u' },
-//     "a": { element: document.getElementById('left-button')!, code: 'l' },
-//     "s": { element: document.getElementById('down-button')!, code: 'd' },
-//     "d": { element: document.getElementById('right-button')!, code: 'r' },
-//   };
-
-//     // Touchscreens
-//     for (const key of Object.keys(keyBindings)) {
-//       const keyBinding = keyBindings[key];
-//       keyBinding.element.addEventListener('tap', () => {
-//         socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
-//       });
-//     }
-
-// });
+document.addEventListener('DOMContentLoaded', () => {
+  const keyBindings: KeyBindings = {
+    "w": { element: document.getElementById('up-button')!, code: 'u' },
+    "a": { element: document.getElementById('left-button')!, code: 'l' },
+    "s": { element: document.getElementById('down-button')!, code: 'd' },
+    "d": { element: document.getElementById('right-button')!, code: 'r' },
+  };
+  
+  // Touchscreens
+  for (const key of Object.keys(keyBindings)) {
+    const keyBinding = keyBindings[key];
+    keyBinding.element.addEventListener('touchstart', () => {
+      socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+    });
+  }
+})
