@@ -77,6 +77,7 @@ socket.on("grid", (grid: TileState[][]) => {
 
     }
   }
+  // requestAnimationFrame(() => {})
   renderer.render(scene, camera)
 })
 
@@ -97,14 +98,14 @@ document.addEventListener('keydown', (event) => {
   
 });
 
-interface ElementCodePair {
-  element: HTMLElement;
-  code: string;
-}
+// interface ElementCodePair {
+//   element: HTMLElement;
+//   code: string;
+// }
 
-interface KeyBindings {
-  [key: string]: ElementCodePair;
-}
+// interface KeyBindings {
+//   [key: string]: ElementCodePair;
+// }
 
 // document.addEventListener('DOMContentLoaded', () => {
 
