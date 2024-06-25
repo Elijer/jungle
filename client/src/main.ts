@@ -15,6 +15,8 @@ function animate() {
   renderer.render(scene, camera);
 }
 
+let cubesForHire: CubeForHire[] = []
+
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 
@@ -32,23 +34,38 @@ const createCube = () => {
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
-  let c = createCube()
+  let c = cubesForHire.find(c => c.active === false)
+  console.log(cubesForHire)
+
+  if (c){
+    console.log("Recucling")
+    c.active = true
+    ephemerals.add(c.cube)
+  }
+
+  if (c === undefined) {
+    c = createCube()
+    cubesForHire.push(c)
+  }
 
   c.material.color.setHex(color)
-  if (opacity < 1.0) c.material.transparent = true
+  c.material.transparent = true
   c.material.opacity = opacity
+  console.log(opacity)
 
   c.cube.position.set(
     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
     y * (b.squareSize + b.gapSize) - b.gridSize + 1,
     .5
   );
+
   ephemerals.add(c.cube);
 }
 
 socket.on("grid", (grid: TileState[][]) => {
 
   ephemerals.remove(...ephemerals.children)
+  cubesForHire.forEach(c => c.active = false)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
