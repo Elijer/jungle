@@ -115,8 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     "d": { element: document.getElementById('right-button')!, code: 'r' },
   };
 
-  if(window.matchMedia("(pointer: coarse)").matches) {
-
     // Touchscreens
     for (const key of Object.keys(keyBindings)) {
       const keyBinding = keyBindings[key];
@@ -124,15 +122,5 @@ document.addEventListener('DOMContentLoaded', () => {
         socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
       });
     }
-  } else {
-    for (const key of Object.keys(keyBindings)) {
-      
-      // Mice
-      const keyBinding = keyBindings[key];
-      keyBinding.element.addEventListener('click', () => {
-        socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
-      });
-    }
-  }
 
 });
