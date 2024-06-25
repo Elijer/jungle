@@ -17,20 +17,20 @@ const sceneSetup = () => {
   const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 ); // there ARE other cameras
   camera.position.set(0, -20, 10);
 
+  
   // Set up renderer and add it to the DOM
   const renderer = new THREE.WebGLRenderer({powerPreference: "high-performance"}); // There are also other...renders?
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
+
+  const controls = new OrbitControls( camera, renderer.domElement );
+  controls.addEventListener("change", () => renderer.render(scene, camera));
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
-
-  // Set up orbit controls
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.update();
 
   // Add a directional light to the scene
   const light = new THREE.DirectionalLight(0xffffff, 1);
@@ -64,7 +64,7 @@ const sceneSetup = () => {
     }
   }
 
-  return {scene, camera, renderer, b}
+  return {scene, camera, renderer, b }
 }
 
 export default sceneSetup
