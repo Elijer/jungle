@@ -1,3 +1,27 @@
 html {
   background: black;
 }
+
+.arrow-key-interface {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+}
+
+.arrow-key-interface button {
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#left-button, #right-button {
+  margin: 5px 15px;
+}
+
+#down-button {
+  margin-top: 10px;
+}

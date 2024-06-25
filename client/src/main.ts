@@ -102,3 +102,29 @@ document.addEventListener('keydown', (event) => {
   }
   
 });
+
+interface ElementCodePair {
+  element: HTMLElement;
+  code: string;
+}
+
+interface KeyBindings {
+  [key: string]: ElementCodePair;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const keyBindings: KeyBindings = {
+    "w": { element: document.getElementById('up-button')!, code: 'u' },
+    "a": { element: document.getElementById('left-button')!, code: 'l' },
+    "s": { element: document.getElementById('down-button')!, code: 'd' },
+    "d": { element: document.getElementById('right-button')!, code: 'r' },
+  };
+
+  for (const key of Object.keys(keyBindings)) {
+    const keyBinding = keyBindings[key];
+    keyBinding.element.addEventListener('click', () => {
+      socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+    });
+  }
+});
