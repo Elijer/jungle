@@ -2,8 +2,6 @@ import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
 const { io, port, httpServer } = setupServer();
 
-// test
-
 let gridSize = 100
 let game = new GameInstance(gridSize, gridSize)
 
