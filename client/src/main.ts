@@ -83,7 +83,8 @@ socket.on("grid", (grid: TileState[][]) => {
 
     }
   }
-  animate();
+  requestAnimationFrame(animate)
+  // animate();
 })
 
 document.addEventListener('keydown', (event) => {
