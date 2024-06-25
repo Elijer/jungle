@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   for (const key of Object.keys(keyBindings)) {
     const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('click', () => {
+    keyBinding.element.addEventListener('tap', () => {
       socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
     });
   }
