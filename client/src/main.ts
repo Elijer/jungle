@@ -122,4 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
       socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
     });
   }
+
+  // Touchscreens
+  for (const key of Object.keys(keyBindings)) {
+    const keyBinding = keyBindings[key];
+    keyBinding.element.addEventListener('click', () => {
+      socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+    });
+  }
 })

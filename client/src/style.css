@@ -2,6 +2,10 @@ html {
   background: black;
 }
 
+* {
+  touch-action: manipulation;
+}
+
 .arrow-key-interface {
   display: flex;
   justify-content: center;
