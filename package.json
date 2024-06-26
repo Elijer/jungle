@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build-client && npm run server",
-    "build-client": "cd client && npm ci && npm run build",
-    "server": "cd server && npm ci && node index.js",
+    "build-client": "cd client && npm i && npm run build",
+    "server": "cd server && npm i && node index.js",
     "serve": "cd server && npm i && nodemon index.js",
     "deploy": "git push heroku main",
     "tunnel1": "lt --port 5173 --subdomain thornberry2",
