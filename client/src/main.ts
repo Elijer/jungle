@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { thousands, memoryCrashAvoider, memoryCheck } from './lib/utils.js'
 
 // Post processing
 import Composer from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -15,7 +16,9 @@ import { TileState } from './interfaces.js'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
-import { Vector2 } from 'three';
+
+memoryCheck()
+
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
@@ -84,6 +87,8 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
 }
 
 socket.on("state", (boardState: BoardState) => {
+  
+  memoryCrashAvoider(.7)
 
   let grid: TileState[][] = boardState.grid
   players = boardState.players
@@ -112,12 +117,11 @@ socket.on("state", (boardState: BoardState) => {
 
     }
   }
-  console.log("Skipped tiles: ", skippedTiles)
   lastGrid = grid
 })
 
 let animate = () => {
-
+  if (!document.hasFocus()) return // to prevent crashing in the background
   // renderer.render(scene, camera)
   let playerId = localStorage.getItem('playerId')
   if (playerId && players){
