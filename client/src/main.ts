@@ -76,8 +76,13 @@ socket.on("grid", (grid: TileState[][]) => {
     }
   }
   // requestAnimationFrame(() => {})
-  renderer.render(scene, camera)
+  // renderer.render(scene, camera)
 })
+
+setInterval(() => {
+  requestAnimationFrame(() => renderer.render(scene, camera))
+  // renderer.render(scene, camera)
+}, 33)
 
 document.addEventListener('keydown', (event) => {
   if (socket.connected === false) return
