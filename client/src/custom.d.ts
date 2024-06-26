@@ -2,6 +2,8 @@ declare module 'three';
 // declare module 'three/addons/controls/OrbitControls.js';
 declare module 'uuid';
 
+declare module '*';
+
 // declare module 'three/addons/postprocessing/RenderPass.js'
 // declare module 'three/addons/postprocessing/RenderPixelatedPass.js';
 // declare module 'three/addons/postprocessing/OutputPass.js';
