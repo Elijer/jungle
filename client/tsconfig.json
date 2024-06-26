@@ -5,7 +5,7 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "typeRoots" : ["./node_modules/@types"],
+    "typeRoots" : ["./node_modules/@types", "./src/custom.d.ts"],
     "declaration": true,
 
     /* Bundler mode */
