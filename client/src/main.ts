@@ -14,6 +14,7 @@ let cubesForHire: CubeForHire[] = []
 
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
+let lastGrid: any = []
 
 const createCube = () => {
   const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
@@ -41,9 +42,18 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
     cubesForHire.push(c)
   }
 
-  c.material.color.setHex(color)
+
+  if (c.material.color.getHex() !== color) {
+    c.material.color.setHex(color);
+  }
+  
   c.material.transparent = true
-  c.material.opacity = opacity
+
+  // Only set opacity as needed
+  if (c.material.opacity !== opacity) {
+    c.material.transparent = opacity < 1.0; // Only set transparency if opacity is less than 1.0
+    c.material.opacity = opacity;
+  }
 
   c.cube.position.set(
     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
@@ -52,19 +62,26 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
   );
 
   ephemerals.add(c.cube);
+  
 }
 
 socket.on("grid", (grid: TileState[][]) => {
 
   ephemerals.remove(...ephemerals.children)
   cubesForHire.forEach(c => c.active = false)
+  let skippedTiles = 0
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       const index = x * b.gridSize + y;
-      let color = "0x" + grid[x][y].terrain
+      if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
+        skippedTiles++
+      } else {
+        let color = "0x" + grid[x][y].terrain
+        b.terrainTiles[index].color.setHex(color);
+      }
+      // if (lastGrid[x][y] === grid[x][y]) continue // skip if no change
 
-      b.terrainTiles[index].color.setHex(color);
       if (grid[x][y].spaceLayer?.geometry === "cube"){
         addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color), 1.0)
       }
@@ -75,6 +92,8 @@ socket.on("grid", (grid: TileState[][]) => {
 
     }
   }
+  console.log("Skipped tiles: ", skippedTiles)
+  lastGrid = grid
   // requestAnimationFrame(() => {})
   // renderer.render(scene, camera)
 })
