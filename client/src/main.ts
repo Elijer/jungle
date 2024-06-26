@@ -80,7 +80,6 @@ socket.on("grid", (grid: TileState[][]) => {
         let color = "0x" + grid[x][y].terrain
         b.terrainTiles[index].color.setHex(color);
       }
-      // if (lastGrid[x][y] === grid[x][y]) continue // skip if no change
 
       if (grid[x][y].spaceLayer?.geometry === "cube"){
         addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color), 1.0)
@@ -94,8 +93,6 @@ socket.on("grid", (grid: TileState[][]) => {
   }
   console.log("Skipped tiles: ", skippedTiles)
   lastGrid = grid
-  // requestAnimationFrame(() => {})
-  // renderer.render(scene, camera)
 })
 
 setInterval(() => {
