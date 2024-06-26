@@ -63,12 +63,11 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
     cubesForHire.push(c)
   }
 
+  c.material.transparent = true
 
   if (c.material.color.getHex() !== color) {
     c.material.color.setHex(color);
   }
-  
-  c.material.transparent = true
 
   // Only set opacity as needed
   if (c.material.opacity !== opacity) {
