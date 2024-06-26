@@ -117,7 +117,8 @@ socket.on("state", (boardState: BoardState) => {
 })
 
 let animate = () => {
-  renderer.render(scene, camera)
+
+  // renderer.render(scene, camera)
   let playerId = localStorage.getItem('playerId')
   if (playerId && players){
     let {x, y } = (players as Players)[playerId]
@@ -142,6 +143,19 @@ let animate = () => {
       }
     }
   }
+
+  const composer = new EffectComposer( renderer );
+
+  const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+  
+  const pixelPass = new RenderPixelatedPass(16, scene, camera);
+  composer.addPass( pixelPass );
+  
+  const outputPass = new OutputPass();
+  composer.addPass( outputPass );
+
+  composer.render()
 
 }
 
