@@ -5,7 +5,7 @@ const setupClient = () => {
   const herokuUrl = "https://thornberry-jungle-461255bc451e.herokuapp.com/"
   const tunnelUrl = "https://thornberry.loca.lt"
   let socketAddress = window.location.hostname === "localhost" ? "ws://localhost:3000" : herokuUrl
-  // if (window.location.hostname.includes("thornberry")) socketAddress = tunnelUrl
+  if (window.location.hostname.includes("thornberry") && !window.location.hostname.includes("heroku")) socketAddress = tunnelUrl
   const socket = io(socketAddress)
   
   const playerId = () => localStorage.getItem('playerId') || localStorage.setItem('playerId', uuidv4())
