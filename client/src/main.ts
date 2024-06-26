@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CubeForHire } from './interfaces.js'
+import { BoardState, CubeForHire } from './interfaces.js'
 
 import './style.css'
 import { TileState } from './interfaces.js'
@@ -65,7 +65,9 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
   
 }
 
-socket.on("grid", (grid: TileState[][]) => {
+socket.on("state", (boardState: BoardState) => {
+
+  let grid: TileState[][] = boardState.grid
 
   ephemerals.remove(...ephemerals.children)
   cubesForHire.forEach(c => c.active = false)

@@ -3,6 +3,19 @@ interface LayerState {
   geometry: string
 }
 
+export interface Player {
+    x: number;
+    y: number;
+    online: boolean;
+}
+
+export interface BoardState {
+  grid: TileState[][];
+  players: {
+    [key: string]: Player;
+  };
+}
+
 export interface TileState {
   terrain: string;
   spaceLayer: LayerState | null;

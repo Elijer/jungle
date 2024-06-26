@@ -26,7 +26,7 @@ class GameInstance {
     return grid
   }
 
-  getGrid(){
+  getState(){
     let tempGrid = []
     for (let x = 0; x < this.rows; x++){
       const row = []
@@ -36,7 +36,11 @@ class GameInstance {
       }
       tempGrid.push(row)
     }
-    return tempGrid
+    console.log(this.players)
+    return {
+      grid: tempGrid,
+      players: this.players
+    }
   }
 
   findRandomSpot(){
