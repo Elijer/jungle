@@ -11,8 +11,18 @@ html {
   justify-content: center;
   align-items: center;
   position: absolute;
-  bottom: 20px;
+  bottom: 0px;
   z-index: 100;
+}
+
+.leftb {
+  right: 0px;
+  bottom: 0px;
+}
+
+.rightb {
+  left: 0px;
+  bottom: 0px;
 }
 
 .arrow-key-interface button {
@@ -23,7 +33,7 @@ html {
   cursor: pointer;
   background: black;
   border: solid grey 1px;
-  color: white
+  color: white;
 }
 
 .arrow-key-interface button:hover {
