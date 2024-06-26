@@ -5,6 +5,7 @@ import { thousands, memoryCrashAvoider, memoryCheck } from './lib/utils.js'
 import Composer from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
@@ -151,9 +152,16 @@ let animate = () => {
 
   const renderPass = new RenderPass( scene, camera );
   composer.addPass( renderPass );
-  
+
   const pixelPass = new RenderPixelatedPass(16, scene, camera);
   composer.addPass( pixelPass );
+  
+  // const bokehPass = new BokehPass(scene, camera, {
+  //   aperture: 1,
+  //   focus: 1,
+  //   maxblur: 0.01,
+  // });
+  // composer.addPass( bokehPass );
   
   const outputPass = new OutputPass();
   composer.addPass( outputPass );
