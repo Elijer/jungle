@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import { BoardState, CubeForHire } from './interfaces.js'
+import { BoardState, CubeForHire, LerpConfig } from './interfaces.js'
+import type { Players } from './interfaces.js'
 
 import './style.css'
 import { TileState } from './interfaces.js'
@@ -15,6 +16,15 @@ let cubesForHire: CubeForHire[] = []
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 let lastGrid: any = []
+
+let lerp: LerpConfig = {
+  start: null,
+  duration: 1500,
+  startPos: { x: 0, y: 0 },
+  targetPos: { x: 0, y: 0 }
+};
+
+let players: Players | {} = {}
 
 const createCube = () => {
   const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
@@ -68,6 +78,7 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
 socket.on("state", (boardState: BoardState) => {
 
   let grid: TileState[][] = boardState.grid
+  players = boardState.players
 
   ephemerals.remove(...ephemerals.children)
   cubesForHire.forEach(c => c.active = false)
@@ -97,10 +108,39 @@ socket.on("state", (boardState: BoardState) => {
   lastGrid = grid
 })
 
+let animate = () => {
+  renderer.render(scene, camera)
+  let playerId = localStorage.getItem('playerId')
+  if (playerId && players){
+    let {x, y } = (players as Players)[playerId]
+    let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 8 };
+
+    if (!lerp.start) {
+      lerp.start = Date.now();
+      lerp.startPos = { x: camera.position.x, y: camera.position.y };
+      lerp.targetPos = newTargetPos;
+    } else {
+      lerp.targetPos = newTargetPos; // Update target position continuously
+      let now = Date.now();
+      let elapsed = now - lerp.start;
+      let t = Math.min(elapsed / lerp.duration, 1); // Interpolation factor
+  
+      let newX = lerp.startPos.x + t * (lerp.targetPos.x - lerp.startPos.x);
+      let newY = lerp.startPos.y + t * (lerp.targetPos.y - lerp.startPos.y);
+  
+      camera.position.set(newX, newY, 10);
+      if (t === 1) {
+        lerp.start = null; // Reset lerpStart for the next movement
+      }
+    }
+  }
+
+}
+
 setInterval(() => {
-  requestAnimationFrame(() => renderer.render(scene, camera))
+  requestAnimationFrame(() => animate())
   // renderer.render(scene, camera)
-}, 33)
+}, 16)
 
 document.addEventListener('keydown', (event) => {
   if (socket.connected === false) return

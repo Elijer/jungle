@@ -4,7 +4,7 @@ import { BoardConfig } from '../interfaces.js';
 
 const sceneSetup = () => {
 
-  let gridSize = 20
+  let gridSize = 50
 
   const b: BoardConfig = {
     gridSize: gridSize,
@@ -19,6 +19,7 @@ const sceneSetup = () => {
   const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 ); // there ARE other cameras
   // camera.position.set(0, -20, 10);
   camera.position.set(0, -10, 35); // aerial view
+  camera.rotation.set(.6, 0, 0); // Adjust the angle as needed
 
   // camera.position.set(0, -150, 50); 
   // camera.rotation.set(0.99,0,0);

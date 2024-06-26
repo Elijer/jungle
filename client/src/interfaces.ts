@@ -9,11 +9,14 @@ export interface Player {
     online: boolean;
 }
 
+export type Players = {
+  [key: string]: Player;
+};
+
+
 export interface BoardState {
   grid: TileState[][];
-  players: {
-    [key: string]: Player;
-  };
+  players: Players
 }
 
 export interface TileState {
@@ -35,4 +38,11 @@ export interface CubeForHire {
   geometry: any;
   material: any;
   cube: any;
+}
+
+export interface LerpConfig {
+  start: number | null;
+  duration: number;
+  startPos: { x: number; y: number };
+  targetPos: { x: number; y: number };
 }
