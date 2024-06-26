@@ -1,4 +1,27 @@
 import * as THREE from 'three';
+
+const CopyShader = /* glsl */`
+  varying vec2 vUv;
+
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+
+
+// Post processing
+import Composer from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
+import { GlitchPass } from 'three/addons/postprocessing/Glitchpass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
 import { BoardState, CubeForHire, LerpConfig } from './interfaces.js'
 import type { Players } from './interfaces.js'
 
@@ -7,7 +30,7 @@ import { TileState } from './interfaces.js'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
-
+import { Vector2 } from 'three';
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
@@ -109,7 +132,37 @@ socket.on("state", (boardState: BoardState) => {
 })
 
 let animate = () => {
-  renderer.render(scene, camera)
+
+  const composer = new EffectComposer( renderer );
+  
+  const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+
+  // const luminosityPass = new ShaderPass( CopyShader );
+  // composer.addPass( luminosityPass );
+
+  // const bloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 20, 2, 10);
+  // composer.addPass( bloomPass );
+
+  // const renderGlitchPass = new GlitchPass(12)
+  // composer.addPass( renderGlitchPass );
+
+  const renderPixelatedPass = new RenderPixelatedPass(13, scene, camera)
+  composer.addPass( renderPixelatedPass );
+
+  // const filmPass = new FilmPass(1000, true)
+  // composer.addPass( filmPass );
+
+  // const unrealBloomPass = new UnrealBloomPass(new Vector2(window.innerWidth, window.innerHeight), 20, 20, 20)
+  // composer.addPass( unrealBloomPass );
+
+  // const hblur = new THREE.ShaderPass( THREE.HorizontalBlurShader );
+  // composer.addPass( hblur );
+
+  const outputPass = new OutputPass();
+  composer.addPass( outputPass );
+
+  composer.render(scene)
   let playerId = localStorage.getItem('playerId')
   if (playerId && players){
     let {x, y } = (players as Players)[playerId]

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BoardConfig } from '../interfaces.js';
 
@@ -28,6 +29,7 @@ const sceneSetup = () => {
   // Set up renderer and add it to the DOM
   // const renderer = new THREE.WebGLRenderer({powerPreference: "high-performance"}); // There are also other...renders?
   const renderer = new THREE.WebGLRenderer(); // There are also other...renders?
+
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
 
