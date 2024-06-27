@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap');
+
 html {
+  font-family: "Exo 2", sans-serif;
   background: black;
 }
 
@@ -56,7 +59,6 @@ body {
 
 .instructions {
   padding: 20px;
-  font-family: courier;
   position: absolute;
   top: 0px;
   left: 0px;

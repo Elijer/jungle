@@ -9,11 +9,12 @@ const setupClient = () => {
   if (window.location.hostname.includes("jumanji")) socketAddress = "https://jumanji.rcdis.co"
   const socket = io(socketAddress)
   
-  const playerId = () => localStorage.getItem('playerId') || localStorage.setItem('playerId', uuidv4())
+  if (!localStorage.getItem('playerId')) localStorage.setItem('playerId', uuidv4())
+  const playerId = localStorage.getItem('playerId')
   
   socket.on("connect", () => {
     console.log("Connected")
-    socket.emit("player joined", playerId())
+    socket.emit("player joined", playerId)
   });
 
   return { socket, playerId }

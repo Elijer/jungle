@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     if (directions.hasOwnProperty(keyName)) {
-      socket.emit("input event", { playerId: playerId(), direction: directions[keyName] });
+      socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
     }
     
   });
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const key of Object.keys(keyBindings)) {
       const keyBinding = keyBindings[key];
       keyBinding.element.addEventListener('touchstart', () => {
-        socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+        socket.emit('input event', { playerId: playerId, direction: keyBinding.code });
       });
     }
 
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (const key of Object.keys(keyBindings)) {
       const keyBinding = keyBindings[key];
       keyBinding.element.addEventListener('click', () => {
-        socket.emit('input event', { playerId: playerId(), direction: keyBinding.code });
+        socket.emit('input event', { playerId: playerId, direction: keyBinding.code });
       });
     }
 })
