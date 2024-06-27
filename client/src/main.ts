@@ -122,7 +122,7 @@ socket.on("state", (boardState: BoardState) => {
 
 let animate = () => {
   if (!document.hasFocus()) return // to prevent crashing in the background
-  
+
   let playerId = localStorage.getItem('playerId')
   if (playerId && players){
     let {x, y } = (players as Players)[playerId]
@@ -153,7 +153,7 @@ let animate = () => {
   const renderPass = new RenderPass( scene, camera );
   composer.addPass( renderPass );
 
-  const pixelPass = new RenderPixelatedPass(16, scene, camera);
+  const pixelPass = new RenderPixelatedPass(8, scene, camera);
   composer.addPass( pixelPass );
   
   // const bokehPass = new BokehPass(scene, camera, {
@@ -175,23 +175,6 @@ setInterval(() => {
   // renderer.render(scene, camera)
 }, 50)
 
-document.addEventListener('keydown', (event) => {
-  if (socket.connected === false) return
-  const keyName = event.key;
-
-  const directions: { [key: string]: string } = {
-    w: "u",
-    a: "l",
-    s: "d",
-    d: "r"
-  };
-
-  if (directions.hasOwnProperty(keyName)) {
-    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
-  }
-  
-});
-
 interface ElementCodePair {
   element: HTMLElement;
   code: string;
@@ -202,6 +185,25 @@ interface KeyBindings {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  
+  // Buttons
+  document.addEventListener('keydown', (event) => {
+    if (socket.connected === false) return
+    const keyName = event.key;
+  
+    const directions: { [key: string]: string } = {
+      w: "u",
+      a: "l",
+      s: "d",
+      d: "r"
+    };
+  
+    if (directions.hasOwnProperty(keyName)) {
+      socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
+    }
+    
+  });
+
   const keyBindings: KeyBindings = {
     "w": { element: document.getElementById('up-button')!, code: 'u' },
     "a": { element: document.getElementById('left-button')!, code: 'l' },
