@@ -6,6 +6,7 @@ let gridSize = 50
 let game = new GameInstance(gridSize, gridSize)
 
 io.on("connection", (socket) => {
+  io.emit("state", game.getState())
   console.log("Websocket connected", `Socket id is ${socket.id}`);
 
   socket.on("player joined", (playerId) => {
