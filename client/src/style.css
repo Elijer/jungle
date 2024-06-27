@@ -6,6 +6,20 @@ html {
   touch-action: manipulation;
 }
 
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
 .arrow-key-interface {
   display: flex;
   justify-content: center;
@@ -38,4 +52,16 @@ html {
 
 .arrow-key-interface button:hover {
   background: pink;
+}
+
+.instructions {
+  padding: 20px;
+  font-family: courier;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  /* background: black; */
+  color: grey;
+  font-size: 24px;
 }
