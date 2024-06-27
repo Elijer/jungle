@@ -121,8 +121,8 @@ socket.on("state", (boardState: BoardState) => {
 })
 
 let animate = () => {
-  // if (!document.hasFocus()) return // to prevent crashing in the background
-  // renderer.render(scene, camera)
+  if (!document.hasFocus()) return // to prevent crashing in the background
+  
   let playerId = localStorage.getItem('playerId')
   if (playerId && players){
     let {x, y } = (players as Players)[playerId]
