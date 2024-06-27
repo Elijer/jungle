@@ -23,6 +23,7 @@ memoryCheck()
 document.addEventListener("DOMContentLoaded", () => {
   const { socket, playerId } = setupClient()
   let { scene, camera, renderer, b } = sceneSetup()
+  window.location.reload()
 
   let cubesForHire: CubeForHire[] = []
 
