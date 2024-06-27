@@ -12,10 +12,11 @@ services:
     build:
       context: .
     environment:
-      NODE_ENV: production
+      ENV: production
     user: root
     ports:
       - "3000:3000"
+    image: mygame:latest
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

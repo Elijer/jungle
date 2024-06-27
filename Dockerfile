@@ -4,7 +4,7 @@ ARG NODE_VERSION=18.18.2
 FROM node:${NODE_VERSION}-alpine
 
 # Use production node environment by default.
-ENV NODE_ENV production
+ENV key=production
 
 # Create app directory and set permissions
 WORKDIR /code

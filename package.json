@@ -11,7 +11,8 @@
     "deploy": "git push heroku main",
     "tunnel1": "lt --port 5173 --subdomain thornberry2",
     "tunnel2": "lt --port 3000 --subdomain thornberry",
-    "tunnel": "npm run tunnel1 & npm run tunnel2"
+    "tunnel": "npm run tunnel1 & npm run tunnel2",
+    "build-image": "docker build -t mygame:latest ."
   },
   "keywords": [],
   "author": "",
