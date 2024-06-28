@@ -1,9 +1,8 @@
 {
-  "version": "1.0",
-  "services": {
-    "web": {
-      "port": 5173,
-      "command": "npm run start"
+    "version": "1.0",
+    "services": {
+        "web": {
+            "port": 3000
+        }
     }
-  }
 }
