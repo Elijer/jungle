@@ -20,6 +20,14 @@ import sceneSetup from './lib/sceneSetup.js'
 let speed = 1
 let speedCeiling = 7
 
+let funMode = false
+
+let funButton = document.getElementById("fun-mode")
+funButton?.addEventListener("click", () => {
+  funMode = !funMode
+  funButton.innerHTML = funMode ? "woah now" : "fun mode"
+})
+
 var stop = false;
 var frameCount = 0;
 var fps, fpsInterval: number, startTime, now, then: number, elapsed;
@@ -183,9 +191,11 @@ let animate = () => {
   
     const renderPass = new RenderPass( scene, camera );
     composer.addPass( renderPass );
-  
-    // const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-    // composer.addPass( pixelPass );
+    
+    if (funMode){
+      const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
+      composer.addPass( pixelPass );
+    }
     
     const outputPass = new OutputPass();
     composer.addPass( outputPass );
@@ -221,26 +231,12 @@ interface KeyBindings {
 document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
-  document.addEventListener('keyup', (event) => {
-    Tone.start()
-    if (socket.connected === false) return
-    const keyName = event.key;
-  
-    const directions: { [key: string]: string } = {
-      w: "u",
-      a: "l",
-      s: "d",
-      d: "r"
-    };
-  
-    if (directions.hasOwnProperty(keyName)) {
-      if (speed < speedCeiling) speed*=1.2
-      let volVal = (3 * (speed)) - 50
-      synth.volume.value = volVal
-      playNote(1 - (speed * 100))
-      socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
-    }
-    
+  document.addEventListener("keydown", (event) => {
+    if (funMode) handleMovement(event)
+  });
+
+  document.addEventListener("keyup", (event) => {
+    if (!funMode) handleMovement(event)
   });
 
   const keyBindings: KeyBindings = {
@@ -257,3 +253,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 })
+
+const handleMovement = (event: KeyboardEvent) => {
+  Tone.start()
+  if (socket.connected === false) return
+  const keyName = event.key;
+
+  const directions: { [key: string]: string } = {
+    w: "u",
+    a: "l",
+    s: "d",
+    d: "r"
+  };
+
+  if (directions.hasOwnProperty(keyName)) {
+    if (speed < speedCeiling) speed*=1.2
+    let volVal = (3 * (speed)) - 30
+    synth.volume.value = volVal
+    if (funMode) playNote(1 - (speed * 100))
+    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
+  }
+}
