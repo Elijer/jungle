@@ -20,6 +20,10 @@ import sceneSetup from './lib/sceneSetup.js'
 let speed = 1
 let speedCeiling = 7
 
+var stop = false;
+var frameCount = 0;
+var fps, fpsInterval: number, startTime, now, then: number, elapsed;
+
 // const vol = new Tone.Volume(-100).toDestination();
 const synth = new Tone.Synth().toDestination()
 
@@ -40,7 +44,8 @@ memoryCheck()
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b } = sceneSetup()
 
-let cubesForHire: CubeForHire[] = []
+let activeCubes: CubeForHire[] = []
+let inactiveCubes: CubeForHire[] = []
 
 let ephemerals = new THREE.Group();
 scene.add(ephemerals)
@@ -69,16 +74,18 @@ const createCube = () => {
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
-  let c = cubesForHire.find(c => c.active === false)
+  // let c = cubesForHire.find(c => c.active === false)
+  let c = inactiveCubes.pop()
 
   if (c){
     c.active = true
     ephemerals.add(c.cube)
+    activeCubes.push(c)
   }
 
   if (c === undefined) {
     c = createCube()
-    cubesForHire.push(c)
+    activeCubes.push(c)
   }
 
   c.material.transparent = true
@@ -111,7 +118,9 @@ socket.on("state", (boardState: BoardState) => {
   players = boardState.players
 
   ephemerals.remove(...ephemerals.children)
-  cubesForHire.forEach(c => c.active = false)
+  inactiveCubes.concat(...activeCubes)
+  activeCubes = []
+
   let skippedTiles = 0
 
   for (let x = 0; x < b.gridSize; x++) {
@@ -138,50 +147,69 @@ socket.on("state", (boardState: BoardState) => {
 })
 
 let animate = () => {
+
+  requestAnimationFrame(animate)
+
   if (!document.hasFocus()) return // to prevent crashing in the background
 
-  let playerId = localStorage.getItem('playerId')
-  if (playerId && players && (players as Players)[playerId]){
-    let {x, y } = (players as Players)[playerId]
-    let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 8 };
+  now = Date.now()
+  elapsed = now - then
+  if (elapsed > fpsInterval){
 
-    if (!lerp.start) {
-      lerp.start = Date.now();
-      lerp.startPos = { x: camera.position.x, y: camera.position.y };
-      lerp.targetPos = newTargetPos;
-    } else {
-      lerp.targetPos = newTargetPos; // Update target position continuously
-      let now = Date.now();
-      let elapsed = now - lerp.start;
-      let t = Math.min(elapsed / lerp.duration, 1); // Interpolation factor
+    let playerId = localStorage.getItem('playerId')
+    if (playerId && players && (players as Players)[playerId]){
+      let {x, y } = (players as Players)[playerId]
+      let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 8 };
   
-      let newX = lerp.startPos.x + t * (lerp.targetPos.x - lerp.startPos.x);
-      let newY = lerp.startPos.y + t * (lerp.targetPos.y - lerp.startPos.y);
-  
-      camera.position.set(newX, newY, 10);
-      if (t === 1) {
-        lerp.start = null; // Reset lerpStart for the next movement
+      if (!lerp.start) {
+        lerp.start = Date.now();
+        lerp.startPos = { x: camera.position.x, y: camera.position.y };
+        lerp.targetPos = newTargetPos;
+      } else {
+        lerp.targetPos = newTargetPos; // Update target position continuously
+        let now = Date.now();
+        let elapsed = now - lerp.start;
+        let t = Math.min(elapsed / lerp.duration, 1); // Interpolation factor
+    
+        let newX = lerp.startPos.x + t * (lerp.targetPos.x - lerp.startPos.x);
+        let newY = lerp.startPos.y + t * (lerp.targetPos.y - lerp.startPos.y);
+    
+        camera.position.set(newX, newY, 10);
+        if (t === 1) {
+          lerp.start = null; // Reset lerpStart for the next movement
+        }
       }
     }
+  
+    const composer = new EffectComposer( renderer );
+  
+    const renderPass = new RenderPass( scene, camera );
+    composer.addPass( renderPass );
+  
+    const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
+    composer.addPass( pixelPass );
+    
+    const outputPass = new OutputPass();
+    composer.addPass( outputPass );
+  
+    composer.render()
+    if (speed > 1) speed/=1.1
+
+
+    then = now - (elapsed % fpsInterval);
   }
 
-  const composer = new EffectComposer( renderer );
-
-  const renderPass = new RenderPass( scene, camera );
-  composer.addPass( renderPass );
-
-  const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-  composer.addPass( pixelPass );
-  
-  const outputPass = new OutputPass();
-  composer.addPass( outputPass );
-
-  composer.render()
-  if (speed > 1) speed/=1.1
-  requestAnimationFrame(animate)
 }
 
-requestAnimationFrame(animate)
+// requestAnimationFrame(animate)
+function startAnimating(fps: number) {
+  fpsInterval = 1000 / fps;
+  then = Date.now();
+  startTime = then;
+  animate();
+}
+
+startAnimating(24)
 
 interface ElementCodePair {
   element: HTMLElement;
@@ -195,7 +223,7 @@ interface KeyBindings {
 document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
-  document.addEventListener('keydown', (event) => {
+  document.addEventListener('keyup', (event) => {
     Tone.start()
     if (socket.connected === false) return
     const keyName = event.key;
