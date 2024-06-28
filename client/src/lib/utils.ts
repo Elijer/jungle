@@ -19,7 +19,6 @@ const memoryCheck = () => {
 
 const memoryCrashAvoider = (limit: number) => {
   if (window.performance && (window.performance as Performance & { memory: any }).memory){
-    console.log("js Heap left:", thousands((window.performance as Performance & { memory: any }).memory.jsHeapSizeLimit - (window.performance as Performance & { memory: any }).memory.usedJSHeapSize))
     if ((window.performance as Performance & { memory: any }).memory.usedJSHeapSize > (window.performance as Performance & { memory: any }).memory.jsHeapSizeLimit * limit){
       console.log("Heap is full, reloading")
       window.location.reload()
