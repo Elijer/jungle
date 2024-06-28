@@ -195,7 +195,7 @@ interface KeyBindings {
 document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
-  document.addEventListener('keydown', (event) => {
+  document.addEventListener('keyup', (event) => {
     Tone.start()
     if (socket.connected === false) return
     const keyName = event.key;
