@@ -1,11 +1,10 @@
 import * as THREE from 'three';
+import * as Tone from "tone";
 import { thousands, memoryCrashAvoider, memoryCheck } from './lib/utils.js'
 
 // Post processing
-import Composer from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
 import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
@@ -17,6 +16,32 @@ import { TileState } from './interfaces.js'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
+
+const vol = new Tone.Volume(-26).toDestination();
+const synth = new Tone.Synth().connect(vol)
+
+
+let sound = {
+  detune: 0,
+  pitch: "C3"
+}
+
+// Function to play the note
+function playNote(detune: number) {
+  synth.set({ detune: detune});
+  synth.triggerAttackRelease("C3", "18n");
+}
+
+// playNote(1)
+// const vol = new Tone.Volume(-20).toDestination();
+
+// const synth = new Tone.Synth().connect(pitchShift)
+
+// const now = Tone.now();
+// pitchShift.pitch = -10
+// synth.triggerAttack("C4", now);
+// synth.triggerRelease(now + 1);
+// synth.triggerAttackRelease("C4÷", "8n");
 
 memoryCheck()
 
@@ -31,10 +56,13 @@ let lastGrid: any = []
 
 let lerp: LerpConfig = {
   start: null,
-  duration: 1500,
+  duration: 1000,
   startPos: { x: 0, y: 0 },
   targetPos: { x: 0, y: 0 }
 };
+
+let speed = 1
+let speedCeiling = 7
 
 let players: Players | {} = {}
 
@@ -153,27 +181,18 @@ let animate = () => {
   const renderPass = new RenderPass( scene, camera );
   composer.addPass( renderPass );
 
-  const pixelPass = new RenderPixelatedPass(8, scene, camera);
+  const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
   composer.addPass( pixelPass );
-  
-  // const bokehPass = new BokehPass(scene, camera, {
-  //   aperture: 1,
-  //   focus: 1,
-  //   maxblur: 0.01,
-  // });
-  // composer.addPass( bokehPass );
   
   const outputPass = new OutputPass();
   composer.addPass( outputPass );
 
   composer.render()
-
+  if (speed > 1) speed/=1.1
+  requestAnimationFrame(animate)
 }
 
-setInterval(() => {
-  requestAnimationFrame(() => animate())
-  // renderer.render(scene, camera)
-}, 50)
+requestAnimationFrame(animate)
 
 interface ElementCodePair {
   element: HTMLElement;
@@ -188,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
   document.addEventListener('keydown', (event) => {
+    Tone.start()
     if (socket.connected === false) return
     const keyName = event.key;
   
@@ -199,6 +219,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   
     if (directions.hasOwnProperty(keyName)) {
+      if (speed < speedCeiling) speed*=1.2
+      playNote(1 - (speed * 100))
+      // synth.set({ detune: detune })
+      // synth.triggerAttackRelease(pitch, "10n");
       socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
     }
     
