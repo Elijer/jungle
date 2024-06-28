@@ -44,7 +44,7 @@ function playNote(detune: number) {
 memoryCheck()
 
 const { socket, playerId } = setupClient()
-let { scene, camera, renderer, b, composer } = sceneSetup(funMode, speed)
+let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup(funMode, speed)
 
 let activeCubes: CubeForHire[] = []
 let inactiveCubes: CubeForHire[] = []
@@ -147,6 +147,12 @@ socket.on("state", (boardState: BoardState) => {
 })
 
 let animate = () => {
+
+  if (funMode){
+    pixelPass.setPixelSize(8 * speed)
+  } else {
+    pixelPass.setPixelSize(1)
+  }
 
   requestAnimationFrame(animate)
 

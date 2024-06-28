@@ -76,15 +76,16 @@ const sceneSetup = (funMode: boolean, speed: number) => {
   const renderPass = new RenderPass( scene, camera );
   composer.addPass( renderPass );
   
-  if (funMode){
-    const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-    composer.addPass( pixelPass );
-  }
+  // const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
+  const pixelPass = new RenderPixelatedPass(1, scene, camera);
+  composer.addPass( pixelPass );
   
   const outputPass = new OutputPass();
   composer.addPass( outputPass );
 
-  return {scene, camera, renderer, b, composer }
+  // pixelPass.setPixelSize
+  return {scene, camera, renderer, b, composer, pixelPass }
+  
 }
 
 export default sceneSetup
