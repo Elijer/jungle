@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 const handleMovement = (event: KeyboardEvent) => {
   Tone.start()
   if (socket.connected === false) return
-  const keyName = event.key;
+  const keyName = event.key.toLowerCase();
 
   const directions: { [key: string]: string } = {
     w: "u",
