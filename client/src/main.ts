@@ -60,9 +60,10 @@ let lerp: LerpConfig = {
 
 let players: Players | {} = {}
 
+const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize); // This can be used by all
+
 const createCube = () => {
   const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-  const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
 
   return {
     active: true,
@@ -121,13 +122,10 @@ socket.on("state", (boardState: BoardState) => {
   inactiveCubes.concat(...activeCubes)
   activeCubes = []
 
-  let skippedTiles = 0
-
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       const index = x * b.gridSize + y;
       if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
-        skippedTiles++
       } else {
         let color = "0x" + grid[x][y].terrain
         b.terrainTiles[index].color.setHex(color);
@@ -159,7 +157,7 @@ let animate = () => {
     let playerId = localStorage.getItem('playerId')
     if (playerId && players && (players as Players)[playerId]){
       let {x, y } = (players as Players)[playerId]
-      let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 8 };
+      let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 7 };
   
       if (!lerp.start) {
         lerp.start = Date.now();
@@ -174,7 +172,7 @@ let animate = () => {
         let newX = lerp.startPos.x + t * (lerp.targetPos.x - lerp.startPos.x);
         let newY = lerp.startPos.y + t * (lerp.targetPos.y - lerp.startPos.y);
     
-        camera.position.set(newX, newY, 10);
+        camera.position.set(newX, newY, 8);
         if (t === 1) {
           lerp.start = null; // Reset lerpStart for the next movement
         }
