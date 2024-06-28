@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as Tone from "tone";
-import { thousands, memoryCrashAvoider, memoryCheck } from './lib/utils.js'
+import { memoryCrashAvoider, memoryCheck } from './lib/utils.js'
 
 // Post processing
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -34,17 +34,6 @@ function playNote(detune: number) {
   synth.set({ detune: detune});
   synth.triggerAttackRelease("C3", "18n");
 }
-
-// playNote(1)
-// const vol = new Tone.Volume(-20).toDestination();
-
-// const synth = new Tone.Synth().connect(pitchShift)
-
-// const now = Tone.now();
-// pitchShift.pitch = -10
-// synth.triggerAttack("C4", now);
-// synth.triggerRelease(now + 1);
-// synth.triggerAttackRelease("C4÷", "8n");
 
 memoryCheck()
 
@@ -207,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
   document.addEventListener('keydown', (event) => {
-    event.preventDefault() // try to prevent text highlighting
     Tone.start()
     if (socket.connected === false) return
     const keyName = event.key;
@@ -222,16 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (directions.hasOwnProperty(keyName)) {
       if (speed < speedCeiling) speed*=1.2
       let volVal = (3 * (speed)) - 50
-      console.log(volVal)
       synth.volume.value = volVal
-      console.log(speed)
       playNote(1 - (speed * 100))
       socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
     }
     
   });
-
-  console.log(document.getElementById('up-button'))
 
   const keyBindings: KeyBindings = {
     "w": { element: document.getElementById('up-button')!, code: 'u' },
