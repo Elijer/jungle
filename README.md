@@ -24,3 +24,6 @@ Pain point: running `docker compose up` had permissions issues, but doing `docke
 
 # Tone.js
 https://tonejs.github.io/docs/15.0.4/index.html
+
+# Sharing over local network:
+ipconfig getifaddr en0
