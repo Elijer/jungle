@@ -36,7 +36,7 @@ class GameInstance {
       }
       tempGrid.push(row)
     }
-    console.log(this.players)
+    // console.log(this.players)
     return {
       grid: tempGrid,
       players: this.players
