@@ -124,7 +124,7 @@ let animate = () => {
   if (!document.hasFocus()) return // to prevent crashing in the background
 
   let playerId = localStorage.getItem('playerId')
-  if (playerId && players){
+  if (playerId && players && (players as Players)[playerId]){
     let {x, y } = (players as Players)[playerId]
     let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 8 };
 
@@ -204,14 +204,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
   });
 
+  console.log(document.getElementById('up-button'))
+
   const keyBindings: KeyBindings = {
     "w": { element: document.getElementById('up-button')!, code: 'u' },
     "a": { element: document.getElementById('left-button')!, code: 'l' },
     "s": { element: document.getElementById('down-button')!, code: 'd' },
     "d": { element: document.getElementById('right-button')!, code: 'r' },
-  };
+};
   
-  // Touchscreens
   for (const key of Object.keys(keyBindings)) {
     const keyBinding = keyBindings[key];
     keyBinding.element.addEventListener('touchstart', () => {
@@ -219,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Touchscreens
   for (const key of Object.keys(keyBindings)) {
     const keyBinding = keyBindings[key];
     keyBinding.element.addEventListener('click', () => {
