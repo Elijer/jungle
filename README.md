@@ -21,3 +21,6 @@ Pain point: running `docker compose up` had permissions issues, but doing `docke
 # Three.js
 ### Gotchas
 - Weird location-based bug in which ghost boxes change color depending on player's current location: make sure that all materials are set to transparent before their opacity is changed (this interacts with box recycling in a weird way)
+
+# Tone.js
+https://tonejs.github.io/docs/15.0.4/index.html
