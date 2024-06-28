@@ -17,8 +17,11 @@ import { TileState } from './interfaces.js'
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
 
-const vol = new Tone.Volume(-26).toDestination();
-const synth = new Tone.Synth().connect(vol)
+let speed = 1
+let speedCeiling = 7
+
+// const vol = new Tone.Volume(-100).toDestination();
+const synth = new Tone.Synth().toDestination()
 
 
 let sound = {
@@ -60,9 +63,6 @@ let lerp: LerpConfig = {
   startPos: { x: 0, y: 0 },
   targetPos: { x: 0, y: 0 }
 };
-
-let speed = 1
-let speedCeiling = 7
 
 let players: Players | {} = {}
 
@@ -207,6 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Buttons
   document.addEventListener('keydown', (event) => {
+    event.preventDefault() // try to prevent text highlighting
     Tone.start()
     if (socket.connected === false) return
     const keyName = event.key;
@@ -220,9 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
     if (directions.hasOwnProperty(keyName)) {
       if (speed < speedCeiling) speed*=1.2
+      let volVal = (3 * (speed)) - 50
+      console.log(volVal)
+      synth.volume.value = volVal
+      console.log(speed)
       playNote(1 - (speed * 100))
-      // synth.set({ detune: detune })
-      // synth.triggerAttackRelease(pitch, "10n");
       socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
     }
     
