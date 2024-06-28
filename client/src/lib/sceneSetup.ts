@@ -1,9 +1,15 @@
 import * as THREE from 'three';
 
+// Post processing
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BoardConfig } from '../interfaces.js';
 
-const sceneSetup = () => {
+const sceneSetup = (funMode: boolean, speed: number) => {
 
   let gridSize = 50
 
@@ -65,7 +71,20 @@ const sceneSetup = () => {
     }
   }
 
-  return {scene, camera, renderer, b }
+  const composer = new EffectComposer( renderer );
+  
+  const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+  
+  if (funMode){
+    const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
+    composer.addPass( pixelPass );
+  }
+  
+  const outputPass = new OutputPass();
+  composer.addPass( outputPass );
+
+  return {scene, camera, renderer, b, composer }
 }
 
 export default sceneSetup

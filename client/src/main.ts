@@ -2,12 +2,6 @@ import * as THREE from 'three';
 import * as Tone from "tone";
 import { memoryCrashAvoider, memoryCheck } from './lib/utils.js'
 
-// Post processing
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-
 import { BoardState, CubeForHire, LerpConfig } from './interfaces.js'
 import type { Players } from './interfaces.js'
 
@@ -50,7 +44,7 @@ function playNote(detune: number) {
 memoryCheck()
 
 const { socket, playerId } = setupClient()
-let { scene, camera, renderer, b } = sceneSetup()
+let { scene, camera, renderer, b, composer } = sceneSetup(funMode, speed)
 
 let activeCubes: CubeForHire[] = []
 let inactiveCubes: CubeForHire[] = []
@@ -187,22 +181,9 @@ let animate = () => {
       }
     }
   
-    const composer = new EffectComposer( renderer );
-  
-    const renderPass = new RenderPass( scene, camera );
-    composer.addPass( renderPass );
-    
-    if (funMode){
-      const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-      composer.addPass( pixelPass );
-    }
-    
-    const outputPass = new OutputPass();
-    composer.addPass( outputPass );
-  
     composer.render()
-    if (speed > 1) speed/=1.1
 
+    if (speed > 1) speed/=1.1
 
     then = now - (elapsed % fpsInterval);
   }
