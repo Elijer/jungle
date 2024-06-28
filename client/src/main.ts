@@ -259,10 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  for (const key of Object.keys(keyBindings)) {
-    const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('click', () => {
-      socket.emit('input event', { playerId: playerId, direction: keyBinding.code });
-    });
-  }
+  // for (const key of Object.keys(keyBindings)) {
+  //   const keyBinding = keyBindings[key];
+  //   keyBinding.element.addEventListener('click', () => {
+  //     socket.emit('input event', { playerId: playerId, direction: keyBinding.code });
+  //   });
+  // }
 })
