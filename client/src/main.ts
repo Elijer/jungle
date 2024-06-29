@@ -1,15 +1,10 @@
 import * as THREE from 'three';
-import * as Tone from "tone";
-import { memoryCrashAvoider, memoryCheck } from './lib/utils.js'
-
-import { BoardState, CubeForHire, LerpConfig } from './interfaces.js'
-import type { Players } from './interfaces.js'
-
-import './style.css'
-import { TileState } from './interfaces.js'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
+import { SomeSynth } from './lib/sound.js';
+import { BoardState, CubeForHire, LerpConfig, TileState, Players } from './interfaces.js'
+import './style.css'
 
 let speed = 1
 let speedCeiling = 7
@@ -22,26 +17,9 @@ funButton?.addEventListener("click", () => {
   funButton.innerHTML = funMode ? "woah now" : "fun mode"
 })
 
-var stop = false;
-var frameCount = 0;
-var fps, fpsInterval: number, startTime, now, then: number, elapsed;
+let fpsInterval: number, startTime, now, then: number, elapsed;
 
-// const vol = new Tone.Volume(-100).toDestination();
-const synth = new Tone.Synth().toDestination()
-
-
-let sound = {
-  detune: 0,
-  pitch: "C3"
-}
-
-// Function to play the note
-function playNote(detune: number) {
-  synth.set({ detune: detune});
-  synth.triggerAttackRelease("C3", "18n");
-}
-
-memoryCheck()
+const someSynth = new SomeSynth()
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup(funMode, speed)
@@ -114,8 +92,6 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
 }
 
 socket.on("state", (boardState: BoardState) => {
-  
-  memoryCrashAvoider(.7)
 
   let grid: TileState[][] = boardState.grid
   players = boardState.players
@@ -245,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 const handleMovement = (event: KeyboardEvent) => {
-  Tone.start()
+  someSynth.initializeAudio()
   if (socket.connected === false) return
   const keyName = event.key.toLowerCase();
 
@@ -259,8 +235,7 @@ const handleMovement = (event: KeyboardEvent) => {
   if (directions.hasOwnProperty(keyName)) {
     if (speed < speedCeiling) speed*=1.2
     let volVal = (3 * (speed)) - 30
-    synth.volume.value = volVal
-    if (funMode) playNote(1 - (speed * 100))
+    if (funMode) someSynth.playNoteAtVolume(1 - (speed * 100), volVal)
     socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
   }
 }
