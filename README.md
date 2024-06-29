@@ -27,3 +27,8 @@ https://tonejs.github.io/docs/15.0.4/index.html
 
 # Sharing over local network:
 ipconfig getifaddr en0
+
+" The idea of, let me send the whole state and render it works, but the idea of a little extra complexity to create some divs, is way more efficient"
+
+Jeff feature request
+- W & D : be able to able to move diagonally -> for fun mode

@@ -127,7 +127,10 @@ socket.on("state", (boardState: BoardState) => {
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       const index = x * b.gridSize + y;
+      // This might be pretty expensive - could separate out the grid
+      // What HAS to change, and how often?
       if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
+        //
       } else {
         let color = "0x" + grid[x][y].terrain
         b.terrainTiles[index].color.setHex(color);
