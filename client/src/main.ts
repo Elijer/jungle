@@ -5,6 +5,7 @@ import sceneSetup from './lib/sceneSetup.js'
 import { SomeSynth } from './lib/sound.js';
 import Lerper from './lib/gameClasses/Lerper.js'
 import CubeManager from './lib/gameClasses/CubeManager.js'
+import FunMode from './lib/gameClasses/FunMode.js'
 import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
@@ -16,9 +17,7 @@ const config = {
   }
 }
 
-// Fun Mode
-let speed = 1
-let funMode = false
+const fun = new FunMode()
 
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
@@ -73,8 +72,8 @@ socket.on("state", (boardState: BoardState) => {
 // ANIMATION LOOP
 let animate = () => {
 
-  if (funMode){
-    pixelPass.setPixelSize(8 * speed)
+  if (fun.funMode){
+    pixelPass.setPixelSize(8 * fun.speed)
   } else {
     pixelPass.setPixelSize(1)
   }
@@ -95,7 +94,7 @@ let animate = () => {
   
     composer.render()
 
-    if (speed > 1) speed/=1.1
+    if (fun.speed > 1) fun.speed/=1.1
 
     then = now - (elapsed % fpsInterval);
   }
@@ -111,22 +110,37 @@ function animationThrottler(fps: number, animationFunction: Function) {
 
 animationThrottler(24, animate)
 
+
+const handleMovement = (event: KeyboardEvent) => {
+  someSynth.initializeAudio()
+  if (socket.connected === false) return
+  const keyName = event.key.toLowerCase();
+
+  const directions: { [key: string]: string } = {
+    w: "u",
+    a: "l",
+    s: "d",
+    d: "r"
+  };
+
+  if (directions.hasOwnProperty(keyName)) {
+    if (fun.speed < config.fun.speedCeiling) fun.speed*=1.2
+    let volVal = (3 * (fun.speed)) - 30
+    if (fun.funMode) someSynth.playNoteAtVolume(1 - (fun.speed * 100), volVal)
+    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
+  }
+}
+
 // INTERACTION
 document.addEventListener('DOMContentLoaded', () => {
-
-  let funButton = document.getElementById("fun-mode")
-  funButton?.addEventListener("click", () => {
-    funMode = !funMode
-    funButton.innerHTML = funMode ? "woah now" : "fun mode"
-  })
   
   // Buttons
   document.addEventListener("keydown", (event) => {
-    if (funMode) handleMovement(event)
+    if (fun.funMode) handleMovement(event)
   });
 
   document.addEventListener("keyup", (event) => {
-    if (!funMode) handleMovement(event)
+    if (!fun.funMode) handleMovement(event)
   });
 
   const keyBindings: KeyBindings = {
@@ -143,23 +157,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 })
-
-const handleMovement = (event: KeyboardEvent) => {
-  someSynth.initializeAudio()
-  if (socket.connected === false) return
-  const keyName = event.key.toLowerCase();
-
-  const directions: { [key: string]: string } = {
-    w: "u",
-    a: "l",
-    s: "d",
-    d: "r"
-  };
-
-  if (directions.hasOwnProperty(keyName)) {
-    if (speed < config.fun.speedCeiling) speed*=1.2
-    let volVal = (3 * (speed)) - 30
-    if (funMode) someSynth.playNoteAtVolume(1 - (speed * 100), volVal)
-    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
-  }
-}
