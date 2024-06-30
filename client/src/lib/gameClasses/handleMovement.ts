@@ -1,7 +1,8 @@
 import type { Socket } from 'socket.io-client'
+import FunMode from './FunMode.js'
 
-const handleMovement = (socket: Socket, playerId: string) => (event: KeyboardEvent, fun: FunMode | null = null) => {
-  if (socket.connected === false) return
+const handleMovement = (socket: Socket, playerId: string | null) => (event: KeyboardEvent, fun: FunMode | null = null) => {
+  if (socket.connected === false || !playerId) return
   const keyName = event.key.toLowerCase();
 
   const directions: { [key: string]: string } = {
