@@ -20,12 +20,6 @@ const config = {
 let speed = 1
 let funMode = false
 
-let funButton = document.getElementById("fun-mode")
-funButton?.addEventListener("click", () => {
-  funMode = !funMode
-  funButton.innerHTML = funMode ? "woah now" : "fun mode"
-})
-
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
 const someSynth = new SomeSynth()
@@ -41,45 +35,7 @@ let lastGrid: any = []
 
 let players: Players | {} = {}
 
-// const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-
-// const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
-
-//   let c = cubes.inactive.pop()
-
-//   if (c){
-//     c.active = true
-//     ephemerals.add(c.cube)
-//     cubes.active.push(c)
-//   }
-
-//   if (!c) {
-//     c = cubes.createCube()
-//     cubes.active.push(c)
-//   }
-
-//   c.material.transparent = true
-
-//   if (c.material.color.getHex() !== color) {
-//     c.material.color.setHex(color);
-//   }
-
-//   // Only set opacity as needed
-//   if (c.material.opacity !== opacity) {
-//     c.material.transparent = opacity < 1.0; // Only set transparency if opacity is less than 1.0
-//     c.material.opacity = opacity;
-//   }
-
-//   c.cube.position.set(
-//     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
-//     y * (b.squareSize + b.gapSize) - b.gridSize + 1,
-//     .5
-//   );
-
-//   ephemerals.add(c.cube);
-  
-// }
-
+// HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
 
   let grid: TileState[][] = boardState.grid
@@ -114,6 +70,7 @@ socket.on("state", (boardState: BoardState) => {
   lastGrid = grid
 })
 
+// ANIMATION LOOP
 let animate = () => {
 
   if (funMode){
@@ -145,17 +102,23 @@ let animate = () => {
 
 }
 
-// requestAnimationFrame(animate)
-function animationThrottler(fps: number) {
+function animationThrottler(fps: number, animationFunction: Function) {
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
-  animate();
+  animationFunction();
 }
 
-animationThrottler(24)
+animationThrottler(24, animate)
 
+// INTERACTION
 document.addEventListener('DOMContentLoaded', () => {
+
+  let funButton = document.getElementById("fun-mode")
+  funButton?.addEventListener("click", () => {
+    funMode = !funMode
+    funButton.innerHTML = funMode ? "woah now" : "fun mode"
+  })
   
   // Buttons
   document.addEventListener("keydown", (event) => {
