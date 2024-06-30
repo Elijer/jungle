@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { Socket } from 'socket.io-client'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
@@ -6,38 +7,19 @@ import { SomeSynth } from './lib/sound.js';
 import Lerper from './lib/gameClasses/Lerper.js'
 import CubeManager from './lib/gameClasses/CubeManager.js'
 import FunMode from './lib/gameClasses/FunMode.js'
+import handleMovement from './lib/gameClasses/handleMovement.js'
 import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
 const lerper = new Lerper()
-
-let fpsInterval: number, startTime, now, then: number, elapsed;
-
 const someSynth = new SomeSynth()
 
-const handleMovement = (event: KeyboardEvent, fun: FunMode | null = null) => {
-  if (socket.connected === false) return
-  const keyName = event.key.toLowerCase();
-
-  const directions: { [key: string]: string } = {
-    w: "u",
-    a: "l",
-    s: "d",
-    d: "r"
-  };
-
-  if (directions.hasOwnProperty(keyName)) {
-    if (fun){
-      fun.playSpeedSynth()
-    }
-    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
-  }
-}
+let fpsInterval: number, startTime, now, then: number, elapsed;
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
 
-const fun = new FunMode(pixelPass, handleMovement, someSynth)
+const fun = new FunMode(pixelPass, handleMovement(socket, playerId), someSynth)
 
 let ephemerals = new THREE.Group();
 let cubes = new CubeManager(b)
@@ -123,8 +105,7 @@ animationThrottler(24, animate)
 document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener("keyup", (event) => {
-    // if (!fun.funMode) handleMovement(event)
-    handleMovement(event)
+    handleMovement(socket, playerId)(event)
   });
 
   const keyBindings: KeyBindings = {

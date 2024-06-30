@@ -1,3 +1,5 @@
+import type { Socket } from 'socket.io-client'
+
 export default class FunMode {
   speed: number
   funMode: boolean
@@ -13,7 +15,7 @@ export default class FunMode {
   // coolingDown: boolean
   // cooldownPeriod: number
 
-  constructor(pixelPass: any, movementHandler: Function, synth: any){
+  constructor(pixelPass: any, movementHandler: Function, synth: any ){
     this.speed = 1
     this.funMode = false
     this.pixelPass = pixelPass
