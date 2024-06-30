@@ -17,7 +17,6 @@ const config = {
   }
 }
 
-const fun = new FunMode()
 
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
@@ -25,6 +24,7 @@ const someSynth = new SomeSynth()
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
+const fun = new FunMode(pixelPass)
 
 let ephemerals = new THREE.Group();
 let cubes = new CubeManager(b)
@@ -72,11 +72,7 @@ socket.on("state", (boardState: BoardState) => {
 // ANIMATION LOOP
 let animate = () => {
 
-  if (fun.funMode){
-    pixelPass.setPixelSize(8 * fun.speed)
-  } else {
-    pixelPass.setPixelSize(1)
-  }
+  fun.pixelateBySpeed()
 
   requestAnimationFrame(animate)
 

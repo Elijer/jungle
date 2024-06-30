@@ -1,10 +1,12 @@
 export default class FunMode {
   speed: number
   funMode: boolean
+  pixelPass: any
 
-  constructor(){
+  constructor(pixelPass: any){
     this.speed = 1
     this.funMode = false
+    this.pixelPass = pixelPass
     document.addEventListener('DOMContentLoaded', () => {
 
       let funButton = document.getElementById("fun-mode")
@@ -15,4 +17,13 @@ export default class FunMode {
 
     })
   }
+
+  pixelateBySpeed(){
+    if (this.funMode){
+      this.pixelPass.setPixelSize(8 * this.speed)
+    } else {
+    this.pixelPass.setPixelSize(1)
+    }
+  }
+  
 }
