@@ -3,12 +3,24 @@ import * as THREE from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
 import { SomeSynth } from './lib/sound.js';
-import { BoardState, CubeForHire, LerpConfig, TileState, Players } from './interfaces.js'
+import { BoardState, CubeForHire, LerpConfig, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
-let speed = 1
-let speedCeiling = 7
+const config = {
+  fun: {
+    speedCeiling: 7,
+  }
+}
 
+let lerp: LerpConfig = {
+  start: null,
+  duration: 1000,
+  startPos: { x: 0, y: 0 },
+  targetPos: { x: 0, y: 0 }
+};
+
+// Fun Mode
+let speed = 1
 let funMode = false
 
 let funButton = document.getElementById("fun-mode")
@@ -31,16 +43,9 @@ let ephemerals = new THREE.Group();
 scene.add(ephemerals)
 let lastGrid: any = []
 
-let lerp: LerpConfig = {
-  start: null,
-  duration: 1000,
-  startPos: { x: 0, y: 0 },
-  targetPos: { x: 0, y: 0 }
-};
-
 let players: Players | {} = {}
 
-const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize); // This can be used by all
+const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
 
 const createCube = () => {
   const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
@@ -55,7 +60,6 @@ const createCube = () => {
 
 const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
-  // let c = cubesForHire.find(c => c.active === false)
   let c = inactiveCubes.pop()
 
   if (c){
@@ -64,7 +68,7 @@ const addCube = (x: number, y: number, color: number | undefined, opacity: numbe
     activeCubes.push(c)
   }
 
-  if (c === undefined) {
+  if (!c) {
     c = createCube()
     activeCubes.push(c)
   }
@@ -103,8 +107,6 @@ socket.on("state", (boardState: BoardState) => {
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       const index = x * b.gridSize + y;
-      // This might be pretty expensive - could separate out the grid
-      // What HAS to change, and how often?
       if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
         //
       } else {
@@ -176,23 +178,14 @@ let animate = () => {
 }
 
 // requestAnimationFrame(animate)
-function startAnimating(fps: number) {
+function animationThrottler(fps: number) {
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
   animate();
 }
 
-startAnimating(24)
-
-interface ElementCodePair {
-  element: HTMLElement;
-  code: string;
-}
-
-interface KeyBindings {
-  [key: string]: ElementCodePair;
-}
+animationThrottler(24)
 
 document.addEventListener('DOMContentLoaded', () => {
   
@@ -233,7 +226,7 @@ const handleMovement = (event: KeyboardEvent) => {
   };
 
   if (directions.hasOwnProperty(keyName)) {
-    if (speed < speedCeiling) speed*=1.2
+    if (speed < config.fun.speedCeiling) speed*=1.2
     let volVal = (3 * (speed)) - 30
     if (funMode) someSynth.playNoteAtVolume(1 - (speed * 100), volVal)
     socket.emit("input event", { playerId: playerId, direction: directions[keyName] });

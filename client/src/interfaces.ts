@@ -46,3 +46,12 @@ export interface LerpConfig {
   startPos: { x: number; y: number };
   targetPos: { x: number; y: number };
 }
+
+interface ElementCodePair {
+  element: HTMLElement;
+  code: string;
+}
+
+interface KeyBindings {
+  [key: string]: ElementCodePair;
+}
