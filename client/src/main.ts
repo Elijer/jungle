@@ -11,20 +11,33 @@ import './style.css'
 
 const lerper = new Lerper()
 
-const config = {
-  fun: {
-    speedCeiling: 7,
-  }
-}
-
-
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
 const someSynth = new SomeSynth()
 
+const handleMovement = (event: KeyboardEvent, fun: FunMode | null = null) => {
+  if (socket.connected === false) return
+  const keyName = event.key.toLowerCase();
+
+  const directions: { [key: string]: string } = {
+    w: "u",
+    a: "l",
+    s: "d",
+    d: "r"
+  };
+
+  if (directions.hasOwnProperty(keyName)) {
+    if (fun){
+      fun.playSpeedSynth()
+    }
+    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
+  }
+}
+
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
-const fun = new FunMode(pixelPass)
+
+const fun = new FunMode(pixelPass, handleMovement, someSynth)
 
 let ephemerals = new THREE.Group();
 let cubes = new CubeManager(b)
@@ -106,37 +119,12 @@ function animationThrottler(fps: number, animationFunction: Function) {
 
 animationThrottler(24, animate)
 
-
-const handleMovement = (event: KeyboardEvent) => {
-  someSynth.initializeAudio()
-  if (socket.connected === false) return
-  const keyName = event.key.toLowerCase();
-
-  const directions: { [key: string]: string } = {
-    w: "u",
-    a: "l",
-    s: "d",
-    d: "r"
-  };
-
-  if (directions.hasOwnProperty(keyName)) {
-    if (fun.speed < config.fun.speedCeiling) fun.speed*=1.2
-    let volVal = (3 * (fun.speed)) - 30
-    if (fun.funMode) someSynth.playNoteAtVolume(1 - (fun.speed * 100), volVal)
-    socket.emit("input event", { playerId: playerId, direction: directions[keyName] });
-  }
-}
-
 // INTERACTION
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // Buttons
-  document.addEventListener("keydown", (event) => {
-    if (fun.funMode) handleMovement(event)
-  });
 
   document.addEventListener("keyup", (event) => {
-    if (!fun.funMode) handleMovement(event)
+    // if (!fun.funMode) handleMovement(event)
+    handleMovement(event)
   });
 
   const keyBindings: KeyBindings = {
