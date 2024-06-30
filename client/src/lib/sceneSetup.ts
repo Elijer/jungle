@@ -9,7 +9,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 // import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { BoardConfig } from '../interfaces.js';
 
-const sceneSetup = (funMode: boolean, speed: number) => {
+const sceneSetup = () => {
 
   let gridSize = 50
 

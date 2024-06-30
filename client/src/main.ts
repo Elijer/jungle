@@ -4,7 +4,8 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
 import { SomeSynth } from './lib/sound.js';
 import Lerper from './lib/gameClasses/Lerper.js'
-import { BoardState, CubeForHire, LerpConfig, TileState, Players, KeyBindings } from './interfaces.js'
+import CubeManager from './lib/gameClasses/CubeManager.js'
+import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
 const lerper = new Lerper()
@@ -30,66 +31,54 @@ let fpsInterval: number, startTime, now, then: number, elapsed;
 const someSynth = new SomeSynth()
 
 const { socket, playerId } = setupClient()
-let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup(funMode, speed)
-
-let activeCubes: CubeForHire[] = []
-let inactiveCubes: CubeForHire[] = []
+let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
 
 let ephemerals = new THREE.Group();
+let cubes = new CubeManager(b)
+
 scene.add(ephemerals)
 let lastGrid: any = []
 
 let players: Players | {} = {}
 
-const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+// const newCubeGeometry = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
 
-const createCube = () => {
-  const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+// const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
 
-  return {
-    active: true,
-    geometry: newCubeGeometry,
-    material: newCubeMaterial,
-    cube: new THREE.Mesh(newCubeGeometry, newCubeMaterial)
-  }
-}
+//   let c = cubes.inactive.pop()
 
-const addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0) => {
+//   if (c){
+//     c.active = true
+//     ephemerals.add(c.cube)
+//     cubes.active.push(c)
+//   }
 
-  let c = inactiveCubes.pop()
+//   if (!c) {
+//     c = cubes.createCube()
+//     cubes.active.push(c)
+//   }
 
-  if (c){
-    c.active = true
-    ephemerals.add(c.cube)
-    activeCubes.push(c)
-  }
+//   c.material.transparent = true
 
-  if (!c) {
-    c = createCube()
-    activeCubes.push(c)
-  }
+//   if (c.material.color.getHex() !== color) {
+//     c.material.color.setHex(color);
+//   }
 
-  c.material.transparent = true
+//   // Only set opacity as needed
+//   if (c.material.opacity !== opacity) {
+//     c.material.transparent = opacity < 1.0; // Only set transparency if opacity is less than 1.0
+//     c.material.opacity = opacity;
+//   }
 
-  if (c.material.color.getHex() !== color) {
-    c.material.color.setHex(color);
-  }
+//   c.cube.position.set(
+//     x * (b.squareSize + b.gapSize) - b.gridSize / 2,
+//     y * (b.squareSize + b.gapSize) - b.gridSize + 1,
+//     .5
+//   );
 
-  // Only set opacity as needed
-  if (c.material.opacity !== opacity) {
-    c.material.transparent = opacity < 1.0; // Only set transparency if opacity is less than 1.0
-    c.material.opacity = opacity;
-  }
-
-  c.cube.position.set(
-    x * (b.squareSize + b.gapSize) - b.gridSize / 2,
-    y * (b.squareSize + b.gapSize) - b.gridSize + 1,
-    .5
-  );
-
-  ephemerals.add(c.cube);
+//   ephemerals.add(c.cube);
   
-}
+// }
 
 socket.on("state", (boardState: BoardState) => {
 
@@ -97,8 +86,8 @@ socket.on("state", (boardState: BoardState) => {
   players = boardState.players
 
   ephemerals.remove(...ephemerals.children)
-  inactiveCubes.concat(...activeCubes)
-  activeCubes = []
+  cubes.inactive.concat(...cubes.active)
+  cubes.active = []
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
@@ -111,11 +100,13 @@ socket.on("state", (boardState: BoardState) => {
       }
 
       if (grid[x][y].spaceLayer?.geometry === "cube"){
-        addCube(x, y, parseInt("0x" + grid[x][y].spaceLayer?.color), 1.0)
+        let pos = grid[x][y]
+        cubes.addCube(x, y, parseInt("0x" + pos.spaceLayer?.color), 1.0, ephemerals)
       }
 
       if (grid[x][y].spiritLayer?.geometry === "cube"){
-        addCube(x, y, parseInt("0x" + grid[x][y].spiritLayer?.color), .05)
+        let pos = grid[x][y]
+        cubes.addCube(x, y, parseInt("0x" + pos.spiritLayer?.color), .05, ephemerals)
       }
 
     }

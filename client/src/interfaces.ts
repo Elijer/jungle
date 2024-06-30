@@ -33,13 +33,6 @@ export interface BoardConfig {
   terrainTiles: any[];
 }
 
-export interface CubeForHire {
-  active: boolean;
-  geometry: any;
-  material: any;
-  cube: any;
-}
-
 export interface LerpConfig {
   start: number | null;
   duration: number;

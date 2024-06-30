@@ -1,3 +1,4 @@
+import type { Camera } from 'three';
 
 export default class Lerper {
   start: number | null;
@@ -12,7 +13,7 @@ export default class Lerper {
     this.targetPos = { x: 0, y: 0 }
   }
 
-  lerp(playerX: number, playerY: number, gridSize: number, camera: THREE.Camera){
+  lerp(playerX: number, playerY: number, gridSize: number, camera: Camera){
     let newTargetPos = { x: playerX - gridSize / 2, y: playerY - gridSize - 7 };
     if (!this.start) {
       this.start = Date.now();
