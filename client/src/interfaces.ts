@@ -52,6 +52,6 @@ interface ElementCodePair {
   code: string;
 }
 
-interface KeyBindings {
+export interface KeyBindings {
   [key: string]: ElementCodePair;
 }

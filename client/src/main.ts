@@ -3,21 +3,17 @@ import * as THREE from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
 import { SomeSynth } from './lib/sound.js';
+import Lerper from './lib/gameClasses/Lerper.js'
 import { BoardState, CubeForHire, LerpConfig, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
+
+const lerper = new Lerper()
 
 const config = {
   fun: {
     speedCeiling: 7,
   }
 }
-
-let lerp: LerpConfig = {
-  start: null,
-  duration: 1000,
-  startPos: { x: 0, y: 0 },
-  targetPos: { x: 0, y: 0 }
-};
 
 // Fun Mode
 let speed = 1
@@ -146,26 +142,7 @@ let animate = () => {
     let playerId = localStorage.getItem('playerId')
     if (playerId && players && (players as Players)[playerId]){
       let {x, y } = (players as Players)[playerId]
-      let newTargetPos = { x: x - b.gridSize / 2, y: y - b.gridSize - 7 };
-  
-      if (!lerp.start) {
-        lerp.start = Date.now();
-        lerp.startPos = { x: camera.position.x, y: camera.position.y };
-        lerp.targetPos = newTargetPos;
-      } else {
-        lerp.targetPos = newTargetPos; // Update target position continuously
-        let now = Date.now();
-        let elapsed = now - lerp.start;
-        let t = Math.min(elapsed / lerp.duration, 1); // Interpolation factor
-    
-        let newX = lerp.startPos.x + t * (lerp.targetPos.x - lerp.startPos.x);
-        let newY = lerp.startPos.y + t * (lerp.targetPos.y - lerp.startPos.y);
-    
-        camera.position.set(newX, newY, 8);
-        if (t === 1) {
-          lerp.start = null; // Reset lerpStart for the next movement
-        }
-      }
+      lerper.lerp(x, y, b.gridSize, camera)
     }
   
     composer.render()
