@@ -57,3 +57,16 @@ export interface UpdateState {
   y: number
   color: string | undefined
 }
+
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface CubeForHire {
+  active: boolean;
+  geometry: any;
+  material: any;
+  cube: any;
+  objectId: string;
+}

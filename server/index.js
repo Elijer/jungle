@@ -13,8 +13,8 @@ io.on("connection", (socket) => {
 
     const playerEvent = game.addPlayer(playerId)
 
-    socket.emit("state", game.getState()) // sends game to player who just joined
     socket.broadcast.emit("updateState", playerEvent) // sends the player joined event to all other players
+    socket.emit("state", game.getState()) // sends game to player who just joined
 
     socket.on("disconnecting", async(reason) => {
       const playerEvent = game.removePlayer(playerId)

@@ -1,30 +1,19 @@
 import * as THREE from 'three';
-import type { BoardConfig } from '../../interfaces.js';
-
-interface Position {
-  x: number;
-  y: number;
-}
-
-export interface CubeForHire {
-  active: boolean;
-  geometry: any;
-  material: any;
-  cube: any;
-  objectId: string;
-}
+import type { BoardConfig, Position, CubeForHire } from '../../interfaces.js';
 
 export default class CubeManager {
   active: CubeForHire[]
   inactive: CubeForHire[]
   defaultGeometry: THREE.BoxGeometry
   b: BoardConfig
+  group: THREE.Group
   
-  constructor(b: any){
+  constructor(b: any, group: THREE.Group){
     this.active = []
     this.inactive = []
     this.defaultGeometry =  new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
     this.b = b
+    this.group = group
   }
 
   createCube(id: string){
@@ -52,13 +41,12 @@ export default class CubeManager {
     }
   }
 
-  addCube = (x: number, y: number, color: number, opacity: number = 1.0, group: THREE.Group, id: string) => {
-
+  addCube = (x: number, y: number, color: number, opacity: number = 1.0, id: string) => {
     let c = this.inactive.pop()
 
     if (c){
       c.active = true
-      group.add(c.cube)
+      this.group.add(c.cube)
       this.active.push(c)
     }
 
@@ -85,7 +73,7 @@ export default class CubeManager {
       .5
     );
 
-    group.add(c.cube);
+    this.group.add(c.cube);
   
   }
 }

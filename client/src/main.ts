@@ -18,15 +18,17 @@ const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
 
 let ephemerals = new THREE.Group();
-let cubes = new CubeManager(b)
-
 scene.add(ephemerals)
+
+let cubes = new CubeManager(b, ephemerals)
+
 let lastGrid: any = []
 
 let players: Players | { [key: string]: any } = {}
 
 socket.on("updateState", (updatedState: UpdateState) => {
-  if (!initialGridRecieved) return
+  console.log("updatedState", updatedState)
+  if (!initialGridRecieved || !updatedState) return
   if (updatedState.action === "move"){
     console.log(updatedState)
     cubes.moveCube(updatedState.playerId, {x: updatedState.x, y: updatedState.y})
@@ -38,7 +40,7 @@ socket.on("updateState", (updatedState: UpdateState) => {
   }
 
   if (updatedState.action === "add"){
-    cubes.addCube(updatedState.x, updatedState.y, updatedState.color, ephemerals, updatedState.playerId)
+    cubes.addCube(updatedState.x, updatedState.y, updatedState.color, updatedState.playerId)
   }
 })
 
@@ -47,7 +49,7 @@ let animate = () => {
 
   requestAnimationFrame(animate)
 
-  if (!document.hasFocus()) return // to prevent crashing in the background
+  // if (!document.hasFocus()) return // to prevent crashing in the background
 
   now = Date.now()
   elapsed = now - then
@@ -119,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (grid[x][y].spaceLayer?.geometry === "cube"){
           let item = grid[x][y].spaceLayer
-          cubes.addCube(x, y, parseInt("0x" + item?.color), 1.0, ephemerals, item?.id)
+          cubes.addCube(x, y, parseInt("0x" + item?.color), 1.0, item?.id)
         }
 
         if (grid[x][y].spiritLayer?.geometry === "cube"){
           let item = grid[x][y].spaceLayer
-          cubes.addCube(x, y, parseInt("0x" + item?.color), .05, ephemerals, item?.id)
+          cubes.addCube(x, y, parseInt("0x" + item?.color), .05, item?.id)
         }
 
       }
