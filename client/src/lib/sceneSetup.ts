@@ -11,7 +11,7 @@ import { BoardConfig } from '../interfaces.js';
 
 const sceneSetup = () => {
 
-  let gridSize = 50
+  let gridSize = 10
 
   const b: BoardConfig = {
     gridSize: gridSize,
