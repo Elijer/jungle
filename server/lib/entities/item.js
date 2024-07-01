@@ -8,7 +8,8 @@ export default class Item {
   portableState(){
     return {
       color: this.color,
-      geometry: this.geometry
+      geometry: this.geometry,
+      id: this.id
     }
   }
 }

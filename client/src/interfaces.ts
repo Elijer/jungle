@@ -1,6 +1,7 @@
 interface LayerState {
   color: string
   geometry: string
+  id: string
 }
 
 export interface Player {

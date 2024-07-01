@@ -10,26 +10,23 @@ io.on("connection", (socket) => {
   // console.log("Websocket connected", `Socket id is ${socket.id}`);
   
   socket.on("player joined", (playerId) => {
-    // console.log("a player joined the game", playerId)
 
     const playerEvent = game.addPlayer(playerId)
-    // console.log("player event", playerEvent)
 
-    socket.to(socket.id).emit("state", game.getState())
-    socket.broadcast.emit("updateState", playerEvent)
+    socket.emit("state", game.getState()) // sends game to player who just joined
+    socket.broadcast.emit("updateState", playerEvent) // sends the player joined event to all other players
 
     socket.on("disconnecting", async(reason) => {
       const playerEvent = game.removePlayer(playerId)
       console.log("Removed a player")
-      socket.broadcast.emit("updateState", playerEvent)
+      socket.broadcast.emit("updateState", playerEvent) // sends disconnect event to all other players
     })
   })
 
   socket.on("input event", (e) => {
     const { playerId, direction } = e
     const playerEvent = game.movePlayer(playerId, direction)
-    // io.emit("state", game.getState())
-    io.emit("updateState", playerEvent) // this could be a broadcast if players own movement is handled locally
+    io.emit("updateState", playerEvent) // this could be a broadcast if players' own movement is handled locally
   })
 
 });

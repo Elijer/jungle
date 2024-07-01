@@ -11,6 +11,7 @@ export interface CubeForHire {
   geometry: any;
   material: any;
   cube: any;
+  objectId: string;
 }
 
 export default class CubeManager {
@@ -26,19 +27,23 @@ export default class CubeManager {
     this.b = b
   }
 
-  createCube(){
+  createCube(id: string){
     const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     
     return {
       active: true,
       geometry: this.defaultGeometry,
       material: newCubeMaterial,
-      cube: new THREE.Mesh(this.defaultGeometry, newCubeMaterial)
+      cube: new THREE.Mesh(this.defaultGeometry, newCubeMaterial),
+      objectId: id
     }
   }
 
   moveCube = (playerId: string, newPosition: Position) => {
-    let c = this.active.find(c => c.cube.name === playerId)
+    console.log("Attempting to move cube")
+    let c = this.active.find(c => c.objectId === playerId)
+    console.log(this.active)
+    // console.log(c)
 
     if (c){
       c.cube.position.set(
@@ -49,7 +54,7 @@ export default class CubeManager {
     }
   }
 
-  addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0, group: THREE.Group) => {
+  addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0, group: THREE.Group, id: string) => {
 
     let c = this.inactive.pop()
 
@@ -60,7 +65,7 @@ export default class CubeManager {
     }
 
     if (!c) {
-      c = this.createCube()
+      c = this.createCube(id)
       this.active.push(c)
     }
 

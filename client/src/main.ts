@@ -2,7 +2,6 @@ import * as THREE from 'three';
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
-import { SomeSynth } from './lib/sound.js';
 import Lerper from './lib/gameClasses/Lerper.js'
 import CubeManager from './lib/gameClasses/CubeManager.js'
 import handleMovement from './lib/gameClasses/handleMovement.js'
@@ -10,6 +9,8 @@ import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
 const lerper = new Lerper()
+
+let initialGridRecieved = false
 
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
@@ -22,45 +23,24 @@ let cubes = new CubeManager(b)
 scene.add(ephemerals)
 let lastGrid: any = []
 
-let players: Players | {} = {}
+let players: Players | { [key: string]: any } = {}
 
-socket.on("updateState", (updatedState: any) => {
-  console.log(updatedState)
-})
+interface UpdateState {
+  action: string
+  playerId: string
+  x: number
+  y: number
+}
 
-// HANDLE LOCAL STATE
-socket.on("state", (boardState: BoardState) => {
+socket.on("updateState", (updatedState: UpdateState) => {
+  if (!initialGridRecieved) return
+  if (updatedState.action === "move"){
+    cubes.moveCube(updatedState.playerId, {x: updatedState.x, y: updatedState.y})
 
-  let grid: TileState[][] = boardState.grid
-  players = boardState.players
-
-  ephemerals.remove(...ephemerals.children)
-  cubes.inactive.concat(...cubes.active)
-  cubes.active = []
-
-  for (let x = 0; x < b.gridSize; x++) {
-    for (let y = 0; y < b.gridSize; y++) {
-      const index = x * b.gridSize + y;
-      if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
-        //
-      } else {
-        let color = "0x" + grid[x][y].terrain
-        b.terrainTiles[index].color.setHex(color);
-      }
-
-      if (grid[x][y].spaceLayer?.geometry === "cube"){
-        let pos = grid[x][y]
-        cubes.addCube(x, y, parseInt("0x" + pos.spaceLayer?.color), 1.0, ephemerals)
-      }
-
-      if (grid[x][y].spiritLayer?.geometry === "cube"){
-        let pos = grid[x][y]
-        cubes.addCube(x, y, parseInt("0x" + pos.spiritLayer?.color), .05, ephemerals)
-      }
-
+    if (players[updatedState.playerId]){
+      players[updatedState.playerId] = { x: updatedState.x, y: updatedState.y }
     }
   }
-  lastGrid = grid
 })
 
 // ANIMATION LOOP
@@ -116,4 +96,40 @@ document.addEventListener('DOMContentLoaded', () => {
       socket.emit('input event', { playerId: playerId, direction: keyBinding.code });
     });
   }
+
+  // HANDLE LOCAL STATE
+  socket.on("state", (boardState: BoardState) => {
+
+    let grid: TileState[][] = boardState.grid
+    initialGridRecieved = true
+    players = boardState.players
+
+    ephemerals.remove(...ephemerals.children)
+    cubes.inactive.concat(...cubes.active)
+    cubes.active = []
+
+    for (let x = 0; x < b.gridSize; x++) {
+      for (let y = 0; y < b.gridSize; y++) {
+        const index = x * b.gridSize + y;
+        if (lastGrid.length > 1 && lastGrid[x][y].terrain === grid[x][y].terrain){
+          //
+        } else {
+          let color = "0x" + grid[x][y].terrain
+          b.terrainTiles[index].color.setHex(color);
+        }
+
+        if (grid[x][y].spaceLayer?.geometry === "cube"){
+          let item = grid[x][y].spaceLayer
+          cubes.addCube(x, y, parseInt("0x" + item?.color), 1.0, ephemerals, item?.id)
+        }
+
+        if (grid[x][y].spiritLayer?.geometry === "cube"){
+          let item = grid[x][y].spaceLayer
+          cubes.addCube(x, y, parseInt("0x" + item?.color), .05, ephemerals, item?.id)
+        }
+
+      }
+    }
+    lastGrid = grid
+  })
 })
