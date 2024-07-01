@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import type { Socket } from 'socket.io-client'
 
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/sceneSetup.js'
