@@ -42,8 +42,6 @@ export default class CubeManager {
   moveCube = (playerId: string, newPosition: Position) => {
     console.log("Attempting to move cube")
     let c = this.active.find(c => c.objectId === playerId)
-    console.log(this.active)
-    // console.log(c)
 
     if (c){
       c.cube.position.set(
@@ -54,7 +52,7 @@ export default class CubeManager {
     }
   }
 
-  addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0, group: THREE.Group, id: string) => {
+  addCube = (x: number, y: number, color: number, opacity: number = 1.0, group: THREE.Group, id: string) => {
 
     let c = this.inactive.pop()
 

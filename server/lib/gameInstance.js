@@ -12,6 +12,7 @@ class GameInstance {
     this.noiseScale = 10
   }
 
+  // Create a grid and fill the tiles with simplex noise tiles
   initializeGrid(){
 
     const grid = []
@@ -26,6 +27,7 @@ class GameInstance {
     return grid
   }
 
+  // Create the state of the game
   getState(){
     let tempGrid = []
     for (let x = 0; x < this.rows; x++){
@@ -36,7 +38,7 @@ class GameInstance {
       }
       tempGrid.push(row)
     }
-    // console.log(this.players)
+
     return {
       grid: tempGrid,
       players: this.players
@@ -58,16 +60,25 @@ class GameInstance {
     return {x, y}
   }
 
-  // TODO: For add and remove players, it may be a good idea to add some safety with the playermap / grid connection.
-  // The most common problems with probably be trying to access grid positions that don't exist
+  // So my idea here is make a function where you can pass in playerId
+  // and in return you get all player info you'd ever want
+  // I could make one of these for a general entity as well
+  // getPlayerInfo(playerId){
+  //   let layer
+  // }
+  // It would be a good idea also to do things like make methods for switching player layers
+
+
   addPlayer(playerId){
 
     let x, y;
+    let color;
 
-    if (this.players[playerId]){
+    if (this.players[playerId]){ // If player already exists, just set them to online and flip their layer to physical
       this.players[playerId].online = true;
       ({ x, y } = this.players[playerId]);
       let player = this.grid[x][y].spiritLayer
+      color = player.color
       this.grid[x][y].spiritLayer = null
 
       // Check if a player now occupies player's old spot: if so, find new spot for player
@@ -78,9 +89,10 @@ class GameInstance {
       this.grid[x][y].spaceLayer = player
     }
 
-    if (!this.players[playerId]){
+    if (!this.players[playerId]){ // new player that's never existed
       ({ x, y } = this.findRandomSpot());
       let newPlayer = new Player(playerId)
+      color = newPlayer.color
       this.grid[x][y].spaceLayer = newPlayer
       this.players[playerId] = { x, y, online: true}
     }
@@ -88,6 +100,7 @@ class GameInstance {
     return {
       playerId: playerId,
       action: "add",
+      color: color,
       x, y
     }
   }

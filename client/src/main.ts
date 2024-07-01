@@ -30,16 +30,23 @@ interface UpdateState {
   playerId: string
   x: number
   y: number
+  color: string | undefined
 }
 
 socket.on("updateState", (updatedState: UpdateState) => {
   if (!initialGridRecieved) return
   if (updatedState.action === "move"){
+    console.log(updatedState)
     cubes.moveCube(updatedState.playerId, {x: updatedState.x, y: updatedState.y})
+    // so all this does is move a RENDERED cube, but I also have to change the cube in the local grid, which isn't getting changed
 
     if (players[updatedState.playerId]){
       players[updatedState.playerId] = { x: updatedState.x, y: updatedState.y }
     }
+  }
+
+  if (updatedState.action === "add"){
+    cubes.addCube(updatedState.x, updatedState.y, updatedState.color, ephemerals, updatedState.playerId)
   }
 })
 
