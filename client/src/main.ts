@@ -5,7 +5,7 @@ import sceneSetup from './lib/sceneSetup.js'
 import Lerper from './lib/gameClasses/Lerper.js'
 import CubeManager from './lib/gameClasses/CubeManager.js'
 import handleMovement from './lib/gameClasses/handleMovement.js'
-import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
+import { BoardState, TileState, Players, KeyBindings, UpdateState } from './interfaces.js'
 import './style.css'
 
 const lerper = new Lerper()
@@ -24,14 +24,6 @@ scene.add(ephemerals)
 let lastGrid: any = []
 
 let players: Players | { [key: string]: any } = {}
-
-interface UpdateState {
-  action: string
-  playerId: string
-  x: number
-  y: number
-  color: string | undefined
-}
 
 socket.on("updateState", (updatedState: UpdateState) => {
   if (!initialGridRecieved) return

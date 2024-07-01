@@ -49,3 +49,11 @@ interface ElementCodePair {
 export interface KeyBindings {
   [key: string]: ElementCodePair;
 }
+
+export interface UpdateState {
+  action: string
+  playerId: string
+  x: number
+  y: number
+  color: string | undefined
+}
