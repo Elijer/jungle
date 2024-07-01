@@ -62,39 +62,42 @@ class GameInstance {
   // The most common problems with probably be trying to access grid positions that don't exist
   addPlayer(playerId){
 
+    let x, y;
+
     if (this.players[playerId]){
-      console.log("PLayer already exists")
-      this.players[playerId].online = true
-      let { x, y } = this.players[playerId]
+      this.players[playerId].online = true;
+      ({ x, y } = this.players[playerId]);
       let player = this.grid[x][y].spiritLayer
       this.grid[x][y].spiritLayer = null
 
+      // Check if a player now occupies player's old spot: if so, find new spot for player
       if (this.grid[x][y].spaceLayer){
-        let { x : newX, y : newY } = this.findRandomSpot()
-        this.grid[newX][newY].spaceLayer = player
-        return
+        ({ x, y } = this.findRandomSpot())
       }
       
       this.grid[x][y].spaceLayer = player
-      return
     }
 
-    try {
-      let { x, y } = this.findRandomSpot()
+    if (!this.players[playerId]){
+      ({ x, y } = this.findRandomSpot());
       let newPlayer = new Player(playerId)
       this.grid[x][y].spaceLayer = newPlayer
       this.players[playerId] = { x, y, online: true}
-    } catch (error) {
-      console.log(error)
     }
 
-    console.log("Players", this.players)
+    return {
+      playerId: playerId,
+      action: "add",
+      x, y
+    }
   }
 
   removePlayer(playerId){
+    
     try {
-      if (!this.players || this.players[playerId]){
+      if (!this.players[playerId]){
         console.log(`Failed to remove player ${playerId}: they do not exist in the game`)
+        return
       }
 
       let { x, y } = this.players[playerId]
@@ -105,6 +108,14 @@ class GameInstance {
         this.grid[x][y].spaceLayer = null
         this.grid[x][y].spiritLayer = player
         this.players[playerId].online = false
+
+        return {
+          playerId: playerId,
+          action: "remove",
+          x: x,
+          y: y
+        }
+
       } else {
         console.log(`Invalid coordinates (${x}, ${y}) for player with ID ${playerId}`);
       }
@@ -112,6 +123,7 @@ class GameInstance {
     } catch (error) {
       console.log(error)
     }
+
   }
 
   tileExists(x, y){
@@ -120,7 +132,7 @@ class GameInstance {
 
   movePlayer(playerId, direction){
     if(!this.players[playerId] || !this.players[playerId].online){
-      console.log("Player does not exist, or is offline")
+      console.log("Player does not exist, or is offline, and can't be moved")
       return
     }
     
@@ -140,6 +152,14 @@ class GameInstance {
       this.grid[x][y].spaceLayer = null
       this.grid[newX][newY].spaceLayer = player
       this.players[playerId] = { x: newX, y: newY, online: true}
+
+      return {
+        playerId: playerId,
+        action: "move",
+        x: newX,
+        y: newY
+      }
+      
     }
 
   }

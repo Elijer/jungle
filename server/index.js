@@ -4,25 +4,32 @@ const { io, port, httpServer } = setupServer();
 
 let gridSize = 50
 let game = new GameInstance(gridSize, gridSize)
+// let socketIds = {} // only needed if we need to save sockets ids for later use
 
 io.on("connection", (socket) => {
-  console.log("Websocket connected", `Socket id is ${socket.id}`);
-
+  // console.log("Websocket connected", `Socket id is ${socket.id}`);
+  
   socket.on("player joined", (playerId) => {
-    console.log("a player joined the game", playerId)
-    game.addPlayer(playerId)
-    io.emit("state", game.getState())
+    // console.log("a player joined the game", playerId)
+
+    const playerEvent = game.addPlayer(playerId)
+    // console.log("player event", playerEvent)
+
+    socket.to(socket.id).emit("state", game.getState())
+    socket.broadcast.emit("updateState", playerEvent)
 
     socket.on("disconnecting", async(reason) => {
-      game.removePlayer(playerId)
+      const playerEvent = game.removePlayer(playerId)
       console.log("Removed a player")
+      socket.broadcast.emit("updateState", playerEvent)
     })
   })
 
   socket.on("input event", (e) => {
     const { playerId, direction } = e
-    game.movePlayer(playerId, direction)
-    io.emit("state", game.getState())
+    const playerEvent = game.movePlayer(playerId, direction)
+    // io.emit("state", game.getState())
+    io.emit("updateState", playerEvent) // this could be a broadcast if players own movement is handled locally
   })
 
 });

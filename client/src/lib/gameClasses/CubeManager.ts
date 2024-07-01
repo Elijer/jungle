@@ -1,6 +1,11 @@
 import * as THREE from 'three';
 import type { BoardConfig } from '../../interfaces.js';
 
+interface Position {
+  x: number;
+  y: number;
+}
+
 export interface CubeForHire {
   active: boolean;
   geometry: any;
@@ -32,6 +37,17 @@ export default class CubeManager {
     }
   }
 
+  moveCube = (playerId: string, newPosition: Position) => {
+    let c = this.active.find(c => c.cube.name === playerId)
+
+    if (c){
+      c.cube.position.set(
+        newPosition.x * (this.b.squareSize + this.b.gapSize) - this.b.gridSize / 2,
+        newPosition.y * (this.b.squareSize + this.b.gapSize) - this.b.gridSize + 1,
+        .5
+      );
+    }
+  }
 
   addCube = (x: number, y: number, color: number | undefined, opacity: number = 1.0, group: THREE.Group) => {
 

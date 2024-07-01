@@ -8,7 +8,6 @@ const setupServer = () => {
   // ES modules compatible way to get __dirname
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  console.log("The dirname is", __dirname)
 
   const app = express();
   const httpServer = createServer(app);

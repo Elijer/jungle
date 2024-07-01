@@ -24,6 +24,10 @@ let lastGrid: any = []
 
 let players: Players | {} = {}
 
+socket.on("updateState", (updatedState: any) => {
+  console.log(updatedState)
+})
+
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
 
