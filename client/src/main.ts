@@ -5,20 +5,16 @@ import sceneSetup from './lib/sceneSetup.js'
 import { SomeSynth } from './lib/sound.js';
 import Lerper from './lib/gameClasses/Lerper.js'
 import CubeManager from './lib/gameClasses/CubeManager.js'
-import FunMode from './lib/gameClasses/FunMode.js'
 import handleMovement from './lib/gameClasses/handleMovement.js'
 import { BoardState, TileState, Players, KeyBindings } from './interfaces.js'
 import './style.css'
 
 const lerper = new Lerper()
-const someSynth = new SomeSynth()
 
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, composer, pixelPass } = sceneSetup()
-
-const fun = new FunMode(pixelPass, handleMovement(socket, playerId), someSynth)
 
 let ephemerals = new THREE.Group();
 let cubes = new CubeManager(b)
@@ -66,8 +62,6 @@ socket.on("state", (boardState: BoardState) => {
 // ANIMATION LOOP
 let animate = () => {
 
-  fun.pixelateBySpeed()
-
   requestAnimationFrame(animate)
 
   if (!document.hasFocus()) return // to prevent crashing in the background
@@ -83,8 +77,6 @@ let animate = () => {
     }
   
     composer.render()
-
-    if (fun.speed > 1) fun.speed/=1.1
 
     then = now - (elapsed % fpsInterval);
   }
