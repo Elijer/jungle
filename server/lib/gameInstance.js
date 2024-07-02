@@ -60,15 +60,6 @@ class GameInstance {
     return {x, y}
   }
 
-  // So my idea here is make a function where you can pass in playerId
-  // and in return you get all player info you'd ever want
-  // I could make one of these for a general entity as well
-  // getPlayerInfo(playerId){
-  //   let layer
-  // }
-  // It would be a good idea also to do things like make methods for switching player layers
-
-
   addPlayer(playerId){
 
     let x, y;

@@ -63,8 +63,7 @@ export interface Position {
   y: number;
 }
 
-export interface CubeForHire {
-  active: boolean;
+export interface Cube {
   geometry: any;
   material: any;
   cube: any;

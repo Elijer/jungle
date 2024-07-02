@@ -27,10 +27,8 @@ let lastGrid: any = []
 let players: Players | { [key: string]: any } = {}
 
 socket.on("updateState", (updatedState: UpdateState) => {
-  console.log("updatedState", updatedState)
-  if (!initialGridRecieved || !updatedState) return
+  if (!initialGridRecieved) return
   if (updatedState.action === "move"){
-    console.log(updatedState)
     cubes.moveCube(updatedState.playerId, {x: updatedState.x, y: updatedState.y})
     // so all this does is move a RENDERED cube, but I also have to change the cube in the local grid, which isn't getting changed
 
@@ -106,8 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
     players = boardState.players
 
     ephemerals.remove(...ephemerals.children)
-    cubes.inactive.concat(...cubes.active)
-    cubes.active = []
 
     for (let x = 0; x < b.gridSize; x++) {
       for (let y = 0; y < b.gridSize; y++) {

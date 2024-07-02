@@ -1,16 +1,14 @@
 import * as THREE from 'three';
-import type { BoardConfig, Position, CubeForHire } from '../../interfaces.js';
+import type { BoardConfig, Position, Cube } from '../../interfaces.js';
 
 export default class CubeManager {
-  active: CubeForHire[]
-  inactive: CubeForHire[]
+  cubes: Cube[]
   defaultGeometry: THREE.BoxGeometry
   b: BoardConfig
   group: THREE.Group
   
   constructor(b: any, group: THREE.Group){
-    this.active = []
-    this.inactive = []
+    this.cubes = []
     this.defaultGeometry =  new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
     this.b = b
     this.group = group
@@ -20,7 +18,6 @@ export default class CubeManager {
     const newCubeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
     
     return {
-      active: true,
       geometry: this.defaultGeometry,
       material: newCubeMaterial,
       cube: new THREE.Mesh(this.defaultGeometry, newCubeMaterial),
@@ -29,8 +26,7 @@ export default class CubeManager {
   }
 
   moveCube = (playerId: string, newPosition: Position) => {
-    console.log("Attempting to move cube")
-    let c = this.active.find(c => c.objectId === playerId)
+    let c = this.cubes.find(c => c.objectId === playerId)
 
     if (c){
       c.cube.position.set(
@@ -42,18 +38,10 @@ export default class CubeManager {
   }
 
   addCube = (x: number, y: number, color: number, opacity: number = 1.0, id: string) => {
-    let c = this.inactive.pop()
 
-    if (c){
-      c.active = true
-      this.group.add(c.cube)
-      this.active.push(c)
-    }
-
-    if (!c) {
-      c = this.createCube(id)
-      this.active.push(c)
-    }
+    const c = this.createCube(id)
+    this.group.add(c.cube)
+    this.cubes.push(c)
 
     c.material.transparent = true
 
