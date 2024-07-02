@@ -19,7 +19,6 @@ const setupServer = () => {
 
   // Heroku passes the PORT env into the environment
   let port = process.env.PORT || 3000;
-  console.log("THE PORT IS", port)
 
   const io = new Server(httpServer, {
     cors: {

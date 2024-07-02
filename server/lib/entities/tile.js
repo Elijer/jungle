@@ -1,7 +1,9 @@
 import rgbHex from 'rgb-hex';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class Tile {
   constructor(noise) {
+    this.id = uuidv4()
     this.rgb = [50, 40, 40]
     this.spaceLayer = null
     this.spiritLayer = null
