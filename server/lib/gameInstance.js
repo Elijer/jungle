@@ -1,14 +1,14 @@
 import { simplexPositive } from './simplex2.js';
 import Tile from './entities/tile.js';
+import Terrain from './entities/terrain.js';
 // import Player from './entities/player.js';
 
 class GameInstance {
   constructor(rows, cols) {
     this.rows = rows
     this.cols = cols
+    this.terrain = {}
     this.players = {}
-    this.tiles = {}
-    this.rgb = [50, 40, 40]
     this.grid = this.initializeGrid()
     this.noiseScale = 10
   }
@@ -18,46 +18,47 @@ class GameInstance {
     for (let x = 0; x < this.rows; x++){
       const row = []
       for (let y = 0; y < this.cols; y++){
-        let result = simplexPositive(x, y, 20)
-        console.log(new Tile(result))
-        // row.push(new Tile(result))
+        let noise = simplexPositive(x, y, 20)
+        let newTerrain = new Terrain(this.terrain, {x, y}, noise)
+        let newTile = new Tile(newTerrain)
+        row.push(newTile)
       }
       grid.push(row)
     }
     return grid
   }
 
-  // getState(){
-  //   let tempGrid = []
-  //   for (let x = 0; x < this.rows; x++){
-  //     const row = []
-  //     for (let y = 0; y < this.cols; y++){
-  //       let tile = this.grid[x][y]
-  //       row.push(tile.getPortableState())
-  //     }
-  //     tempGrid.push(row)
-  //   }
+  getState(){
+    let tempGrid = []
+    for (let x = 0; x < this.rows; x++){
+      const row = []
+      for (let y = 0; y < this.cols; y++){
+        let tile = this.grid[x][y]
+        row.push(tile.getState())
+      }
+      tempGrid.push(row)
+    }
 
-  //   return {
-  //     grid: tempGrid,
-  //     players: this.players
-  //   }
-  // }
+    return {
+      grid: tempGrid,
+      players: this.players
+    }
+  }
 
-  // findRandomSpot(){
-  //   let counter = 0
-  //   const limit = 100
-  //   let x = Math.floor(Math.random() * this.rows)
-  //   let y = Math.floor(Math.random() * this.cols)
-  //   if (this.grid[x][y].spaceLayer){
-  //     counter++
-  //     if (counter < limit){
-  //       throw new Error('Could not find a spot for the player')
-  //     }
-  //     return this.findRandomSpot()
-  //   }
-  //   return {x, y}
-  // }
+  findRandomSpot(layer){
+    let counter = 0
+    const limit = 100
+    let x = Math.floor(Math.random() * this.rows)
+    let y = Math.floor(Math.random() * this.cols)
+    if (this.grid[x][y][layer]){
+      counter++
+      if (counter < limit){
+        throw new Error('Could not find a spot for the player')
+      }
+      return this.findRandomSpot()
+    }
+    return {x, y}
+  }
 
   // addPlayer(playerId){
 

@@ -20,9 +20,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/socket.io": "^3.0.2",
     "express": "^4.19.2",
     "rgb-hex": "^4.1.0",
     "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
     "typescript": "^5.4.5",
     "uuid": "^10.0.0",
     "uuid4": "^2.0.3",
