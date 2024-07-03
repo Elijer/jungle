@@ -26,6 +26,10 @@ socket.on("state", (boardState: any) => {
   renderer.render(scene, camera);
 })
 
+socket.on("update", (updateState: any) => {
+  console.log(updateState)
+})
+
 const keyCommandBindings: { [key: string]: string } = {
   w: 'u',
   s: 'd',
