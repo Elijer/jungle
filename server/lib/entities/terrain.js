@@ -5,8 +5,8 @@ export default class Terrain extends Entity {
   static rgb = [50, 40, 40]
   static type = "terrain"
 
-  constructor(cohort, position, noise){
-    super(cohort, position, null)
+  constructor(cohort, position, grid, noise){
+    super(cohort, position, grid, null)
     this.noise = noise
   }
 

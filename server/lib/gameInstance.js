@@ -1,7 +1,7 @@
 import { simplexPositive } from './simplex2.js';
 import Tile from './entities/tile.js';
 import Terrain from './entities/terrain.js';
-// import Player from './entities/player.js';
+import Player from './entities/player.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -19,7 +19,7 @@ class GameInstance {
       const row = []
       for (let y = 0; y < this.cols; y++){
         let noise = simplexPositive(x, y, 20)
-        let newTerrain = new Terrain(this.terrain, {x, y}, noise)
+        let newTerrain = new Terrain(this.terrain, {x, y}, this.grid, noise)
         let newTile = new Tile(newTerrain)
         row.push(newTile)
       }
@@ -60,6 +60,46 @@ class GameInstance {
     return {x, y}
   }
 
+  addPlayer(playerId){
+
+    let x, y, player;
+
+    if (this.players[playerId]){
+      ({ x, y } = this.players[playerId])
+      player = this.grid[x][y].spiritLayer
+    }
+
+    if (!this.players[playerId]){
+      ({ x, y } = this.findRandomSpot('spaceLayer'))
+      player = new Player(this.players, {x, y}, this.grid, playerId)
+    }
+
+    this.grid[x][y].spaceLayer = player
+    this.grid[x][y].spiritLayer = null
+
+    return {
+      id: playerId.id,
+      color: player.color,
+      x, y
+    }
+  }
+
+  playerOffline(playerId){
+    if (!this.players[playerId]){
+      console.log(`Failed to remove player ${playerId}: they do not exist in the game`)
+      return
+    }
+
+    let { x, y } = this.players[playerId]
+    let player = this.grid[x][y].spaceLayer
+    this.grid[x][y].spaceLayer = null
+    this.grid[x][y].spiritLayer = player
+
+    return {
+      id: playerId,
+      x, y
+    }
+  }
   // addPlayer(playerId){
 
   //   let x, y;
