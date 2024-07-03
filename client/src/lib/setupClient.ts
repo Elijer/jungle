@@ -14,7 +14,7 @@ const setupClient = () => {
   const socket = io(socketAddress)
   
   socket.on("connect", () => {
-    console.log("Connected")
+    console.log("Connected as player", playerId?.substring(0, 4))
     socket.emit("player joined", playerId)
   });
 

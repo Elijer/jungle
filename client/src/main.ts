@@ -6,7 +6,6 @@ import { BoardState, TileState, Players, KeyBindings, UpdateState } from './lib/
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, terrainTiles } = sceneSetup()
-console.log(scene, camera, renderer, b, terrainTiles)
 
 // Setup dynamic objects
 let ephemerals = new THREE.Group()
@@ -20,7 +19,6 @@ socket.on("state", (boardState: any) => {
     for (let y = 0; y < b.gridSize; y++) {
       index = x * b.gridSize + y;
       terrain = boardState.grid[x][y].terrain
-      console.log(terrain.color)
       terrainTiles[index].mat.color.setHex("0x" + terrain.color);
     }
   }
