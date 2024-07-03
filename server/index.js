@@ -13,6 +13,10 @@ io.on("connection", (socket) => {
     socket.emit("state", game.getState()) // sends game to player who just joined
   })
 
+  socket.on("input event", (inputEvent) => {
+    console.log("input event", inputEvent)
+  })
+
 })
 
 httpServer.listen(port, () => {

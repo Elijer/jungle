@@ -8,7 +8,7 @@ const { socket, playerId } = setupClient()
 let { scene, camera, renderer, b, terrainTiles } = sceneSetup()
 console.log(scene, camera, renderer, b, terrainTiles)
 
-// Setup render objects
+// Setup dynamic objects
 let ephemerals = new THREE.Group()
 scene.add(ephemerals)
 
@@ -26,5 +26,20 @@ socket.on("state", (boardState: any) => {
   }
 
   renderer.render(scene, camera);
-  // composer.render()
+})
+
+const keyCommandBindings: { [key: string]: string } = {
+  w: 'u',
+  s: 'd',
+  a: 'l',
+  d: 'r'
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("keyup", (event): any => {
+    const keyName = event.key.toLowerCase();
+    if (keyCommandBindings.hasOwnProperty(keyName)) {
+      socket.emit("input event", {playerId: playerId, command: keyCommandBindings[keyName]})
+    }
+  });
 })
