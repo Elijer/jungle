@@ -15,14 +15,14 @@ export const stateSchema = yup.object({
 
 // This is what a socket update event can return
 export const actionResultSchema = yup.object({
-  id: yup.string().required(),
   color: yup.string().required(),
-  action: yup.string().required(),
   geometry: yup.string().required(),
+  id: yup.string().required(),
   position: yup.object({
     x: yup.number().required(),
     y: yup.number().required()
-  })
+  }),
+  layer: yup.string().required(),
 })
 
 // It would be kind of cool to unify these by never passing state,

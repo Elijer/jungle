@@ -12,13 +12,14 @@ export default class Entity {
     cohort[this.id] = position
   }
 
-  createActionPayload(action){
+  createActionPayload(layer){
+    // TODO - would be better to just figure out what the layer of the entity is without needing to pass anything in
     let payload = {
-      id: this.id,
       color: this.color,
-      action: action,
+      geometry: this.geometry,
+      id: this.id,
       position: this.position,
-      geometry: this.geometry
+      layer: layer
     }
     this.stateSchema.validateSync(payload)
     return payload

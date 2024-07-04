@@ -82,7 +82,7 @@ class GameInstance {
     this.grid[x][y].space = player
     this.grid[x][y].spirit = null
 
-    return player.createActionPayload("online")
+    return player.createActionPayload("space")
   }
 
   playerOffline(playerId){
@@ -96,7 +96,7 @@ class GameInstance {
     this.grid[x][y].spirit = player
     this.grid[x][y].space = null
 
-    return player.createActionPayload("offline")
+    return player.createActionPayload("spirit")
   }
   // playerOnlineOrAddPlayer(playerId){
 

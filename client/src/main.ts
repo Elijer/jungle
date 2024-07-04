@@ -59,26 +59,27 @@ function animationThrottler(fps: number, animationFunction: Function) {
 animationThrottler(24, animate)
 
 socket.on("update", (updateState: UpdateState) => {
+  console.log(updateState)
 
 
   // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates
   // NEXT2: handle player movement updates
 
-  if (updateState.action === "online"){
-    let eph = ephemerals.ephs[updateState.id]
-    if (!eph){
-      console.log(updateState)
-      // color: string
-      // geometry: string
-      // id: string
-      // // layer
-      // // position
-      // ephemerals.createEphemeral()
-    }
+  // if (updateState.action === "online"){
+  //   let eph = ephemerals.ephs[updateState.id]
+  //   if (!eph){
+  //     console.log(updateState)
+  //     // color: string
+  //     // geometry: string
+  //     // id: string
+  //     // // layer
+  //     // // position
+  //     // ephemerals.createEphemeral()
+  //   }
 
-    console.log(updateState)
-  }
+  //   console.log(updateState)
+  // }
 
   // if (updateState.action === "offline") {
   //   console.log("YPPP")
