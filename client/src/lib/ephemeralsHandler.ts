@@ -1,19 +1,19 @@
 import b from './boardConfig.js'
 import * as THREE from 'three';
 
-class EntityHandler {
-  ents: {[key: string]: any}
+class ephemeralsHandler {
+  ephs: {[key: string]: any}
   target: THREE.Group
 
   constructor(target: THREE.Group){
-    this.ents = {}
+    this.ephs = {}
     this.target = target
   }
 
   createEntity = (entity: any) => {
     const body = this.createCube(entity.position.x, entity.position.y, parseInt(entity.color), false)
 
-    this.ents[entity.id] = {
+    this.ephs[entity.id] = {
       ...body,
       color: entity.color,
       position: entity.position,
@@ -45,9 +45,9 @@ class EntityHandler {
   }
 
   updateCubeTransparency(id: string, transparent: boolean){
-    this.ents[id].mat.transparent = transparent
-    this.ents[id].mat.opacity = transparent ? 0.5 : 1
+    this.ephs[id].mat.transparent = transparent
+    this.ephs[id].mat.opacity = transparent ? 0.5 : 1
   }
 }
 
-export default EntityHandler
+export default ephemeralsHandler

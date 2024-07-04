@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
-import EntityHandler from './lib/entityHandler.js'
+import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, UpdateState } from './lib/interfaces.js'
 
 const { socket, playerId } = setupClient()
@@ -11,10 +11,10 @@ let { scene, camera, renderer, terrainTiles } = sceneSetup()
 let fpsInterval: number, startTime, now, then: number, elapsed;
 
 // Setup dynamic objects
-let ephemerals = new THREE.Group()
-scene.add(ephemerals)
+let ephemeralsGroup = new THREE.Group()
+scene.add(ephemeralsGroup)
 
-let entities = new EntityHandler(ephemerals)
+let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
@@ -31,7 +31,7 @@ socket.on("state", (boardState: BoardState) => {
 
   for (let playerId in boardState.players) {
     let player = boardState.players[playerId]
-    entities.createEntity(player)
+    ephemerals.createEntity(player)
   }
 })
 
@@ -60,22 +60,22 @@ animationThrottler(24, animate)
 
 socket.on("update", (updateState: UpdateState) => {
 
+
   // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates
   // NEXT2: handle player movement updates
 
-  console.log(updateState)
   if (updateState.action === "online"){
-
+    console.log(updateState)
   }
 
   // if (updateState.action === "offline") {
   //   console.log("YPPP")
-  //   entities.ents[updateState.playerId].mat.opacity = .5
-  //   // entities.updateCubeTransparency(updateState.playerId, false)
-  //   // let player = entities.ents[updateState.playerId]
-  //   // ephemerals.remove(player.cube)
-  //   // delete entities.ents[updateState.playerId]
+  //   ephemerals.ents[updateState.playerId].mat.opacity = .5
+  //   // ephemerals.updateCubeTransparency(updateState.playerId, false)
+  //   // let player = ephemerals.ents[updateState.playerId]
+  //   // ephemeralsGroup.remove(player.cube)
+  //   // delete ephemerals.ents[updateState.playerId]
   // }
 
   // if (updateState.action === "online"){
