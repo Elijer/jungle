@@ -85,7 +85,8 @@ class GameInstance {
     return {
       id: playerId.id,
       color: player.color,
-      x, y
+      action: "online",
+      position: { x, y}
     }
   }
 
@@ -95,13 +96,16 @@ class GameInstance {
       return
     }
 
-    let { x, y } = this.players.ents[playerId]
+    let player = this.players.ents[playerId]
+    let { x, y } = player.position
     this.grid[x][y].spirit = this.grid[x][y].space
     this.grid[x][y].space = null
 
     return {
       id: playerId,
-      x, y
+      color: player.color,
+      action: "offline",
+      position: { x, y }
     }
   }
   // addPlayer(playerId){

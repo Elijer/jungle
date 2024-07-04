@@ -3,43 +3,22 @@ import * as THREE from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
+import EntityHandler from './lib/entityHandler.js'
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
+let fpsInterval: number, startTime, now, then: number, elapsed;
 
 // Setup dynamic objects
 let ephemerals = new THREE.Group()
 scene.add(ephemerals)
 
-let entities: any = {}
-
-const createCube = (x: number, y: number, color: number, transparent: boolean) => {
-  const geo = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
-  const mat = new THREE.MeshBasicMaterial({ color: color });
-  const cube = new THREE.Mesh(geo, mat);
-
-  mat.transparent = true;
-  if (transparent){
-    mat.opacity = 0.5;
-  }
-
-
-  // Calculate the position based on grid size and gap size
-  const cubeX = (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2;
-  const cubeY = b.squareSize / x; // Position the cube above the plane
-  const cubeZ = y * b.squareSize * b.gapSize;
-
-  cube.position.set(cubeX, cubeY, cubeZ);
-  ephemerals.add(cube);
-  return {
-    cube, geo, mat
-  }
-}
+let entities = new EntityHandler(ephemerals)
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: any) => {
   let index, terrain
-  console.log(boardState)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
@@ -51,20 +30,51 @@ socket.on("state", (boardState: any) => {
 
   for (let playerId in boardState.players) {
     let player = boardState.players[playerId]
-    const body = createCube(player.position.x, player.position.y, parseInt(player.color), false)
-    entities[playerId] = {
-      ...body,
-      color: player.color,
-      position: player.position,
-      layer: player.layer
-    }
+    entities.createEntity(player)
+  }
+})
+
+// ANIMATION LOOP
+let animate = () => {
+
+  requestAnimationFrame(animate)
+
+  now = Date.now()
+  elapsed = now - then
+  if (elapsed > fpsInterval){
+    renderer.render(scene, camera);
+    then = now - (elapsed % fpsInterval);
   }
 
-  renderer.render(scene, camera);
-})
+}
+
+function animationThrottler(fps: number, animationFunction: Function) {
+  fpsInterval = 1000 / fps;
+  then = Date.now();
+  startTime = then;
+  animationFunction();
+}
+
+animationThrottler(24, animate)
 
 socket.on("update", (updateState: any) => {
   console.log(updateState)
+  if (updateState.action === "online"){
+
+  }
+
+  // if (updateState.action === "offline") {
+  //   console.log("YPPP")
+  //   entities.ents[updateState.playerId].mat.opacity = .5
+  //   // entities.updateCubeTransparency(updateState.playerId, false)
+  //   // let player = entities.ents[updateState.playerId]
+  //   // ephemerals.remove(player.cube)
+  //   // delete entities.ents[updateState.playerId]
+  // }
+
+  // if (updateState.action === "online"){
+    
+  // }
 })
 
 const keyCommandBindings: { [key: string]: string } = {
