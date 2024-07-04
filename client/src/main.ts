@@ -61,6 +61,21 @@ animationThrottler(24, animate)
 socket.on("update", (updateState: UpdateState) => {
   console.log(updateState)
 
+  // if (updateState.layer === "spirit"){
+
+  // }
+
+  if (updateState.layer === "space"){
+    if (!ephemerals.ephs[updateState.id]){
+      console.log("HI")
+      ephemerals.createEphemeral(updateState)
+    }
+
+    if (ephemerals.ephs[updateState.id]){
+      ephemerals.updateCubeTransparency(updateState.id, true)
+    }
+  }
+
 
   // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates

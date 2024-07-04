@@ -12,6 +12,9 @@ class ephemeralsHandler {
   }
 
   createEphemeral = (ephemeral: Entity) => {
+
+    // so there is an issue with the color here so that the update event, when adding a new cube, doesn't add it with the right color
+
     const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), false)
 
     this.ephs[ephemeral.id] = {

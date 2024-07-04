@@ -66,10 +66,11 @@ export interface KeyBindings {
   [key: string]: ElementCodePair;
 }
 
+// This is actually the same interface as the Entity interface - can merge them later!! They are sort of different concepts...?
 export interface UpdateState {
   id: string
-  color: string | undefined
-  action: string
+  color: string
+  layer: string
   geometry: string
   position: Position
 }
