@@ -25,7 +25,7 @@ socket.on("state", (boardState: BoardState) => {
     for (let y = 0; y < b.gridSize; y++) {
       index = x * b.gridSize + y;
       terrain = boardState.grid[x][y].terrain
-      terrainTiles[index].mat.color.setHex(terrain.color);
+      terrainTiles[index].mat.color.setHex(terrain?.color);
     }
   }
 
@@ -60,6 +60,7 @@ animationThrottler(24, animate)
 
 socket.on("update", (updateState: any) => {
 
+  // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates
   // NEXT2: handle player movement updates
 

@@ -4,7 +4,7 @@ interface LayerState {
   id: string
 }
 
-export interface Player extends LayerState{
+export interface Player extends LayerState {
   layer: string;
   position: Position;
 }
