@@ -9,11 +9,10 @@ class GameInstance {
     this.rows = rows
     this.cols = cols
     this.terrain = {}
-    this.players = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
 
-    this.playerGroup = new EntityGroup(this.players, this.grid)
+    this.players = new EntityGroup(this.grid) // must be called after grid
   }
 
   initializeGrid(){
@@ -42,11 +41,10 @@ class GameInstance {
       tempGrid.push(row)
     }
 
-    console.log(this.players)
 
     return {
       grid: tempGrid,
-      players: this.playerGroup.getEntities()
+      players: this.players.getEntities()
     }
   }
 
@@ -71,14 +69,14 @@ class GameInstance {
 
     let x, y, player;
 
-    if (this.players[playerId]){
-      ({ x, y } = this.players[playerId])
+    if (this.players.ents[playerId]){
+      ({ x, y } = this.players.ents[playerId])
       player = this.grid[x][y].spirit
     }
 
-    if (!this.players[playerId]){
+    if (!this.players.ents[playerId]){
       ({ x, y } = this.findRandomSpot('space'))
-      player = new Player(this.players, {x, y}, this.grid, playerId)
+      player = new Player(this.players.ents, {x, y}, this.grid, playerId)
     }
 
     this.grid[x][y].space = player
@@ -92,12 +90,12 @@ class GameInstance {
   }
 
   playerOffline(playerId){
-    if (!this.players[playerId]){
+    if (!this.players.ents[playerId]){
       console.log(`Failed to remove player ${playerId}: they do not exist in the game`)
       return
     }
 
-    let { x, y } = this.players[playerId]
+    let { x, y } = this.players.ents[playerId]
     let player = this.grid[x][y].space
     this.grid[x][y].space = null
     this.grid[x][y].spirit = player
