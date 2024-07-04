@@ -4,7 +4,6 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import EntityHandler from './lib/entityHandler.js'
-import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()

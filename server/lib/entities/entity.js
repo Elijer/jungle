@@ -11,14 +11,6 @@ export default class Entity {
     cohort[this.id] = position
   }
 
-  removeEntity(){
-    delete this.cohort[this.id]
-    let {x, y} = this.position
-    for (let plane of ["spirit", "physical"]){
-      this.grid[x][y][plane] = null
-    }
-  }
-
   getColor(){
     return "0x" + this.color
   }

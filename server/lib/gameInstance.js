@@ -64,7 +64,7 @@ class GameInstance {
     return {x, y}
   }
 
-  addPlayer(playerId){
+  playerOnlineOrAddPlayer(playerId){
 
     console.log("add player called")
 
@@ -87,7 +87,7 @@ class GameInstance {
       id: playerId,
       color: player.color,
       action: "online",
-      position: { x, y}
+      position: { x, y }
     }
 
     actionResultSchema.validateSync(payload);
@@ -100,22 +100,22 @@ class GameInstance {
       return
     }
 
-    let player = this.players.ents[playerId]
-    let { x, y } = player.position
-    this.grid[x][y].spirit = this.grid[x][y].space
+    let { x, y } = this.players.ents[playerId]
+    let player = this.grid[x][y].space
+    this.grid[x][y].spirit = player
     this.grid[x][y].space = null
 
     let payload = {
       id: playerId,
       color: player.color,
       action: "offline",
-      position: { x, y }
+      position: player.position
     }
 
     actionResultSchema.validateSync(payload);
     return payload
   }
-  // addPlayer(playerId){
+  // playerOnlineOrAddPlayer(playerId){
 
   //   let x, y;
   //   let color;
