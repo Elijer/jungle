@@ -83,16 +83,7 @@ class GameInstance {
     this.grid[x][y].space = player
     this.grid[x][y].spirit = null
 
-    let payload = {
-      id: playerId,
-      color: player.color,
-      action: "online",
-      position: { x, y },
-      geometry: player.geometry
-    }
-
-    actionResultSchema.validateSync(payload);
-    return payload
+    return player.createActionPayload("online")
   }
 
   playerOffline(playerId){
@@ -106,16 +97,7 @@ class GameInstance {
     this.grid[x][y].spirit = player
     this.grid[x][y].space = null
 
-    let payload = {
-      id: playerId,
-      color: player.color,
-      action: "offline",
-      position: player.position,
-      geometry: player.geometry
-    }
-
-    actionResultSchema.validateSync(payload);
-    return payload
+    return createActionPayload("offline")
   }
   // playerOnlineOrAddPlayer(playerId){
 

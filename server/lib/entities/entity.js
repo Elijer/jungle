@@ -12,6 +12,18 @@ export default class Entity {
     cohort[this.id] = position
   }
 
+  createActionPayload(action){
+    let payload = {
+      id: this.id,
+      color: this.color,
+      action: action,
+      position: this.position,
+      geometry: this.geometry
+    }
+    this.stateSchema.validateSync(payload)
+    return payload
+  }
+
   getColor(){
     return "0x" + this.color
   }
