@@ -2,6 +2,7 @@ import { simplexPositive } from './simplex2.js';
 import Tile from './entities/tile.js';
 import Terrain from './entities/terrain.js';
 import Player from './entities/player.js';
+import EntityGroup from './entityGroup.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -11,6 +12,8 @@ class GameInstance {
     this.players = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
+
+    this.playerGroup = new EntityGroup(this.players, this.grid)
   }
 
   initializeGrid(){
@@ -39,9 +42,11 @@ class GameInstance {
       tempGrid.push(row)
     }
 
+    console.log(this.players)
+
     return {
       grid: tempGrid,
-      players: this.players
+      players: this.playerGroup.getEntities()
     }
   }
 
@@ -62,20 +67,22 @@ class GameInstance {
 
   addPlayer(playerId){
 
+    console.log("add player called")
+
     let x, y, player;
 
     if (this.players[playerId]){
       ({ x, y } = this.players[playerId])
-      player = this.grid[x][y].spiritLayer
+      player = this.grid[x][y].spirit
     }
 
     if (!this.players[playerId]){
-      ({ x, y } = this.findRandomSpot('spaceLayer'))
+      ({ x, y } = this.findRandomSpot('space'))
       player = new Player(this.players, {x, y}, this.grid, playerId)
     }
 
-    this.grid[x][y].spaceLayer = player
-    this.grid[x][y].spiritLayer = null
+    this.grid[x][y].space = player
+    this.grid[x][y].spirit = null
 
     return {
       id: playerId.id,
@@ -91,9 +98,9 @@ class GameInstance {
     }
 
     let { x, y } = this.players[playerId]
-    let player = this.grid[x][y].spaceLayer
-    this.grid[x][y].spaceLayer = null
-    this.grid[x][y].spiritLayer = player
+    let player = this.grid[x][y].space
+    this.grid[x][y].space = null
+    this.grid[x][y].spirit = player
 
     return {
       id: playerId,

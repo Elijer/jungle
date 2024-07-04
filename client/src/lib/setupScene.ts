@@ -13,7 +13,6 @@ const sceneSetup = () => {
     gridSize: 20,
     squareSize: 1,
     gapSize: 1,
-    // gapSize: 1.1,
   }
 
   const terrainTiles: any = []
@@ -54,6 +53,8 @@ const sceneSetup = () => {
       scene.add(tile)
     }
   }
+
+  
 
   renderer.render(scene, camera);
 

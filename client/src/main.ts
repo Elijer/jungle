@@ -13,8 +13,7 @@ scene.add(ephemerals)
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: any) => {
-  let index
-  let terrain
+  let index, terrain
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       index = x * b.gridSize + y;

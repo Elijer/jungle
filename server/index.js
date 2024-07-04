@@ -10,7 +10,8 @@ io.on("connection", (socket) => {
   socket.on("player joined", (playerId) => {
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
-    socket.broadcast.emit("update", game.addPlayer(playerId)) // sends the player joined event to all other players
+    let addedPlayerToGame = game.addPlayer(playerId)
+    socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players
     socket.emit("state", game.getState()) // sends game to player who just joined
 
     socket.on("disconnecting", async(reason) => {

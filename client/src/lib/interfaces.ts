@@ -22,8 +22,8 @@ export interface BoardState {
 
 export interface TileState {
   terrain: string;
-  spaceLayer: LayerState | null;
-  spiritLayer: LayerState | null;
+  space: LayerState | null;
+  spirit: LayerState | null;
 }
 
 export interface BoardConfig {
