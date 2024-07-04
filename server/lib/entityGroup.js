@@ -1,6 +1,7 @@
 export default class EntityGroup {
 
-  constructor(grid){
+  constructor(grid, type){
+    this.type = type ?? "<unknown type>"
     this.ents = {}
     this.grid = grid;
     this.layers = ["space", "spirit"]

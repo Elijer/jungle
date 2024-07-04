@@ -19,7 +19,8 @@ export default class Entity {
 
   getState(){
     return{
-      id: this.id
+      id: this.id,
+      position: this.position
     }
   }
 }

@@ -16,7 +16,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnecting", async(reason) => {
       const playerEvent = game.playerOffline(playerId)
-      // if (playerEvent) socket.broadcast.emit("updateState", playerEvent) // sends disconnect event to all other players
+      if (playerEvent) socket.broadcast.emit("updateState", playerEvent) // sends disconnect event to all other players
     })
   })
 

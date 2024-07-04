@@ -12,7 +12,7 @@ class GameInstance {
     this.grid = this.initializeGrid()
     this.noiseScale = 10
 
-    this.players = new EntityGroup(this.grid) // must be called after grid
+    this.players = new EntityGroup(this.grid, "players") // must be called after grid
   }
 
   initializeGrid(){
@@ -96,9 +96,8 @@ class GameInstance {
     }
 
     let { x, y } = this.players.ents[playerId]
-    let player = this.grid[x][y].space
+    this.grid[x][y].spirit = this.grid[x][y].space
     this.grid[x][y].space = null
-    this.grid[x][y].spirit = player
 
     return {
       id: playerId,
