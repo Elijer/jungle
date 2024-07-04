@@ -17,6 +17,10 @@ export default class Entity {
     }
   }
 
+  getColor(){
+    return "0x" + this.color
+  }
+
   getState(){
     return{
       id: this.id,

@@ -10,7 +10,7 @@ export default class Player extends Entity {
   getState(){
     return {
       ...super.getState(),
-      color: this.color
+      color: this.getColor()
     }
   }
 }

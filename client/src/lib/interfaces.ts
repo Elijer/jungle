@@ -5,9 +5,10 @@ interface LayerState {
 }
 
 export interface Player {
-    x: number;
-    y: number;
-    online: boolean;
+  color: string;
+  id: string;
+  layer: string;
+  position: Position;
 }
 
 export type Players = {

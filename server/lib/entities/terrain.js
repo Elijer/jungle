@@ -11,7 +11,7 @@ export default class Terrain extends Entity {
   }
 
   getColor(){
-    return rgbHex(Terrain.rgb[0] * this.noise, Terrain.rgb[1] * this.noise, Terrain.rgb[2] * this.noise)
+    return "0x" + rgbHex(Terrain.rgb[0] * this.noise, Terrain.rgb[1] * this.noise, Terrain.rgb[2] * this.noise)
   }
 
   getState(){

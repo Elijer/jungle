@@ -5,15 +5,9 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
-import { BoardConfig } from './interfaces.js';
+import b from './boardConfig.js'
 
 const sceneSetup = () => {
-
-  const b: any = {
-    gridSize: 20,
-    squareSize: 1,
-    gapSize: 1,
-  }
 
   const terrainTiles: any = []
 
@@ -54,8 +48,6 @@ const sceneSetup = () => {
     }
   }
 
-  
-
   renderer.render(scene, camera);
 
   window.addEventListener('resize', () => {
@@ -64,7 +56,7 @@ const sceneSetup = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-    return {scene, camera, renderer, terrainTiles, b}
+    return {scene, camera, renderer, terrainTiles }
 }
 
 export default sceneSetup
