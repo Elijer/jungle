@@ -3,6 +3,7 @@ import Tile from './entities/tile.js';
 import Terrain from './entities/terrain.js';
 import Player from './entities/player.js';
 import EntityGroup from './entityGroup.js';
+import { actionResultSchema } from './schemas.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -82,12 +83,15 @@ class GameInstance {
     this.grid[x][y].space = player
     this.grid[x][y].spirit = null
 
-    return {
-      id: playerId.id,
+    let payload = {
+      id: playerId,
       color: player.color,
       action: "online",
       position: { x, y}
     }
+
+    actionResultSchema.validateSync(payload);
+    return payload
   }
 
   playerOffline(playerId){
@@ -101,12 +105,15 @@ class GameInstance {
     this.grid[x][y].spirit = this.grid[x][y].space
     this.grid[x][y].space = null
 
-    return {
+    let payload = {
       id: playerId,
       color: player.color,
       action: "offline",
       position: { x, y }
     }
+
+    actionResultSchema.validateSync(payload);
+    return payload
   }
   // addPlayer(playerId){
 

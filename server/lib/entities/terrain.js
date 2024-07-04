@@ -15,10 +15,12 @@ export default class Terrain extends Entity {
   }
 
   getState(){
-    return {
+    let payload =  {
       ...super.getState(),
       color: this.getColor()
-    }  
+    }
+    this.stateSchema.validateSync(payload)
+    return payload
   }
 
 }

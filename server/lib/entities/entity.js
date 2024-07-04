@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { stateSchema } from '../schemas.js'
 
 export default class Entity {
   constructor(cohort, position, grid, id){
@@ -6,6 +7,7 @@ export default class Entity {
     this.cohort = cohort
     this.position = position
     this.grid = grid
+    this.stateSchema = stateSchema
     cohort[this.id] = position
   }
 
@@ -22,9 +24,11 @@ export default class Entity {
   }
 
   getState(){
-    return{
+    let payload = {
       id: this.id,
       position: this.position
     }
+    this.stateSchema.validateSync(payload)
+    return payload
   }
 }
