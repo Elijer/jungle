@@ -4,9 +4,7 @@ interface LayerState {
   id: string
 }
 
-export interface Player {
-  color: string;
-  id: string;
+export interface Player extends LayerState{
   layer: string;
   position: Position;
 }
@@ -22,7 +20,7 @@ export interface BoardState {
 }
 
 export interface TileState {
-  terrain: string;
+  terrain: LayerState | null;
   space: LayerState | null;
   spirit: LayerState | null;
 }

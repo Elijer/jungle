@@ -87,7 +87,8 @@ class GameInstance {
       id: playerId,
       color: player.color,
       action: "online",
-      position: { x, y }
+      position: { x, y },
+      geometry: player.geometry
     }
 
     actionResultSchema.validateSync(payload);
@@ -109,7 +110,8 @@ class GameInstance {
       id: playerId,
       color: player.color,
       action: "offline",
-      position: player.position
+      position: player.position,
+      geometry: player.geometry
     }
 
     actionResultSchema.validateSync(payload);

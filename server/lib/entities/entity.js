@@ -8,6 +8,7 @@ export default class Entity {
     this.position = position
     this.grid = grid
     this.stateSchema = stateSchema
+    this.geometry = "default"
     cohort[this.id] = position
   }
 
@@ -18,7 +19,8 @@ export default class Entity {
   getState(){
     let payload = {
       id: this.id,
-      position: this.position
+      position: this.position,
+      geometry: this.geometry
     }
     this.stateSchema.validateSync(payload)
     return payload

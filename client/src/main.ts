@@ -4,6 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import EntityHandler from './lib/entityHandler.js'
+import { BoardState } from './lib/interfaces.js'
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
@@ -16,8 +17,9 @@ scene.add(ephemerals)
 let entities = new EntityHandler(ephemerals)
 
 // HANDLE LOCAL STATE
-socket.on("state", (boardState: any) => {
+socket.on("state", (boardState: BoardState) => {
   let index, terrain
+  console.log(boardState)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
@@ -57,6 +59,10 @@ function animationThrottler(fps: number, animationFunction: Function) {
 animationThrottler(24, animate)
 
 socket.on("update", (updateState: any) => {
+
+  // NEXT: handle player action updates
+  // NEXT2: handle player movement updates
+
   console.log(updateState)
   if (updateState.action === "online"){
 
