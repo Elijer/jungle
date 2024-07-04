@@ -50,11 +50,11 @@ export interface KeyBindings {
 }
 
 export interface UpdateState {
-  action: string
-  playerId: string
-  x: number
-  y: number
+  id: string
   color: string | undefined
+  action: string
+  geometry: string
+  position: Position
 }
 
 export interface Position {

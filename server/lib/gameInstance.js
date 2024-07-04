@@ -97,7 +97,7 @@ class GameInstance {
     this.grid[x][y].spirit = player
     this.grid[x][y].space = null
 
-    return createActionPayload("offline")
+    return player.createActionPayload("offline")
   }
   // playerOnlineOrAddPlayer(playerId){
 

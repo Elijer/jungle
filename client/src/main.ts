@@ -4,7 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import EntityHandler from './lib/entityHandler.js'
-import { BoardState } from './lib/interfaces.js'
+import { BoardState, UpdateState } from './lib/interfaces.js'
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
@@ -58,7 +58,7 @@ function animationThrottler(fps: number, animationFunction: Function) {
 
 animationThrottler(24, animate)
 
-socket.on("update", (updateState: any) => {
+socket.on("update", (updateState: UpdateState) => {
 
   // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates
