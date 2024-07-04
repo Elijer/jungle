@@ -1,8 +1,9 @@
 import b from './boardConfig.js'
 import * as THREE from 'three';
+import { Entity, Ephs } from './interfaces.js'
 
 class ephemeralsHandler {
-  ephs: {[key: string]: any}
+  ephs: Ephs
   target: THREE.Group
 
   constructor(target: THREE.Group){
@@ -10,14 +11,14 @@ class ephemeralsHandler {
     this.target = target
   }
 
-  createEntity = (entity: any) => {
-    const body = this.createCube(entity.position.x, entity.position.y, parseInt(entity.color), false)
+  createEphemeral = (ephemeral: Entity) => {
+    const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), false)
 
-    this.ephs[entity.id] = {
+    this.ephs[ephemeral.id] = {
       ...body,
-      color: entity.color,
-      position: entity.position,
-      layer: entity.layer
+      color: ephemeral.color,
+      position: ephemeral.position,
+      layer: ephemeral.layer
     }
   }
 
@@ -30,7 +31,6 @@ class ephemeralsHandler {
     if (transparent){
       mat.opacity = 0.5;
     }
-  
   
     // Calculate the position based on grid size and gap size
     const cubeX = (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2;

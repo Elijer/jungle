@@ -4,7 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
-import { BoardState, UpdateState } from './lib/interfaces.js'
+import { BoardState, UpdateState, Entity } from './lib/interfaces.js'
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
@@ -30,8 +30,8 @@ socket.on("state", (boardState: BoardState) => {
   }
 
   for (let playerId in boardState.players) {
-    let player = boardState.players[playerId]
-    ephemerals.createEntity(player)
+    let player: Entity = boardState.players[playerId]
+    ephemerals.createEphemeral(player)
   }
 })
 
@@ -66,6 +66,17 @@ socket.on("update", (updateState: UpdateState) => {
   // NEXT2: handle player movement updates
 
   if (updateState.action === "online"){
+    let eph = ephemerals.ephs[updateState.id]
+    if (!eph){
+      console.log(updateState)
+      // color: string
+      // geometry: string
+      // id: string
+      // // layer
+      // // position
+      // ephemerals.createEphemeral()
+    }
+
     console.log(updateState)
   }
 

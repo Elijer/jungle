@@ -1,22 +1,39 @@
-interface LayerState {
+import * as THREE from 'three';
+
+export interface LayerState {
   color: string
   geometry: string
   id: string
+  // layer
+  // position
 }
 
-export interface Player extends LayerState {
+export interface Eph {
+  geo: THREE.BoxGeometry
+  mat: THREE.MeshBasicMaterial
+  cube: THREE.Mesh
+  color: string
+  position: { x: number; y: number }
+  layer: string
+}
+
+export interface Ephs {
+  [key: string]: Eph
+}
+
+export interface Entity extends LayerState {
   layer: string;
   position: Position;
 }
 
-export type Players = {
-  [key: string]: Player;
+export type Entities = {
+  [key: string]: Entity;
 };
 
 
 export interface BoardState {
   grid: TileState[][];
-  players: Players
+  players: Entities
 }
 
 export interface TileState {
