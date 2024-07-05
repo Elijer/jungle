@@ -4,7 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
-import { BoardState, UpdateState, Entity } from './lib/interfaces.js'
+import { BoardState, Entity } from './lib/interfaces.js'
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
@@ -57,22 +57,17 @@ function animationThrottler(fps: number, animationFunction: Function) {
 }
 
 animationThrottler(24, animate)
+// TO DO: get rid of redundant update state interface
+socket.on("update", (entity: Entity) => {
 
-socket.on("update", (updateState: UpdateState) => {
-  console.log(updateState)
+  if (entity.layer === "space"){
 
-  // if (updateState.layer === "spirit"){
-
-  // }
-
-  if (updateState.layer === "space"){
-    if (!ephemerals.ephs[updateState.id]){
-      console.log("HI")
-      ephemerals.createEphemeral(updateState)
+    if (!ephemerals.ephs[entity.id]){
+      ephemerals.createEphemeral(entity)
     }
 
-    if (ephemerals.ephs[updateState.id]){
-      ephemerals.updateCubeTransparency(updateState.id, true)
+    if (ephemerals.ephs[entity.id]){
+      ephemerals.updateCubeTransparency(entity.id, false)
     }
   }
 

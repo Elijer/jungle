@@ -9,20 +9,8 @@ export default class Entity {
     this.grid = grid
     this.stateSchema = stateSchema
     this.geometry = "default"
+    this.layer = "space"
     cohort[this.id] = position
-  }
-
-  createActionPayload(layer){
-    // TODO - would be better to just figure out what the layer of the entity is without needing to pass anything in
-    let payload = {
-      color: this.color,
-      geometry: this.geometry,
-      id: this.id,
-      position: this.position,
-      layer: layer
-    }
-    this.stateSchema.validateSync(payload)
-    return payload
   }
 
   getColor(){
@@ -33,7 +21,8 @@ export default class Entity {
     let payload = {
       id: this.id,
       position: this.position,
-      geometry: this.geometry
+      geometry: this.geometry,
+      layer: this.layer
     }
     this.stateSchema.validateSync(payload)
     return payload

@@ -67,13 +67,13 @@ export interface KeyBindings {
 }
 
 // This is actually the same interface as the Entity interface - can merge them later!! They are sort of different concepts...?
-export interface UpdateState {
-  id: string
-  color: string
-  layer: string
-  geometry: string
-  position: Position
-}
+// export interface UpdateState {
+//   id: string
+//   color: string
+//   layer: string
+//   geometry: string
+//   position: Position
+// }
 
 export interface Position {
   x: number;

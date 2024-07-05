@@ -79,10 +79,12 @@ class GameInstance {
       player = new Player(this.players.ents, {x, y}, this.grid, playerId)
     }
 
-    this.grid[x][y].space = player
-    this.grid[x][y].spirit = null
+    player.online()
+    // this.grid[x][y].space = player
+    // this.grid[x][y].spirit = null
 
-    return player.createActionPayload("space")
+    return player.getState()
+    // return player.createActionPayload("space")
   }
 
   playerOffline(playerId){
@@ -93,10 +95,11 @@ class GameInstance {
 
     let { x, y } = this.players.ents[playerId]
     let player = this.grid[x][y].space
-    this.grid[x][y].spirit = player
-    this.grid[x][y].space = null
-
-    return player.createActionPayload("spirit")
+    player.offline()
+    // this.grid[x][y].spirit = player
+    // this.grid[x][y].space = null
+    return player.getState()
+    // return player.createActionPayload("spirit")
   }
   // playerOnlineOrAddPlayer(playerId){
 

@@ -8,6 +8,18 @@ export default class Player extends Entity {
     this.geometry = "cube"
   }
 
+  online(){
+    this.grid[this.position.x][this.position.y].space = this
+    this.grid[this.position.x][this.position.y].spirit = null
+    this.layer = "space"
+  }
+
+  offline(){
+    this.grid[this.position.x][this.position.y].space = null
+    this.grid[this.position.x][this.position.y].spirit = this
+    this.layer = "spirit"
+  }
+
   getState(){
     let payload = {
       ...super.getState(),
