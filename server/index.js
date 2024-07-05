@@ -1,8 +1,8 @@
 import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
 const { io, port, httpServer } = setupServer();
+import gridSize from './lib/gameConfig.js';
 
-let gridSize = 20
 let game = new GameInstance(gridSize, gridSize)
 
 io.on("connection", (socket) => {
@@ -21,7 +21,8 @@ io.on("connection", (socket) => {
   })
 
   socket.on("input event", (inputEvent) => {
-    console.log("input event", inputEvent)
+    game.handleInput(inputEvent)
+    // console.log("input event", inputEvent)
   })
 
 })

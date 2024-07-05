@@ -60,7 +60,7 @@ animationThrottler(24, animate)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
 
-  if (entity.layer === "space"){
+  if (entity.action === "online"){
 
     if (!ephemerals.ephs[entity.id]){
       ephemerals.createEphemeral(entity)
@@ -71,13 +71,17 @@ socket.on("update", (entity: EntityStateEvent) => {
     }
   }
 
-  if (entity.layer === "spirit"){
+  if (entity.action === "offline"){
 
     if (ephemerals.ephs[entity.id]){
       ephemerals.updateCubeTransparency(entity.id, true)
     }
   }
-    
+
+  if (entity.action === "move"){
+    console.log("YOU WANT TO MOVE IT MOVE IT")
+    // move
+  }
 
   // CURRENT: make sure that all clientside events are typed
   // NEXT: handle player action updates

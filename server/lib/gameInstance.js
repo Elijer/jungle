@@ -101,6 +101,13 @@ class GameInstance {
     return player.getState("offline")
     // return player.createActionPayload("spirit")
   }
+
+  handleInput(inputEvent){
+    if (!this.players.ents[inputEvent.playerId]) return
+    let {x, y} = this.players.ents[inputEvent.playerId]
+    let player = this.grid[x][y].space
+    player.move(inputEvent.command)
+  }
   // playerOnlineOrAddPlayer(playerId){
 
   //   let x, y;

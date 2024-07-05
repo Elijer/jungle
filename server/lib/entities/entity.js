@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { stateSchema } from '../schemas.js'
+import gridSize from '../gameConfig.js';
 
 export default class Entity {
   constructor(cohort, position, grid, id){
@@ -15,6 +16,33 @@ export default class Entity {
 
   getColor(){
     return "0x" + this.color
+  }
+
+  checkTileExistsAndIsEmpty(x, y){
+    if (x < 0 || y < 0) return
+    if (x >= this.gridSize || y >= this.gridSize) return
+    return this.grid[x] && this.grid[x][y]
+  }
+
+  move(direction){
+
+    let directions = {
+      "u": { x: 0, y: -1 },
+      "d": { x: 0, y: 1 },
+      "l": { x: -1, y: 0 },
+      "r": { x: 1, y: 0 }
+    }
+
+    let movement = directions[direction]
+    if (!this.checkTileExistsAndIsEmpty(this.position.x + movement.x, this.position.y + movement.y)) return
+    let { x, y } = this.position
+    let nX = x + movement.x
+    let nY = y + movement.y
+    // TO DO: This is getting too messy. I need to make central methods for this stuff
+    this.cohort[this.id] = { x: nX, y: nY }
+    this.grid[x][y].space = null
+    this.grid[nX][nY].space = this
+
   }
 
   getState(action = "none"){
