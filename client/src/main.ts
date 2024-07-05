@@ -79,41 +79,9 @@ socket.on("update", (entity: EntityStateEvent) => {
   }
 
   if (entity.action === "move"){
-    console.log("YOU WANT TO MOVE IT MOVE IT")
-    // move
+    ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
   }
-
-  // CURRENT: make sure that all clientside events are typed
-  // NEXT: handle player action updates
-  // NEXT2: handle player movement updates
-
-  // if (updateState.action === "online"){
-  //   let eph = ephemerals.ephs[updateState.id]
-  //   if (!eph){
-  //     console.log(updateState)
-  //     // color: string
-  //     // geometry: string
-  //     // id: string
-  //     // // layer
-  //     // // position
-  //     // ephemerals.createEphemeral()
-  //   }
-
-  //   console.log(updateState)
-  // }
-
-  // if (updateState.action === "offline") {
-  //   console.log("YPPP")
-  //   ephemerals.ents[updateState.playerId].mat.opacity = .5
-  //   // ephemerals.updateCubeTransparency(updateState.playerId, false)
-  //   // let player = ephemerals.ents[updateState.playerId]
-  //   // ephemeralsGroup.remove(player.cube)
-  //   // delete ephemerals.ents[updateState.playerId]
-  // }
-
-  // if (updateState.action === "online"){
-    
-  // }
+  
 })
 
 const keyCommandBindings: { [key: string]: string } = {

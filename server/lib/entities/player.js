@@ -20,9 +20,9 @@ export default class Player extends Entity {
     this.layer = "spirit"
   }
 
-  getState(){
+  getState(action){
     let payload = {
-      ...super.getState(),
+      ...super.getState(action),
       color: this.getColor(),
       geometry: this.geometry
     }

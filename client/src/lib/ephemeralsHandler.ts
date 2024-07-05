@@ -47,6 +47,11 @@ class ephemeralsHandler {
     }
   }
 
+  moveCube = (id: string, x: number, y: number) => {
+    this.ephs[id].cube.position.x = (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2;
+    this.ephs[id].cube.position.z = y * b.squareSize * b.gapSize;
+  }
+
   updateCubeTransparency(id: string, transparent: boolean){
     this.ephs[id].mat.transparent = transparent
     this.ephs[id].mat.opacity = transparent ? 0.4 : 1
