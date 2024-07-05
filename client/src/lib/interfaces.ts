@@ -26,6 +26,10 @@ export interface Entity extends LayerState {
   position: Position;
 }
 
+export interface EntityStateEvent extends Entity {
+  action: string;
+}
+
 export type Entities = {
   [key: string]: Entity;
 };

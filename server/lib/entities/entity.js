@@ -17,12 +17,13 @@ export default class Entity {
     return "0x" + this.color
   }
 
-  getState(){
+  getState(action = "none"){
     let payload = {
       id: this.id,
       position: this.position,
       geometry: this.geometry,
-      layer: this.layer
+      layer: this.layer,
+      action: action
     }
     this.stateSchema.validateSync(payload)
     return payload

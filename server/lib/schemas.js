@@ -13,4 +13,5 @@ export const stateSchema = yup.object({
   geometry: yup.string().required(),
   color: yup.string(),
   layer: yup.string().required(),
+  action: yup.string().required()
 })

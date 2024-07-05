@@ -21,7 +21,8 @@ var stateSchema = _yup["default"].object({
   position: positionSchema,
   geometry: _yup["default"].string().required(),
   color: _yup["default"].string(),
-  layer: _yup["default"].string().required()
+  layer: _yup["default"].string().required(),
+  action: _yup["default"].string().required()
 });
 
 exports.stateSchema = stateSchema;

@@ -15,9 +15,9 @@ export default class Terrain extends Entity {
     return "0x" + rgbHex(Terrain.rgb[0] * this.noise, Terrain.rgb[1] * this.noise, Terrain.rgb[2] * this.noise)
   }
 
-  getState(){
+  getState(action = "none"){
     let payload =  {
-      ...super.getState(),
+      ...super.getState(action),
       color: this.getColor(),
       geometry: this.geometry
     }

@@ -49,7 +49,7 @@ class ephemeralsHandler {
 
   updateCubeTransparency(id: string, transparent: boolean){
     this.ephs[id].mat.transparent = transparent
-    this.ephs[id].mat.opacity = transparent ? 0.5 : 1
+    this.ephs[id].mat.opacity = transparent ? 0.4 : 1
   }
 }
 
