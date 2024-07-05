@@ -38,11 +38,15 @@ export default class Entity {
     let { x, y } = this.position
     let nX = x + movement.x
     let nY = y + movement.y
-    // TO DO: This is getting too messy. I need to make central methods for this stuff
-    this.cohort[this.id] = { x: nX, y: nY }
-    this.grid[x][y].space = null
-    this.grid[nX][nY].space = this
+    this.#changeLocation(nX, nY)
+  }
 
+  #changeLocation(newX, newY){
+    let { x, y } = this.position
+    this.cohort[this.id] = { x: newX, y: newY }
+    this.grid[x][y].space = null
+    this.grid[newX][newY].space = this
+    this.grid[newX][newY].space.position = {x: newX, y: newY}
   }
 
   getState(action = "none"){

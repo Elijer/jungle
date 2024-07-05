@@ -65,16 +65,16 @@ class GameInstance {
 
   playerOnlineOrAddPlayer(playerId){
 
-    console.log("add player called")
-
     let x, y, player;
 
     if (this.players.ents[playerId]){
+      console.log("Player already exists");
       ({ x, y } = this.players.ents[playerId])
-      player = this.grid[x][y].spirit
+      player = this.grid[x][y].spirit ?? this.grid[x][y].space
     }
 
     if (!this.players.ents[playerId]){
+      console.log("Player does not exist");
       ({ x, y } = this.findRandomSpot('space'))
       player = new Player(this.players.ents, {x, y}, this.grid, playerId)
     }
@@ -107,6 +107,7 @@ class GameInstance {
     let {x, y} = this.players.ents[inputEvent.playerId]
     let player = this.grid[x][y].space
     player.move(inputEvent.command)
+    return player.getState("move")
   }
   // playerOnlineOrAddPlayer(playerId){
 
