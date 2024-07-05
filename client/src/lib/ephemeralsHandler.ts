@@ -14,8 +14,8 @@ class ephemeralsHandler {
   createEphemeral = (ephemeral: Entity) => {
 
     // so there is an issue with the color here so that the update event, when adding a new cube, doesn't add it with the right color
-
-    const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), false)
+    let transparency = ephemeral.layer === "spirit" ? true : false
+    const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), transparency)
 
     this.ephs[ephemeral.id] = {
       ...body,
@@ -31,6 +31,7 @@ class ephemeralsHandler {
     const cube = new THREE.Mesh(geo, mat);
   
     mat.transparent = true;
+    mat.opacity = 1;
     if (transparent){
       mat.opacity = 0.5;
     }
@@ -53,7 +54,6 @@ class ephemeralsHandler {
   }
 
   updateCubeTransparency(id: string, transparent: boolean){
-    this.ephs[id].mat.transparent = transparent
     this.ephs[id].mat.opacity = transparent ? 0.4 : 1
   }
 }

@@ -81,7 +81,7 @@ socket.on("update", (entity: EntityStateEvent) => {
   if (entity.action === "move"){
     ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
   }
-  
+
 })
 
 const keyCommandBindings: { [key: string]: string } = {
