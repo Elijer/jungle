@@ -21,7 +21,8 @@ export default class Entity {
   checkTileExistsAndIsEmpty(x, y){
     if (x < 0 || y < 0) return
     if (x >= this.gridSize || y >= this.gridSize) return
-    return this.grid[x] && this.grid[x][y]
+    let isit = this.grid[x] && this.grid[x][y] && !this.grid[x][y].space
+    return isit
   }
 
   move(direction){
@@ -34,7 +35,9 @@ export default class Entity {
     }
 
     let movement = directions[direction]
-    if (!this.checkTileExistsAndIsEmpty(this.position.x + movement.x, this.position.y + movement.y)) return
+    let tileExistsAndIsEmpty = this.checkTileExistsAndIsEmpty(this.position.x + movement.x, this.position.y + movement.y)
+    console.log(tileExistsAndIsEmpty)
+    if (!tileExistsAndIsEmpty) return
     let { x, y } = this.position
     let nX = x + movement.x
     let nY = y + movement.y

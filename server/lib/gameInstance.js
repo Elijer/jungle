@@ -48,8 +48,7 @@ class GameInstance {
     }
   }
 
-  findRandomSpot(layer){
-    let counter = 0
+  findRandomSpot(layer, counter = 0){
     const limit = 100
     let x = Math.floor(Math.random() * this.rows)
     let y = Math.floor(Math.random() * this.cols)
@@ -58,7 +57,7 @@ class GameInstance {
       if (counter < limit){
         throw new Error('Could not find a spot for the player')
       }
-      return this.findRandomSpot()
+      return this.findRandomSpot(layer, counter)
     }
     return {x, y}
   }

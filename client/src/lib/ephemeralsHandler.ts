@@ -13,7 +13,6 @@ class ephemeralsHandler {
 
   createEphemeral = (ephemeral: Entity) => {
 
-    // so there is an issue with the color here so that the update event, when adding a new cube, doesn't add it with the right color
     let transparency = ephemeral.layer === "spirit" ? true : false
     const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), transparency)
 
