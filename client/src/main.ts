@@ -127,7 +127,7 @@ const keyCommandBindings: { [key: string]: string } = {
   d: 'r'
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
 
   console.log("YO version 1.1")
 
@@ -159,4 +159,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-})
+// })
