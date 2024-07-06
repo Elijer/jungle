@@ -143,11 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
     "d": { element: document.getElementById('right-button')!, code: 'r' },
   };
 
-  console.log("HAsd")
   for (const key of Object.keys(keyBindings)) {
-    console.log("Yjsdf")
     const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('click', () => {
+    keyBinding.element.addEventListener('touchstart', () => {
       socket.emit('input event', { playerId: playerId, command: keyBinding.code });
     });
   }
