@@ -10,6 +10,7 @@ let ips = {}
 const logOffPrimaryUser = (socket) => {
   if (!socket.handshake.headers['x-forwarded-for']) return
   userIp = socket.handshake.headers['x-forwarded-for']
+  if (!userIp || !ips[userIp]) return
   if (socket.id === ips[userIp].active){
     delete ips[userIp]
   }
@@ -19,6 +20,7 @@ export const isUserPrimary = (socket) => {
   if (!socket.handshake.headers['x-forwarded-for']) return true
   userIp = socket.handshake.headers['x-forwarded-for']
 
+  if (!userIp) return true
 
     // If no record, or record of active IP has been deleted, set current user as primary user of IP and let them vibe
     if (!ips[userIp]){
