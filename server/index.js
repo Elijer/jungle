@@ -17,10 +17,10 @@ io.on("connection", (socket) => {
   // This exists on disco, but not locally
   if (socket.handshake.headers['x-forwarded-for']){
     userIp = socket.handshake.headers['x-forwarded-for']
-    activeUsers.add(userIp)
     if (activeUsers.has(userIp)){
       socket.disconnect()
     }
+    activeUsers.add(userIp)
   }
 
   socket.on("player joined", (playerId) => {
