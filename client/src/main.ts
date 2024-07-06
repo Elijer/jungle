@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log("YO version 1.1")
 
   document.addEventListener("keyup", (event): any => {
+    console.log("DO THESE GET ADDED")
     const keyName = event.key.toLowerCase();
     if (keyCommandBindings.hasOwnProperty(keyName)) {
       socket.emit("input event", {playerId: playerId, command: keyCommandBindings[keyName]})
