@@ -4,7 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
-import { BoardState, Entity, EntityStateEvent } from './lib/interfaces.js'
+import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
 // import { lerp } from './lib/utils.js'
 
 let fpsInterval: number, startTime, now, then: number, elapsed
@@ -128,10 +128,27 @@ const keyCommandBindings: { [key: string]: string } = {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("Hi")
   document.addEventListener("keyup", (event): any => {
     const keyName = event.key.toLowerCase();
     if (keyCommandBindings.hasOwnProperty(keyName)) {
       socket.emit("input event", {playerId: playerId, command: keyCommandBindings[keyName]})
     }
   });
+
+  const keyBindings: KeyBindings = {
+    "w": { element: document.getElementById('up-button')!, code: 'u' },
+    "a": { element: document.getElementById('left-button')!, code: 'l' },
+    "s": { element: document.getElementById('down-button')!, code: 'd' },
+    "d": { element: document.getElementById('right-button')!, code: 'r' },
+  };
+
+  console.log("HAsd")
+  for (const key of Object.keys(keyBindings)) {
+    console.log("Yjsdf")
+    const keyBinding = keyBindings[key];
+    keyBinding.element.addEventListener('touchend', () => {
+      socket.emit('input event', { playerId: playerId, command: keyBinding.code });
+    });
+  }
 })
