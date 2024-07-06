@@ -5,7 +5,6 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
-// import { lerp } from './lib/utils.js'
 
 let fpsInterval: number, startTime, now, then: number, elapsed
 let cameraY = 5
@@ -127,7 +126,7 @@ const keyCommandBindings: { [key: string]: string } = {
   d: 'r'
 }
 
-// document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
   console.log("YO version 1.1")
 
@@ -148,15 +147,11 @@ const keyCommandBindings: { [key: string]: string } = {
   for (const key in keyBindings) {
     if (keyBindings.hasOwnProperty(key)) {
       const keyBinding = keyBindings[key];
-      if (keyBinding.element) {
+        console.log("JHEY")
         keyBinding.element.addEventListener('touchend', () => {
-          console.log("um")
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
         console.log(`Added touchend listener for key ${key} on element ${keyBinding.element.id}`);
-      } else {
-        console.error(`Element for key ${key} not found`);
-      }
     }
   }
-// })
+})
