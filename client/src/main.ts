@@ -147,7 +147,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (keyBindings.hasOwnProperty(key)) {
       const keyBinding = keyBindings[key];
       if (keyBinding.element) {
-        keyBinding.element.addEventListener('touchend', () => {
+        keyBinding.element.addEventListener('touchend', (event) => {
+          event.preventDefault()
           console.log("um")
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
