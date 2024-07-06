@@ -37,7 +37,7 @@ class ephemeralsHandler {
   
     // Calculate the position based on grid size and gap size
     const cubeX = (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2;
-    const cubeY = b.squareSize / x; // Position the cube above the plane
+    const cubeY = b.squareSize / 2; // Position the cube above the plane
     const cubeZ = y * b.squareSize * b.gapSize;
   
     cube.position.set(cubeX, cubeY, cubeZ);

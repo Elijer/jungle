@@ -5,17 +5,16 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent } from './lib/interfaces.js'
-
-function lerp(start: number, end: number, t: number): number {
-  return start + (end - start) * t;
-}
-
-const { socket, playerId } = setupClient()
-let { scene, camera, renderer, terrainTiles } = sceneSetup()
+import { lerp } from './lib/utils.js'
 
 let fpsInterval: number, startTime, now, then: number, elapsed
-let cameraY = 9
+let cameraY = 5
+let zCameraOffset = 8
+let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
+
+const { socket, playerId } = setupClient()
+let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
 
 let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
@@ -45,7 +44,7 @@ socket.on("state", (boardState: BoardState) => {
     if (playerId === localStorage.getItem("playerId")){
       let {x, y} = player.position
       cameraTargetX = x * b.squareSize - 10
-      cameraTargetZ = y * b.squareSize
+      cameraTargetZ = y * b.squareSize + zCameraOffset
     }
     ephemerals.createEphemeral(player)
   }
@@ -68,7 +67,7 @@ let animate = () => {
       // Lerping
       // cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
       // cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
-      
+
       camera.position.set(cameraX, cameraY, cameraZ)
     }
 
@@ -114,7 +113,7 @@ socket.on("update", (entity: EntityStateEvent) => {
       cameraZ = entity.position.y
       let {x, y} = entity.position
       cameraTargetX = x * b.squareSize - 10
-      cameraTargetZ = y * b.squareSize
+      cameraTargetZ = y * b.squareSize + zCameraOffset
     }
     ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
   }

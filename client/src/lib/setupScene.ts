@@ -7,7 +7,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 import b from './boardConfig.js'
 
-const sceneSetup = () => {
+const sceneSetup = (cameraRotation: number) => {
 
   const terrainTiles: any = []
 
@@ -21,7 +21,7 @@ const sceneSetup = () => {
   camera.position.x = 0; // x centers the board
   camera.position.z = 10; // gridSize / 2 centers the board on the z axis
   camera.position.y = 30; // Puts us 30 above
-  camera.rotation.x = -1.5; // Tilt the camera down a bit
+  camera.rotation.x = cameraRotation; // Tilt the camera down a bit
 
   // Add light
   const ambientLight = new THREE.AmbientLight(0x404040);
