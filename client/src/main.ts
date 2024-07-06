@@ -25,31 +25,6 @@ scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
-// HANDLE LOCAL STATE
-socket.on("state", (boardState: BoardState) => {
-
-  let index, terrain
-  console.log(boardState)
-
-  for (let x = 0; x < b.gridSize; x++) {
-    for (let y = 0; y < b.gridSize; y++) {
-      index = x * b.gridSize + y;
-      terrain = boardState.grid[x][y].terrain
-      terrainTiles[index].mat.color.setHex(terrain?.color);
-    }
-  }
-
-  for (let playerId in boardState.players) {
-    let player: Entity = boardState.players[playerId]
-    if (playerId === localStorage.getItem("playerId")){
-      let {x, y} = player.position
-      cameraTargetX = x * b.squareSize - 10
-      cameraTargetZ = y * b.squareSize + zCameraOffset
-    }
-    ephemerals.createEphemeral(player)
-  }
-})
-
 // ANIMATION LOOP
 let animate = () => {
 
@@ -158,4 +133,30 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+    // HANDLE LOCAL STATE
+  socket.on("state", (boardState: BoardState) => {
+
+    let index, terrain
+    console.log(boardState)
+
+    for (let x = 0; x < b.gridSize; x++) {
+      for (let y = 0; y < b.gridSize; y++) {
+        index = x * b.gridSize + y;
+        terrain = boardState.grid[x][y].terrain
+        terrainTiles[index].mat.color.setHex(terrain?.color);
+      }
+    }
+
+    for (let playerId in boardState.players) {
+      let player: Entity = boardState.players[playerId]
+      if (playerId === localStorage.getItem("playerId")){
+        let {x, y} = player.position
+        cameraTargetX = x * b.squareSize - 10
+        cameraTargetZ = y * b.squareSize + zCameraOffset
+      }
+      ephemerals.createEphemeral(player)
+    }
+  })
+
 })
