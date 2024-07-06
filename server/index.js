@@ -18,7 +18,8 @@ io.on("connection", (socket) => {
   // console.log("ADDRESS IS", socket.handshake.address)
   // const ipAddress = parseHeader(socket.handshake.headers["forwarded"] || "");
   // console.log("THe IP aderess is...", ipAddress);
-  console.log(socket.handshake.headers)
+  console.log("thing", socket.handshake.headers['x-forwarded-for'])
+  //'x-forwarded-proto' header exists on disco
 
   socket.on("player joined", (playerId) => {
     console.log("player", playerId.substring(0, 4) + '...', "joined")
