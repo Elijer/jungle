@@ -7,6 +7,8 @@ let game = new GameInstance(gridSize, gridSize)
 
 io.on("connection", (socket) => {
 
+  console.log("ADDRESS IS", socket.handshake.address)
+
   socket.on("player joined", (playerId) => {
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
