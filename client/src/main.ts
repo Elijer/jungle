@@ -5,7 +5,7 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent } from './lib/interfaces.js'
-import { lerp } from './lib/utils.js'
+// import { lerp } from './lib/utils.js'
 
 let fpsInterval: number, startTime, now, then: number, elapsed
 let cameraY = 5
