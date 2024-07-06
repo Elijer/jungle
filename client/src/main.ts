@@ -146,6 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   for (const key of Object.keys(keyBindings)) {
     const keyBinding = keyBindings[key];
     keyBinding.element.addEventListener('touchstart', () => {
+      console.log("touchstart")
       socket.emit('input event', { playerId: playerId, command: keyBinding.code });
     });
   }
