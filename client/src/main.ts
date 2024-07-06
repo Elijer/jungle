@@ -128,7 +128,7 @@ const keyCommandBindings: { [key: string]: string } = {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("Hi")
+
   document.addEventListener("keyup", (event): any => {
     const keyName = event.key.toLowerCase();
     if (keyCommandBindings.hasOwnProperty(keyName)) {
@@ -145,8 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   for (const key of Object.keys(keyBindings)) {
     const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('touchstart', () => {
-      console.log("touchstart")
+    keyBinding.element.addEventListener('touchend', () => {
       socket.emit('input event', { playerId: playerId, command: keyBinding.code });
     });
   }
