@@ -13,7 +13,8 @@
     "tunnel2": "lt --port 3000 --subdomain thornberry",
     "tunnel": "npm run tunnel1 & npm run tunnel2",
     "build-image": "docker build -t mygame:latest .",
-    "local": "heroku local -p 3000"
+    "local": "heroku local -p 3000",
+    "disco": "disco projects:remove jungle; disco projects:add --github elijer/jungle --name jungle --domain jungle.rcdis.co"
   },
   "keywords": [],
   "author": "",
