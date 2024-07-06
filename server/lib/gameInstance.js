@@ -95,10 +95,7 @@ class GameInstance {
     let { x, y } = this.players.ents[playerId]
     let player = this.grid[x][y].space
     player.offline()
-    // this.grid[x][y].spirit = player
-    // this.grid[x][y].space = null
     return player.getState("offline")
-    // return player.createActionPayload("spirit")
   }
 
   handleInput(inputEvent){
@@ -108,114 +105,6 @@ class GameInstance {
     player.move(inputEvent.command)
     return player.getState("move")
   }
-  // playerOnlineOrAddPlayer(playerId){
-
-  //   let x, y;
-  //   let color;
-
-  //   if (this.players[playerId]){ // If player already exists, just set them to online and flip their layer to physical
-  //     this.players[playerId].online = true;
-  //     ({ x, y } = this.players[playerId]);
-  //     let player = this.grid[x][y].spiritLayer
-  //     color = player.color
-  //     this.grid[x][y].spiritLayer = null
-
-  //     // Check if a player now occupies player's old spot: if so, find new spot for player
-  //     if (this.grid[x][y].spaceLayer){
-  //       ({ x, y } = this.findRandomSpot())
-  //     }
-      
-  //     this.grid[x][y].spaceLayer = player
-  //   }
-
-  //   if (!this.players[playerId]){ // new player that's never existed
-  //     ({ x, y } = this.findRandomSpot());
-  //     let newPlayer = new Player(playerId)
-  //     color = newPlayer.color
-  //     this.grid[x][y].spaceLayer = newPlayer
-  //     this.players[playerId] = { x, y, online: true}
-  //   }
-
-  //   return {
-  //     playerId: playerId,
-  //     action: "add",
-  //     color: color,
-  //     x, y
-  //   }
-  // }
-
-  // removePlayer(playerId){
-    
-  //   try {
-  //     if (!this.players[playerId]){
-  //       console.log(`Failed to remove player ${playerId}: they do not exist in the game`)
-  //       return
-  //     }
-
-  //     let { x, y } = this.players[playerId]
-  //     console.log("Attempting to delete a player with the coords of", x, y)
-
-  //     if (this.grid[x] && this.grid[x][y]){
-  //       let player = this.grid[x][y].spaceLayer
-  //       this.grid[x][y].spaceLayer = null
-  //       this.grid[x][y].spiritLayer = player
-  //       this.players[playerId].online = false
-
-  //       return {
-  //         playerId: playerId,
-  //         action: "remove",
-  //         x: x,
-  //         y: y
-  //       }
-
-  //     } else {
-  //       console.log(`Invalid coordinates (${x}, ${y}) for player with ID ${playerId}`);
-  //     }
-
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-
-  // }
-
-  // tileExists(x, y){
-  //   return x >= 0 && x < this.rows && y >= 0 && y < this.cols
-  // }
-
-  // movePlayer(playerId, direction){
-  //   if(!this.players[playerId] || !this.players[playerId].online){
-  //     console.log("Player does not exist, or is offline, and can't be moved")
-  //     return
-  //   }
-    
-  //   const moves = {
-  //     l: [-1, 0],
-  //     r: [1, 0],
-  //     u: [0, 1],
-  //     d: [0, -1]
-  //   }
-
-  //   let { x, y } = this.players[playerId]
-  //   let player = this.grid[x][y].spaceLayer
-  //   let [dx, dy] = moves[direction]
-  //   const newX = x + dx
-  //   const newY = y + dy
-  //   if (this.tileExists(newX, newY) && !this.grid[newX][newY].spaceLayer){
-  //     this.grid[x][y].spaceLayer = null
-  //     this.grid[newX][newY].spaceLayer = player
-  //     this.players[playerId] = { x: newX, y: newY, online: true}
-
-  //     return {
-  //       playerId: playerId,
-  //       action: "move",
-  //       x: newX,
-  //       y: newY
-  //     }
-      
-  //   }
-
-  // }
-
 }
 
 export default GameInstance
