@@ -21,7 +21,6 @@ io.on("connection", (socket) => {
   })
 
   socket.on("input event", (inputEvent) => {
-    console.log(inputEvent)
     let moveEvent = game.handleInput(inputEvent)
     io.emit("update", moveEvent)
   })
