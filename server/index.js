@@ -9,7 +9,7 @@ let ips = {}
 
 const logOffPrimaryUser = (socket) => {
   if (!socket.handshake.headers['x-forwarded-for']) return
-  userIp = socket.handshake.headers['x-forwarded-for']
+  let userIp = socket.handshake.headers['x-forwarded-for']
   if (!userIp || !ips[userIp]) return
   if (socket.id === ips[userIp].active){
     delete ips[userIp]
@@ -18,7 +18,7 @@ const logOffPrimaryUser = (socket) => {
 
 export const isUserPrimary = (socket) => {
   if (!socket.handshake.headers['x-forwarded-for']) return true
-  userIp = socket.handshake.headers['x-forwarded-for']
+  let userIp = socket.handshake.headers['x-forwarded-for']
 
   if (!userIp) return true
 
