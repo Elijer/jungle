@@ -5,9 +5,19 @@ import gridSize from './lib/gameConfig.js';
 
 let game = new GameInstance(gridSize, gridSize)
 
+function parseHeader(header) {
+  for (const directive of header.split(",")[0].split(";")) {
+    if (directive.startsWith("for=")) {
+      return directive.substring(4);
+    }
+  }
+}
+
 io.on("connection", (socket) => {
 
-  console.log("ADDRESS IS", socket.handshake.address)
+  // console.log("ADDRESS IS", socket.handshake.address)
+  const ipAddress = parseHeader(socket.handshake.headers["forwarded"] || "");
+  console.log(ipAddress);
 
   socket.on("player joined", (playerId) => {
     console.log("player", playerId.substring(0, 4) + '...', "joined")
