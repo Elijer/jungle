@@ -25,6 +25,31 @@ scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
+// HANDLE LOCAL STATE
+socket.on("state", (boardState: BoardState) => {
+
+  let index, terrain
+  console.log(boardState)
+
+  for (let x = 0; x < b.gridSize; x++) {
+    for (let y = 0; y < b.gridSize; y++) {
+      index = x * b.gridSize + y;
+      terrain = boardState.grid[x][y].terrain
+      terrainTiles[index].mat.color.setHex(terrain?.color);
+    }
+  }
+
+  for (let playerId in boardState.players) {
+    let player: Entity = boardState.players[playerId]
+    if (playerId === localStorage.getItem("playerId")){
+      let {x, y} = player.position
+      cameraTargetX = x * b.squareSize - 10
+      cameraTargetZ = y * b.squareSize + zCameraOffset
+    }
+    ephemerals.createEphemeral(player)
+  }
+})
+
 // ANIMATION LOOP
 let animate = () => {
 
@@ -104,6 +129,8 @@ const keyCommandBindings: { [key: string]: string } = {
 
 document.addEventListener('DOMContentLoaded', () => {
 
+  console.log("YO version 1.1")
+
   document.addEventListener("keyup", (event): any => {
     const keyName = event.key.toLowerCase();
     if (keyCommandBindings.hasOwnProperty(keyName)) {
@@ -122,8 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (keyBindings.hasOwnProperty(key)) {
       const keyBinding = keyBindings[key];
       if (keyBinding.element) {
-        keyBinding.element.addEventListener('touchend', (event) => {
-          event.preventDefault()
+        keyBinding.element.addEventListener('touchend', () => {
           console.log("um")
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
@@ -133,30 +159,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-
-    // HANDLE LOCAL STATE
-  socket.on("state", (boardState: BoardState) => {
-
-    let index, terrain
-    console.log(boardState)
-
-    for (let x = 0; x < b.gridSize; x++) {
-      for (let y = 0; y < b.gridSize; y++) {
-        index = x * b.gridSize + y;
-        terrain = boardState.grid[x][y].terrain
-        terrainTiles[index].mat.color.setHex(terrain?.color);
-      }
-    }
-
-    for (let playerId in boardState.players) {
-      let player: Entity = boardState.players[playerId]
-      if (playerId === localStorage.getItem("playerId")){
-        let {x, y} = player.position
-        cameraTargetX = x * b.squareSize - 10
-        cameraTargetZ = y * b.squareSize + zCameraOffset
-      }
-      ephemerals.createEphemeral(player)
-    }
-  })
-
 })
