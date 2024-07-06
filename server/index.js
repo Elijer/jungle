@@ -8,6 +8,12 @@ let game = new GameInstance(gridSize, gridSize)
 let userIp
 let activeUsers = new Set()
 
+let checkRedundantUser = (userIp) => {
+  if (activeUsers.has(userIp)){
+    redundantUser = true
+  }
+}
+
 io.on("connection", (socket) => {
 
   // console.log("ADDRESS IS", socket.handshake.address)
@@ -18,12 +24,13 @@ io.on("connection", (socket) => {
   if (socket.handshake.headers['x-forwarded-for']){
     userIp = socket.handshake.headers['x-forwarded-for']
     if (activeUsers.has(userIp)){
-      socket.disconnect()
+      redundantUser = true
     }
     activeUsers.add(userIp)
   }
 
   socket.on("player joined", (playerId) => {
+    if (checkRedundantUser()) return
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
     let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
@@ -38,6 +45,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("input event", (inputEvent) => {
+    if (checkRedundantUser()) return
     let moveEvent = game.handleInput(inputEvent)
     io.emit("update", moveEvent)
   })
