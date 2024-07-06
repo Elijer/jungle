@@ -143,10 +143,18 @@ document.addEventListener('DOMContentLoaded', () => {
     "d": { element: document.getElementById('right-button')!, code: 'r' },
   };
 
-  for (const key of Object.keys(keyBindings)) {
-    const keyBinding = keyBindings[key];
-    keyBinding.element.addEventListener('touchend', () => {
-      socket.emit('input event', { playerId: playerId, command: keyBinding.code });
-    });
+  for (const key in keyBindings) {
+    if (keyBindings.hasOwnProperty(key)) {
+      const keyBinding = keyBindings[key];
+      if (keyBinding.element) {
+        keyBinding.element.addEventListener('touchend', () => {
+          console.log("um")
+          socket.emit('input event', { playerId: playerId, command: keyBinding.code });
+        });
+        console.log(`Added touchend listener for key ${key} on element ${keyBinding.element.id}`);
+      } else {
+        console.error(`Element for key ${key} not found`);
+      }
+    }
   }
 })
