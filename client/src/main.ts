@@ -6,9 +6,19 @@ import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent } from './lib/interfaces.js'
 
+function lerp(start: number, end: number, t: number): number {
+  return start + (end - start) * t;
+}
+
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup()
-let fpsInterval: number, startTime, now, then: number, elapsed;
+
+let fpsInterval: number, startTime, now, then: number, elapsed
+let cameraY = 9
+let cameraX: number, cameraZ: number;
+
+let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
+
 
 // Setup dynamic objects
 let ephemeralsGroup = new THREE.Group()
@@ -18,6 +28,7 @@ let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
+
   let index, terrain
   console.log(boardState)
 
@@ -31,6 +42,11 @@ socket.on("state", (boardState: BoardState) => {
 
   for (let playerId in boardState.players) {
     let player: Entity = boardState.players[playerId]
+    if (playerId === localStorage.getItem("playerId")){
+      let {x, y} = player.position
+      cameraTargetX = x * b.squareSize - 10
+      cameraTargetZ = y * b.squareSize
+    }
     ephemerals.createEphemeral(player)
   }
 })
@@ -40,9 +56,22 @@ let animate = () => {
 
   requestAnimationFrame(animate)
 
+  // For throttling
   now = Date.now()
   elapsed = now - then
   if (elapsed > fpsInterval){
+
+    if (cameraTargetX && cameraTargetZ){
+      cameraX = cameraTargetX
+      cameraZ = cameraTargetZ
+
+      // Lerping
+      // cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
+      // cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
+      
+      camera.position.set(cameraX, cameraY, cameraZ)
+    }
+
     renderer.render(scene, camera);
     then = now - (elapsed % fpsInterval);
   }
@@ -50,13 +79,14 @@ let animate = () => {
 }
 
 function animationThrottler(fps: number, animationFunction: Function) {
+  // throttlering vars
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
   animationFunction();
 }
 
-animationThrottler(24, animate)
+animationThrottler(20, animate)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
 
@@ -79,6 +109,13 @@ socket.on("update", (entity: EntityStateEvent) => {
   }
 
   if (entity.action === "move"){
+    if (entity.id === localStorage.getItem("playerId")){
+      cameraX = entity.position.x - 10
+      cameraZ = entity.position.y
+      let {x, y} = entity.position
+      cameraTargetX = x * b.squareSize - 10
+      cameraTargetZ = y * b.squareSize
+    }
     ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
   }
 

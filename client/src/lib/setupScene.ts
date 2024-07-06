@@ -18,9 +18,10 @@ const sceneSetup = () => {
   document.body.appendChild( renderer.domElement );
 
   // 45 degree view
-  camera.position.z = b.gridSize * 1; // Move the camera away from the box so we can see it
-  camera.position.y = b.gridSize * 1.6; // Move the camera away from the box so we can see it
-  camera.rotation.x = b.gridSize / -16; // Tilt the camera down a bit
+  camera.position.x = 0; // x centers the board
+  camera.position.z = 10; // gridSize / 2 centers the board on the z axis
+  camera.position.y = 30; // Puts us 30 above
+  camera.rotation.x = -1.5; // Tilt the camera down a bit
 
   // Add light
   const ambientLight = new THREE.AmbientLight(0x404040);
