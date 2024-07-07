@@ -7,6 +7,15 @@ let game = new GameInstance(gridSize, gridSize)
 
 let ips = {}
 
+const getUserFingerPrint = (socket) => {
+  let userIp = socket.handshake.headers['x-forwarded-for']
+  let browser = socket.handshake.headers['user-agent']
+  let browser2 = socket.handshake.headers['sec-ch-ua']
+  let platform = socket.handshake.headers['sec-ch-ua-platform']
+  let mobile = socket.handshake['sec-ch-ua-mobile']
+  return userIp + browser + browser2 + platform + mobile
+}
+
 const logOffPrimaryUser = (socket) => {
   let userIp = socket.handshake.headers['x-forwarded-for']
   if (ips[userIp] === socket.id) delete ips[userIp]
@@ -14,8 +23,11 @@ const logOffPrimaryUser = (socket) => {
 }
 
 export const isUserPrimary = (socket) => {
+  console.log("Fingerprint: ", getUserFingerPrint(socket))
   console.log("Printing headers")
   console.log(socket.handshake.headers)
+  console.log("address is", socket.handshake.address)
+  console.log("while ip is", socket.handshake.headers['x-forwarded-for'])
   if (!socket.handshake.headers['x-forwarded-for']) return true
   let userIp = socket.handshake.headers['x-forwarded-for']
 
