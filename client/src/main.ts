@@ -24,6 +24,10 @@ scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
+socket.on("redundant connection", () => {
+  alert("You are already connected in another tab, or device on this IP address.")
+})
+
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
 

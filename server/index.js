@@ -14,6 +14,8 @@ const logOffPrimaryUser = (socket) => {
 }
 
 export const isUserPrimary = (socket) => {
+  console.log("Printing headers")
+  console.log(socket.handshake.headers)
   if (!socket.handshake.headers['x-forwarded-for']) return true
   let userIp = socket.handshake.headers['x-forwarded-for']
 
@@ -34,6 +36,7 @@ export const isUserPrimary = (socket) => {
     
     // If a record but not the current user's socket, don't let them vibe
     if (ips[userIp] && ips[userIp] !== socket.id){
+      socket.emit("redundant connection", "redundant connection")
       console.log("User action rejected - you are late to the party")
       return false
     }
