@@ -36,7 +36,6 @@ export default class Entity {
 
     let movement = directions[direction]
     let tileExistsAndIsEmpty = this.checkTileExistsAndIsEmpty(this.position.x + movement.x, this.position.y + movement.y)
-    console.log(tileExistsAndIsEmpty)
     if (!tileExistsAndIsEmpty) return
     let { x, y } = this.position
     let nX = x + movement.x
