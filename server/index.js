@@ -17,7 +17,8 @@ const getUserFingerPrint = (socket) => {
 }
 
 const logOffPrimaryUser = (socket) => {
-  let userIp = socket.handshake.headers['x-forwarded-for']
+  // let userIp = socket.handshake.headers['x-forwarded-for']
+  let userIp = getUserFingerPrint(socket)
   if (ips[userIp] === socket.id) delete ips[userIp]
   delete ips[userIp]
 }
@@ -29,7 +30,8 @@ export const isUserPrimary = (socket) => {
   console.log("address is", socket.handshake.address)
   console.log("while ip is", socket.handshake.headers['x-forwarded-for'])
   if (!socket.handshake.headers['x-forwarded-for']) return true
-  let userIp = socket.handshake.headers['x-forwarded-for']
+  // let userIp = socket.handshake.headers['x-forwarded-for']
+  let userIp = getUserFingerPrint(socket)
 
   if (!userIp) return true
 
