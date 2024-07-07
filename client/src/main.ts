@@ -5,6 +5,7 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
+import { hideClassIfTouchDevice } from './lib/utilities.js'
 
 let fpsInterval: number, startTime, now, then: number, elapsed
 let cameraY = 5
@@ -17,7 +18,7 @@ let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
 
 let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
-
+hideClassIfTouchDevice('arrow-key-interface')
 // Setup dynamic objects
 let ephemeralsGroup = new THREE.Group()
 scene.add(ephemeralsGroup)
@@ -149,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
   for (const key in keyBindings) {
     if (keyBindings.hasOwnProperty(key)) {
       const keyBinding = keyBindings[key];
-        console.log("JHEY")
         keyBinding.element.addEventListener('touchend', () => {
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
