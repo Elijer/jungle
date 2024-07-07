@@ -1,56 +1,41 @@
 import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
+import { getUserFingerPrint } from './lib/utilities.js';
 const { io, port, httpServer } = setupServer();
 import gridSize from './lib/gameConfig.js';
 
 let game = new GameInstance(gridSize, gridSize)
 
-let ips = {}
-
-const getUserFingerPrint = (socket) => {
-  let userIp = socket.handshake.headers['x-forwarded-for']
-  let browser = socket.handshake.headers['user-agent']
-  let browser2 = socket.handshake.headers['sec-ch-ua']
-  let platform = socket.handshake.headers['sec-ch-ua-platform']
-  let mobile = socket.handshake['sec-ch-ua-mobile']
-  return userIp + browser + browser2 + platform + mobile
-}
+let IPs = {}
 
 const logOffPrimaryUser = (socket) => {
-  // let userIp = socket.handshake.headers['x-forwarded-for']
   let userIp = getUserFingerPrint(socket)
-  if (ips[userIp] === socket.id) delete ips[userIp]
-  delete ips[userIp]
+  if (IPs[userIp] === socket.id) delete IPs[userIp]
+  delete IPs[userIp]
 }
 
 export const isUserPrimary = (socket) => {
-  console.log("Fingerprint: ", getUserFingerPrint(socket))
-  console.log("Printing headers")
-  console.log(socket.handshake.headers)
-  console.log("address is", socket.handshake.address)
-  console.log("while ip is", socket.handshake.headers['x-forwarded-for'])
+
   if (!socket.handshake.headers['x-forwarded-for']) return true
-  // let userIp = socket.handshake.headers['x-forwarded-for']
   let userIp = getUserFingerPrint(socket)
 
   if (!userIp) return true
 
     // If no record, or record of active IP has been deleted, set current user as primary user of IP and let them vibe
-    if (!ips[userIp]){
+    if (!IPs[userIp]){
       console.log("User action accepted")
-      ips[userIp] = socket.id
+      IPs[userIp] = socket.id
       return true
     }
 
     // If there is a record, and it's already the current user, let them vibe
-    if (ips[userIp] === socket.id){
+    if (IPs[userIp] === socket.id){
       console.log("User action accepted")
       return true
     }
     
     // If a record but not the current user's socket, don't let them vibe
-    if (ips[userIp] && ips[userIp] !== socket.id){
-      console.log("test")
+    if (IPs[userIp] && ips[userIp] !== socket.id){
       socket.emit("redundant connection", "redundant connection")
       console.log("User action rejected - you are late to the party")
       return false
@@ -59,9 +44,6 @@ export const isUserPrimary = (socket) => {
 }
 
 io.on("connection", (socket) => {
-
-  console.log("User with IP of", socket.handshake.headers['x-forwarded-for'], "just connected")
-  // This exists on disco, but not locally
 
   socket.on("player joined", (playerId) => {
     if (!isUserPrimary(socket)) return
