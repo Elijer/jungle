@@ -8,15 +8,9 @@ let game = new GameInstance(gridSize, gridSize)
 let ips = {}
 
 const logOffPrimaryUser = (socket) => {
-  console.log("Attempting to logoff primary user")
-  if (!socket.handshake.headers['x-forwarded-for']) return
   let userIp = socket.handshake.headers['x-forwarded-for']
-  if (!userIp || !ips[userIp]) return
-  if (socket.id === ips[userIp].active){
-    ips[userIp] = null
-    console.log("Okay here is proof we logged off the current user - here is the record", ips[userIp])
-    console.log("And here is the ip of the current user", userIp)
-  }
+  if (ips[userIp] === socket.id) delete ips[userIp]
+  delete ips[userIp]
 }
 
 export const isUserPrimary = (socket) => {
