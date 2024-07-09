@@ -112,7 +112,7 @@ let animate = () => {
 
 }
 
-function animationThrottler(fps: number, animationFunction: Function, orbitFunction: Function) {
+function animationThrottler(fps: number, animationFunction: Function) {
   // throttlering vars
   fpsInterval = 1000 / fps;
   then = Date.now();
@@ -123,7 +123,7 @@ function animationThrottler(fps: number, animationFunction: Function, orbitFunct
   // if (!orbitMode) animationFunction()
 }
 
-animationThrottler(20, animate, orbit)
+animationThrottler(20, animate)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
 
