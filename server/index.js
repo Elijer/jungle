@@ -4,6 +4,8 @@ import { getUserFingerPrint } from './lib/utilities.js';
 const { io, port, httpServer } = setupServer();
 import gridSize from './lib/gameConfig.js';
 
+// test
+
 let game = new GameInstance(gridSize, gridSize)
 
 let IPs = {}
