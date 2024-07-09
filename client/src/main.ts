@@ -18,6 +18,7 @@ const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
 let controls: OrbitControls | null
 let orbitMode = false
+let activeAnimationCallback = Function || null
 
 let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
@@ -51,6 +52,16 @@ function toggleOrbitControls() {
     enableOrbitControls();
   } else {
     disableOrbitControls();
+
+    let playerId = localStorage.getItem("playerId");
+    if (playerId) {
+      let entity = ephemerals.ephs[playerId];
+      let cubePos = entity.cube.position
+      let camPos = camera.position
+      camera.position.set(cubePos.x, cubePos.y + 4.5, cubePos.z + 8)
+      camera.rotation.set(cameraRotation, 0, 0 )
+    }
+
   }
 }
 
@@ -79,37 +90,38 @@ socket.on("state", (boardState: BoardState) => {
   }
 })
 
-let orbit = () => {
-  requestAnimationFrame(orbit)
-  renderer.render(scene, camera)
-}
-
 // ANIMATION LOOP
 let animate = () => {
-
-  requestAnimationFrame(animate)
 
   // For throttling
   now = Date.now()
   elapsed = now - then
   if (elapsed > fpsInterval){
 
-    if (cameraTargetX && cameraTargetZ){
+    if (cameraTargetX && cameraTargetZ && !orbitMode){
       cameraX = cameraTargetX
       cameraZ = cameraTargetZ
+
+      let playerId = localStorage.getItem("playerId");
+      if (playerId) {
+        let entity = ephemerals.ephs[playerId];
+        console.log("cube", entity.cube.position)
+        console.log("camera", camera.position)
+        // Cube position to camera translation is x=x, y=y+4.5,z=z+8
+      }
 
       // Lerping
       // cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
       // cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
 
       camera.position.set(cameraX, cameraY, cameraZ)
-      // controls.update();
     }
 
     renderer.render(scene, camera);
     then = now - (elapsed % fpsInterval);
   }
-
+  
+  requestAnimationFrame(animate)
 }
 
 function animationThrottler(fps: number, animationFunction: Function) {
@@ -117,10 +129,7 @@ function animationThrottler(fps: number, animationFunction: Function) {
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
-  // orbitFunction()
   animationFunction()
-  // if (orbitMode) orbitFunction()
-  // if (!orbitMode) animationFunction()
 }
 
 animationThrottler(20, animate)
