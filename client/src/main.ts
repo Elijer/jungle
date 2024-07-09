@@ -88,6 +88,7 @@ socket.on("state", (boardState: BoardState) => {
     }
     ephemerals.createEphemeral(player)
   }
+
 })
 
 // ANIMATION LOOP
