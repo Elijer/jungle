@@ -9,12 +9,15 @@ let game = new GameInstance(gridSize, gridSize)
 let IPs = {}
 
 const logOffPrimaryUser = (socket) => {
+  if (!IPs) return
   let userIp = getUserFingerPrint(socket)
   if (IPs[userIp] === socket.id) delete IPs[userIp]
   delete IPs[userIp]
 }
 
 export const isUserPrimary = (socket) => {
+
+  if (!IPs) return
 
   if (!socket.handshake.headers['x-forwarded-for']) return true
   let userIp = getUserFingerPrint(socket)

@@ -6,6 +6,7 @@ import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
 import { hideClassIfTouchDevice } from './lib/utilities.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let fpsInterval: number, startTime, now, then: number, elapsed
 let cameraY = 5
@@ -15,6 +16,8 @@ let cameraX: number, cameraZ: number;
 
 const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
+let controls: OrbitControls | null
+let orbitMode = false
 
 let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
@@ -28,6 +31,28 @@ let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 socket.on("redundant connection", () => {
   alert("You are already connected in another tab, or device on this IP address.")
 })
+
+function enableOrbitControls() {
+  if (controls) controls.dispose();
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.update();
+}
+
+function disableOrbitControls() {
+  if (controls) {
+    controls.dispose();
+    controls = null;
+  }
+}
+
+function toggleOrbitControls() {
+  orbitMode = !orbitMode;
+  if (orbitMode) {
+    enableOrbitControls();
+  } else {
+    disableOrbitControls();
+  }
+}
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
@@ -54,6 +79,11 @@ socket.on("state", (boardState: BoardState) => {
   }
 })
 
+let orbit = () => {
+  requestAnimationFrame(orbit)
+  renderer.render(scene, camera)
+}
+
 // ANIMATION LOOP
 let animate = () => {
 
@@ -73,6 +103,7 @@ let animate = () => {
       // cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
 
       camera.position.set(cameraX, cameraY, cameraZ)
+      // controls.update();
     }
 
     renderer.render(scene, camera);
@@ -81,15 +112,18 @@ let animate = () => {
 
 }
 
-function animationThrottler(fps: number, animationFunction: Function) {
+function animationThrottler(fps: number, animationFunction: Function, orbitFunction: Function) {
   // throttlering vars
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
-  animationFunction();
+  // orbitFunction()
+  animationFunction()
+  // if (orbitMode) orbitFunction()
+  // if (!orbitMode) animationFunction()
 }
 
-animationThrottler(20, animate)
+animationThrottler(20, animate, orbit)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
 
@@ -139,6 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
       socket.emit("input event", {playerId: playerId, command: keyCommandBindings[keyName]})
     }
   });
+
+  document.addEventListener("keydown", (event): any => {
+    if (event.code === "Digit0"){
+      console.log("Toggling orbit mode")
+      toggleOrbitControls()
+      // orbitMode = !orbitMode
+    }
+  })
 
   const keyBindings: KeyBindings = {
     "w": { element: document.getElementById('up-button')!, code: 'u' },
