@@ -4,54 +4,70 @@ import { getUserFingerPrint } from './lib/utilities.js';
 const { io, port, httpServer } = setupServer();
 import gridSize from './lib/gameConfig.js';
 
-// test
-
 let game = new GameInstance(gridSize, gridSize)
 
 let IPs = {}
+let sampleWindow = 1000
+let requestLimit = 12
 
 const logOffPrimaryUser = (socket) => {
-  if (!IPs) return
   let userIp = getUserFingerPrint(socket)
-  if (IPs[userIp] === socket.id) delete IPs[userIp]
-  delete IPs[userIp]
+  if (IPs[userIp] === socket.id) delete IPs[userIp].id
 }
 
-export const isUserPrimary = (socket) => {
+// Limit only one IP/user agent per socket, and also limit rate of requests
+export const isUserLegit = (socket) => {
 
-  if (!IPs) return
+  let now = Date.now()
 
   if (!socket.handshake.headers['x-forwarded-for']) return true
   let userIp = getUserFingerPrint(socket)
 
   if (!userIp) return true
 
-    // If no record, or record of active IP has been deleted, set current user as primary user of IP and let them vibe
-    if (!IPs[userIp]){
-      console.log("User action accepted")
-      IPs[userIp] = socket.id
+    // No record of user fingerprint exists; create one
+    if (!IPs[userIp] || !IPs[userIp].requests || !IPs[userIp].lastRequest){
+      IPs[userIp] = {
+        id: socket.id,
+        requests: 0,
+        lastRequest: now
+      }
+      IPs[userIp].requests++
       return true
     }
 
-    // If there is a record, and it's already the current user, let them vibe
-    if (IPs[userIp] === socket.id){
-      console.log("User action accepted")
-      return true
-    }
-    
+    let userRecord = IPs[userIp]
+
     // If a record but not the current user's socket, don't let them vibe
-    if (IPs[userIp] && IPs[userIp] !== socket.id){
+    if (userRecord && userRecord.id && userRecord.id !== socket.id){
       socket.emit("redundant connection", "redundant connection")
       console.log("User action rejected - you are late to the party")
       return false
     }
+
+    if (now - userRecord.lastRequest > sampleWindow){
+      userRecord.requests = 1
+      userRecord.lastRequest = now
+      console.log("User action accepted - new sample window")
+      return true
+    }
+
+    if (userRecord.requests >= requestLimit) {
+      socket.emit("rate limit exceeded", "rate limit exceeded")
+      console.log("User action rejected - rate limit exceeded")
+      return false
+    }
+
+    userRecord.requests++
+    console.log("User action accepted")
+    return true
 
 }
 
 io.on("connection", (socket) => {
 
   socket.on("player joined", (playerId) => {
-    if (!isUserPrimary(socket)) return
+    if (!isUserLegit(socket)) return
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
     let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
@@ -66,7 +82,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("input event", (inputEvent) => {
-    if (!isUserPrimary(socket)) return
+    if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
     io.emit("update", moveEvent)
   })
