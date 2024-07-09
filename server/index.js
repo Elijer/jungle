@@ -12,7 +12,7 @@ let requestLimit = 12
 
 const logOffPrimaryUser = (socket) => {
   let userIp = getUserFingerPrint(socket)
-  if (IPs[userIp] === socket.id) delete IPs[userIp].id
+  if (IPs[userIp] && IPs[userIp].id === socket.id) delete IPs[userIp].id
 }
 
 // Limit only one IP/user agent per socket, and also limit rate of requests
