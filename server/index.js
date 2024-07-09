@@ -20,7 +20,7 @@ export const isUserLegit = (socket) => {
 
   let now = Date.now()
 
-  if (!socket.handshake.headers['x-forwarded-for']) return true
+  if (!socket.handshake.headers['x-forwarded-for']) return true // local host
   let userIp = getUserFingerPrint(socket)
 
   if (!userIp) return true
