@@ -1,6 +1,5 @@
 import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
-import { getUserFingerPrint } from './lib/utilities.js';
 const { io, port, httpServer } = setupServer();
 import gridSize from './lib/gameConfig.js';
 import { isUserLegit, logOffPrimaryUser } from './lib/userManagement.js';
