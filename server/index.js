@@ -40,7 +40,7 @@ export const isUserPrimary = (socket) => {
     }
     
     // If a record but not the current user's socket, don't let them vibe
-    if (IPs[userIp] && ips[userIp] !== socket.id){
+    if (IPs[userIp] && IPs[userIp] !== socket.id){
       socket.emit("redundant connection", "redundant connection")
       console.log("User action rejected - you are late to the party")
       return false
