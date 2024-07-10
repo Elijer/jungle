@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelatedPass.js';
 
 import b from './boardConfig.js'
 
@@ -49,7 +50,19 @@ const sceneSetup = (cameraRotation: number) => {
     }
   }
 
-  renderer.render(scene, camera);
+  const composer = new EffectComposer( renderer );
+  
+  const renderPass = new RenderPass( scene, camera );
+  composer.addPass( renderPass );
+  
+  // const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
+  const pixelPass = new RenderPixelatedPass(1, scene, camera);
+  composer.addPass( pixelPass );
+  
+  const outputPass = new OutputPass();
+  composer.addPass( outputPass );
+  composer.render()
+  // renderer.render(scene, camera);
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -57,7 +70,7 @@ const sceneSetup = (cameraRotation: number) => {
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-    return {scene, camera, renderer, terrainTiles }
+    return {scene, camera, renderer, terrainTiles, composer }
 }
 
 export default sceneSetup

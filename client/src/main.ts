@@ -5,7 +5,7 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
-import { hideClassIfTouchDevice } from './lib/utilities.js'
+import { hideClassIfTouchDevice, lerp } from './lib/utilities.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let fpsInterval: number, startTime, now, then: number, elapsed
@@ -14,8 +14,10 @@ let zCameraOffset = 8
 let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
 
+let lerpMode = true
+
 const { socket, playerId } = setupClient()
-let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
+let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation)
 let controls: OrbitControls | null
 let orbitMode = false
 let activeAnimationCallback = Function || null
@@ -100,8 +102,11 @@ let animate = () => {
   if (elapsed > fpsInterval){
 
     if (cameraTargetX && cameraTargetZ && !orbitMode){
-      cameraX = cameraTargetX
-      cameraZ = cameraTargetZ
+
+      if (!lerpMode){
+        cameraX = cameraTargetX
+        cameraZ = cameraTargetZ
+      }
 
       let playerId = localStorage.getItem("playerId");
       if (playerId) {
@@ -111,14 +116,15 @@ let animate = () => {
         // Cube position to camera translation is x=x, y=y+4.5,z=z+8
       }
 
-      // Lerping
-      // cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
-      // cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
+      if (lerpMode){
+        cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
+        cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
+      }
 
       camera.position.set(cameraX, cameraY, cameraZ)
     }
 
-    renderer.render(scene, camera);
+    composer.render();
     then = now - (elapsed % fpsInterval);
   }
   
