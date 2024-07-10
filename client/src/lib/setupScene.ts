@@ -8,7 +8,7 @@ import { RenderPixelatedPass } from 'three/addons/postprocessing/RenderPixelated
 
 import b from './boardConfig.js'
 
-const sceneSetup = (cameraRotation: number) => {
+const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
 
   const terrainTiles: any = []
 
@@ -50,19 +50,22 @@ const sceneSetup = (cameraRotation: number) => {
     }
   }
 
-  const composer = new EffectComposer( renderer );
+  let composer
+  if (performanceConfig.postProcessing){
+    composer = new EffectComposer( renderer );
   
-  const renderPass = new RenderPass( scene, camera );
-  composer.addPass( renderPass );
-  
-  // const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-  const pixelPass = new RenderPixelatedPass(7, scene, camera);
-  composer.addPass( pixelPass );
-  
-  const outputPass = new OutputPass();
-  composer.addPass( outputPass );
-  composer.render()
-  // renderer.render(scene, camera);
+    const renderPass = new RenderPass( scene, camera );
+    composer.addPass( renderPass );
+    
+    const pixelPass = new RenderPixelatedPass(7, scene, camera);
+    composer.addPass( pixelPass );
+    
+    const outputPass = new OutputPass();
+    composer.addPass( outputPass );
+    composer.render()
+  } else {
+    renderer.render(scene, camera);
+  }
 
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;

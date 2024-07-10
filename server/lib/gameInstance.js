@@ -94,6 +94,10 @@ class GameInstance {
 
     let { x, y } = this.players.ents[playerId]
     let player = this.grid[x][y].space
+    if (!player){
+      console.log(`Failed to remove player ${playerId}: they are not in the game`)
+      return
+    }
     player.offline()
     return player.getState("offline")
   }

@@ -1,5 +1,7 @@
+let gridSize = 120
+
 const b: any = {
-  gridSize: 20,
+  gridSize: gridSize,
   squareSize: 1,
   gapSize: 1
 }

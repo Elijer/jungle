@@ -10,14 +10,18 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let fpsInterval: number, startTime, now, then: number, elapsed
 let cameraY = 5
-let zCameraOffset = 8
+let zCameraOffset = b.squareSize * 7
 let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
 
-let lerpMode = true
+let performanceConfig = {
+  lerpMode: true,
+  postProcessing: true
+}
 
 const { socket, playerId } = setupClient()
-let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation)
+let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation, performanceConfig)
+// let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
 let controls: OrbitControls | null
 let orbitMode = false
 
@@ -83,7 +87,7 @@ socket.on("state", (boardState: BoardState) => {
     let player: Entity = boardState.players[playerId]
     if (playerId === localStorage.getItem("playerId")){
       let {x, y} = player.position
-      cameraTargetX = x * b.squareSize - 10
+      cameraTargetX = x * b.squareSize - b.gridSize / 2
       cameraTargetZ = y * b.squareSize + zCameraOffset
     }
     ephemerals.createEphemeral(player)
@@ -101,7 +105,7 @@ let animate = () => {
 
     if (cameraTargetX && cameraTargetZ && !orbitMode){
 
-      if (!lerpMode){
+      if (!performanceConfig.lerpMode){
         cameraX = cameraTargetX
         cameraZ = cameraTargetZ
       }
@@ -114,15 +118,19 @@ let animate = () => {
         // Cube position to camera translation is x=x, y=y+4.5,z=z+8
       }
 
-      if (lerpMode){
-        cameraX = lerp(camera.position.x, cameraTargetX, .05);
-        cameraZ = lerp(camera.position.z, cameraTargetZ, .05);
+      if (performanceConfig.lerpMode){
+        cameraX = lerp(camera.position.x, cameraTargetX, .06);
+        cameraZ = lerp(camera.position.z, cameraTargetZ, .06);
       }
 
       camera.position.set(cameraX, cameraY, cameraZ)
     }
 
-    composer.render();
+    if (performanceConfig.postProcessing && composer){
+      composer.render();
+    } else {
+      renderer.render(scene, camera);
+    }
     then = now - (elapsed % fpsInterval);
   }
   
@@ -164,7 +172,9 @@ socket.on("update", (entity: EntityStateEvent) => {
       cameraX = entity.position.x - 10
       cameraZ = entity.position.y
       let {x, y} = entity.position
-      cameraTargetX = x * b.squareSize - 10
+      // For a map of 100 * 100, ~50
+      // For 20 * 20, ~10
+      cameraTargetX = x * b.squareSize - b.gridSize / 2
       cameraTargetZ = y * b.squareSize + zCameraOffset
     }
     ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
