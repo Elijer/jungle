@@ -20,7 +20,6 @@ const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation)
 let controls: OrbitControls | null
 let orbitMode = false
-let activeAnimationCallback = Function || null
 
 let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
@@ -59,7 +58,6 @@ function toggleOrbitControls() {
     if (playerId) {
       let entity = ephemerals.ephs[playerId];
       let cubePos = entity.cube.position
-      let camPos = camera.position
       camera.position.set(cubePos.x, cubePos.y + 4.5, cubePos.z + 8)
       camera.rotation.set(cameraRotation, 0, 0 )
     }
@@ -117,8 +115,8 @@ let animate = () => {
       }
 
       if (lerpMode){
-        cameraX = lerp(camera.position.x, cameraTargetX, 0.1);
-        cameraZ = lerp(camera.position.z, cameraTargetZ, 0.1);
+        cameraX = lerp(camera.position.x, cameraTargetX, .05);
+        cameraZ = lerp(camera.position.z, cameraTargetZ, .05);
       }
 
       camera.position.set(cameraX, cameraY, cameraZ)

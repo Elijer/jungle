@@ -56,7 +56,7 @@ const sceneSetup = (cameraRotation: number) => {
   composer.addPass( renderPass );
   
   // const pixelPass = new RenderPixelatedPass(8*speed, scene, camera);
-  const pixelPass = new RenderPixelatedPass(1, scene, camera);
+  const pixelPass = new RenderPixelatedPass(7, scene, camera);
   composer.addPass( pixelPass );
   
   const outputPass = new OutputPass();
