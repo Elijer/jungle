@@ -19,8 +19,8 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   document.body.appendChild( renderer.domElement );
 
   // 45 degree view
-  camera.position.x = 0; // x centers the board
-  camera.position.z = 10; // gridSize / 2 centers the board on the z axis
+  camera.position.x = b.gridSize / 2; // x centers the board
+  camera.position.z = b.gridSize / 2; // gridSize / 2 centers the board on the z axis
   camera.position.y = 30; // Puts us 30 above
   camera.rotation.x = cameraRotation; // Tilt the camera down a bit
 
@@ -52,6 +52,9 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
 
   let composer
   if (performanceConfig.postProcessing){
+
+
+
     composer = new EffectComposer( renderer );
   
     const renderPass = new RenderPass( scene, camera );
@@ -63,6 +66,9 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
     const outputPass = new OutputPass();
     composer.addPass( outputPass );
     composer.render()
+
+
+
   } else {
     renderer.render(scene, camera);
   }
