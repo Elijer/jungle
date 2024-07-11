@@ -1,4 +1,4 @@
-let gridSize = 120
+let gridSize = 20
 
 const b: any = {
   gridSize: gridSize,

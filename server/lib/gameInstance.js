@@ -69,12 +69,14 @@ class GameInstance {
     if (this.players.ents[playerId]){
       console.log("Player already exists");
       ({ x, y } = this.players.ents[playerId])
+      console.log("Existing player location:", x, y)
       player = this.grid[x][y].spirit ?? this.grid[x][y].space
     }
 
     if (!this.players.ents[playerId]){
-      console.log("Player does not exist");
+      console.log("Player does not exist: creating player in sate");
       ({ x, y } = this.findRandomSpot('space'))
+      console.log("Location generated for newplayer:", x, y)
       player = new Player(this.players.ents, {x, y}, this.grid, playerId)
     }
 

@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { stateSchema } from '../schemas.js'
-import gridSize from '../gameConfig.js';
 
 export default class Entity {
   constructor(cohort, position, grid, id){

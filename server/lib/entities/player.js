@@ -6,6 +6,7 @@ export default class Player extends Entity {
     super(cohort, position, grid, id)
     this.color = generateRandomColor()
     this.geometry = "cube"
+    console.log("Player created at", this.position, "with id of", this.id)
   }
 
   online(){
