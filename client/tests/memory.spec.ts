@@ -1,9 +1,9 @@
 import { chromium, test } from '@playwright/test';
 
 let c = {
-  loops: 1000,
-  maxDuration: 100,
-  tests: 24,
+  loops: 100,
+  maxDuration: 1000,
+  tests: 16,
   timeout: 1000000
 }
 
@@ -20,17 +20,18 @@ test.describe.configure({ mode: 'parallel', timeout: c.timeout });
 
 for (let i = 0; i < c.tests; i++) {
   test(`memory test-${i}`, async () => {
+
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 
     // Replace with the URL of the page you want to test
-    const url = 'http://localhost:3000/';
+    const url = 'http://localhost:5173/';
 
     let memoryUsageData: number[] = [];
     let startTime = Date.now();
 
-    Start memory usage collection
+    // Start memory usage collection
     const intervalId = setInterval(async () => {
       const memory = await page.evaluate(() => {
         const performance = window.performance as Performance & { memory?: any };
@@ -53,17 +54,25 @@ for (let i = 0; i < c.tests; i++) {
     for (let j = 0; j < c.loops; j++) {
       await mC(page);
     }
-
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
     // Stop memory usage collection
     clearInterval(intervalId);
+
+    await new Promise(resolve => setTimeout(resolve, 1500 + i * 10));
 
     // Calculate the statistics
     const duration = (Date.now() - startTime) / 1000; // in seconds
     const minMemoryUsage = Math.min(...memoryUsageData);
     const maxMemoryUsage = Math.max(...memoryUsageData);
     const avgMemoryUsage = memoryUsageData.reduce((a, b) => a + b, 0) / memoryUsageData.length;
+    console.log(avgMemoryUsage)
+
+    await fetch('http://localhost:3001/report/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ memoryUsage: avgMemoryUsage })
+    })
 
     // Generate the report
     const report = `
@@ -75,6 +84,13 @@ for (let i = 0; i < c.tests; i++) {
 
     console.log(report);
     await page.waitForTimeout(1000);
-    await browser.close();
+    await context.close()
+    // await browser.close();
   });
 }
+
+test.afterAll(async () => {
+  const response = await fetch('http://localhost:3001/report/');
+  const report = await response.text();
+  console.log(report);
+});
