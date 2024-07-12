@@ -74,7 +74,7 @@ class GameInstance {
     }
 
     if (!this.players.ents[playerId]){
-      console.log("Player does not exist: creating player in sate");
+      console.log("Player was not found: creating player in sate");
       try {
         ({ x, y } = this.findRandomSpot('space'))
       } catch (e){

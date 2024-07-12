@@ -15,7 +15,7 @@
     "build-image": "docker build -t mygame:latest .",
     "local": "heroku local -p 3000",
     "disco": "disco projects:remove jungle; disco projects:add --github elijer/jungle --name jungle --domain jungle.rcdis.co",
-    "test": "cd client;  npx playwright test --headed"
+    "test": "cd client; npx playwright test --headed"
   },
   "keywords": [],
   "author": "",
