@@ -13,6 +13,7 @@ io.on("connection", (socket) => {
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
     let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
+    if (!addedPlayerToGame) return // if there is no space
     socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players
     socket.emit("state", game.getState()) // sends game to player who just joined
 

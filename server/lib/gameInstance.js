@@ -49,7 +49,7 @@ class GameInstance {
   }
 
   findRandomSpot(layer, counter = 0){
-    const limit = 100
+    const limit = 20
     let x = Math.floor(Math.random() * this.rows)
     let y = Math.floor(Math.random() * this.cols)
     if (this.grid[x][y][layer]){
@@ -75,7 +75,12 @@ class GameInstance {
 
     if (!this.players.ents[playerId]){
       console.log("Player does not exist: creating player in sate");
-      ({ x, y } = this.findRandomSpot('space'))
+      try {
+        ({ x, y } = this.findRandomSpot('space'))
+      } catch (e){
+        console.log(e)
+        return
+      }
       console.log("Location generated for newplayer:", x, y)
       player = new Player(this.players.ents, {x, y}, this.grid, playerId)
     }
@@ -108,6 +113,7 @@ class GameInstance {
     if (!this.players.ents[inputEvent.playerId]) return
     let {x, y} = this.players.ents[inputEvent.playerId]
     let player = this.grid[x][y].space
+    if (!player) return // this happens sometimes?
     player.move(inputEvent.command)
     return player.getState("move")
   }
