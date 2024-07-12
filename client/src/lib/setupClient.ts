@@ -11,6 +11,7 @@ const setupClient = () => {
   let socketAddress = window.location.hostname === "localhost" ? "ws://localhost:3000" : herokuUrl
   if (window.location.hostname.includes("thornberry") && !window.location.hostname.includes("heroku")) socketAddress = tunnelUrl
   if (window.location.hostname.includes("jungle.rcdis.co")) socketAddress = "https://jungle.rcdis.co"
+  if (window.location.hostname.includes("fg8ck7rs")) socketAddress = "https://fg8ck7rs-3000.use.devtunnels.ms/"
   const socket = io(socketAddress)
   
   socket.on("connect", () => {

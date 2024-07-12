@@ -24,8 +24,62 @@ class ephemeralsHandler {
     }
   }
 
+  createBoxBufferGeometry = (squareSize: number) => {
+    const h = squareSize / 2;
+
+    const vertices = new Float32Array([
+      // Front face
+      -h, -h,  h,
+       h, -h,  h,
+       h,  h,  h,
+      -h,  h,  h,
+  
+      // Back face
+      -h, -h, -h,
+      -h,  h, -h,
+       h,  h, -h,
+       h, -h, -h,
+  
+      // Top face
+      -h,  h, -h,
+      -h,  h,  h,
+       h,  h,  h,
+       h,  h, -h,
+  
+      // Right face
+       h, -h, -h,
+       h,  h, -h,
+       h,  h,  h,
+       h, -h,  h,
+  
+      // Left face
+      -h, -h, -h,
+      -h, -h,  h,
+      -h,  h,  h,
+      -h,  h, -h,
+    ]);
+  
+    const indices = new Uint16Array([
+        0, 1, 2,  0, 2, 3,    // front
+        4, 5, 6,  4, 6, 7,    // back
+        8, 9, 10, 8, 10, 11,  // top
+        12, 13, 14, 12, 14, 15, // right
+        16, 17, 18, 16, 18, 19  // left
+    ]);
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    geo.setIndex(new THREE.BufferAttribute(indices, 1));
+    geo.computeVertexNormals(); // This is needed if you want to have correct lighting on your box
+    return geo
+  }
+
   createCube = (x: number, y: number, color: number, transparent: boolean) => {
-    const geo = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
+    
+
+
+    const geo = this.createBoxBufferGeometry(b.squareSize);
+    // const geo = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
     const mat = new THREE.MeshBasicMaterial({ color: color });
     const cube = new THREE.Mesh(geo, mat);
   

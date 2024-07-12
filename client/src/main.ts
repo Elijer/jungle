@@ -15,7 +15,7 @@ let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
 
 let performanceConfig = {
-  lerpMode: true,
+  lerpMode: false,
   postProcessing: true
 }
 
@@ -73,7 +73,7 @@ function toggleOrbitControls() {
 socket.on("state", (boardState: BoardState) => {
 
   let index, terrain
-  console.log(boardState)
+  // console.log(boardState)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
@@ -113,8 +113,8 @@ let animate = () => {
       let playerId = localStorage.getItem("playerId");
       if (playerId) {
         let entity = ephemerals.ephs[playerId];
-        console.log("cube", entity.cube.position)
-        console.log("camera", camera.position)
+        // console.log("cube", entity.cube.position)
+        // console.log("camera", camera.position)
         // Cube position to camera translation is x=x, y=y+4.5,z=z+8
       }
 
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener("keydown", (event): any => {
     if (event.code === "Digit0"){
-      console.log("Toggling orbit mode")
+      // console.log("Toggling orbit mode")
       toggleOrbitControls()
       // orbitMode = !orbitMode
     }
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         keyBinding.element.addEventListener('touchend', () => {
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
-        console.log(`Added touchend listener for key ${key} on element ${keyBinding.element.id}`);
+        // console.log(`Added touchend listener for key ${key} on element ${keyBinding.element.id}`);
     }
   }
 })

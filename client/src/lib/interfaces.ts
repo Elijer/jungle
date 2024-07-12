@@ -9,7 +9,8 @@ export interface LayerState {
 }
 
 export interface Eph {
-  geo: THREE.BoxGeometry
+  // geo: THREE.BoxGeometry
+  geo: THREE.BufferGeometry
   mat: THREE.MeshBasicMaterial
   cube: THREE.Mesh
   color: string

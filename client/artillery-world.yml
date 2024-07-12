@@ -1,0 +1,10 @@
+config:
+  target: https://www.artillery.io
+  # Load the Playwright engine:
+  engines:
+    playwright: {}
+  # Path to JavaScript file that defines Playwright test functions
+  processor: './tests/playwright.js'
+scenarios:
+  - engine: playwright
+    testFunction: 'helloFlow'
