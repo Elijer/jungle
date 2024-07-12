@@ -5,7 +5,8 @@ let direction = ['W', 'A', 'S', 'D'];
 let mC = async (page) => {
   let randomIndex = Math.floor(Math.random() * 4);
   await page.keyboard.press(direction[randomIndex]);
-  await page.waitForTimeout(200);
+  let duration = Math.random() * 200
+  await page.waitForTimeout(10 * duration);
 }
 
 test.describe.configure({mode: 'parallel'});
@@ -23,7 +24,7 @@ for (let i = 0; i < 30; i++) {
       }
     });
 
-    for (let j = 0; j < 300; j++) {
+    for (let j = 0; j < 500; j++) {
       await mC(page);
     }
   });
