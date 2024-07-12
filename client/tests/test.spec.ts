@@ -15,7 +15,7 @@ for (let i = 0; i < 30; i++) {
   setTimeout(() => {}, 300 * i)
   test(`suite ${i}`, async ({ page }) => {
     // await page.goto('http://localhost:5173/');
-    await page.goto('http://localhost:3000/');
+    await page.goto('http://localhost:5173/');
     await page.locator('body').click();
     await page.locator('canvas').click({
       position: {

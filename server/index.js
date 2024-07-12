@@ -6,6 +6,8 @@ import { isUserLegit, logOffPrimaryUser } from './lib/userManagement.js';
 
 let game = new GameInstance(gridSize, gridSize)
 
+let changesOnQueue = []
+
 io.on("connection", (socket) => {
 
   socket.on("player joined", (playerId) => {
@@ -25,9 +27,15 @@ io.on("connection", (socket) => {
   })
 
   socket.on("input event", (inputEvent) => {
+
+    // two optimizations -
+    // The easiest is probably to emit in batches
+    // - one is to batch handleInput
+    // - another is to only send updates to players who are close to those who moved
+
     if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
-    io.emit("update", moveEvent)
+    io.emit("update", moveEvent) // So this should be batched
   })
 
 })

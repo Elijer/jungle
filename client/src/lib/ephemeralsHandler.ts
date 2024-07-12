@@ -79,7 +79,6 @@ class ephemeralsHandler {
 
 
     const geo = this.createBoxBufferGeometry(b.squareSize);
-    // const geo = new THREE.BoxGeometry(b.squareSize, b.squareSize, b.squareSize);
     const mat = new THREE.MeshBasicMaterial({ color: color });
     const cube = new THREE.Mesh(geo, mat);
   
