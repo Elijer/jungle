@@ -1,6 +1,9 @@
 import http from 'http'
 
-let totalMemoryUsage = 0;
+
+let avgMemoryUsage = 0;
+let maxMemoryUsage = 0;
+let minMemoryUsage = 0;
 let testCount = 0;
 
 const server = http.createServer((req, res) => {
@@ -12,14 +15,20 @@ const server = http.createServer((req, res) => {
     });
     req.on('end', () => {
       const data = JSON.parse(body);
-      totalMemoryUsage += data.memoryUsage;
+      // avgMemoryUsage, maxMemoryUsage, minMemoryUsage})
+      avgMemoryUsage += data.avgMemoryUsage;
+      maxMemoryUsage += data.maxMemoryUsage;
+      minMemoryUsage += data.minMemoryUsage;
       testCount += 1;
       res.end('Data received');
     });
   } else if (req.method === 'GET' && req.url === '/report/') {
-    const averageMemoryUsage = totalMemoryUsage / testCount;
-    console.log(averageMemoryUsage)
-    res.end(`Overall Average Memory Usage: ${averageMemoryUsage.toFixed(2)} MB`);
+    const avg = avgMemoryUsage / testCount;
+    const max = maxMemoryUsage / testCount;
+    const min = minMemoryUsage / testCount;
+    console.log("avg-max:", avg.toFixed(0) + "/" + max.toFixed(0))
+    // console.log("min:", min.toFixed(2))
+    res.end()
   } else {
     res.statusCode = 404;
     res.end();

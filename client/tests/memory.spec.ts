@@ -2,7 +2,7 @@ import { chromium, test } from '@playwright/test';
 
 let c = {
   loops: 100,
-  maxDuration: 1000,
+  maxDuration: 500,
   tests: 16,
   timeout: 1000000
 }
@@ -71,7 +71,7 @@ for (let i = 0; i < c.tests; i++) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ memoryUsage: avgMemoryUsage })
+      body: JSON.stringify({ avgMemoryUsage, maxMemoryUsage, minMemoryUsage})
     })
 
     // Generate the report
