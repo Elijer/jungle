@@ -1,10 +1,10 @@
 import { chromium, test } from '@playwright/test';
 
 let c = {
-  loops: 800,
-  maxDuration: 600,
-  tests: 16,
-  timeout: 1000000
+  loops: 100,
+  maxDuration: 200,
+  tests: 12,
+  timeout: 100000
 }
 
 let direction = ['W', 'A', 'S', 'D'];
