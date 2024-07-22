@@ -148,6 +148,8 @@ function animationThrottler(fps: number, animationFunction: Function) {
 animationThrottler(20, animate)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
+  
+  if (!entity) return
 
   if (entity.action === "online"){
 

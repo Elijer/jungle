@@ -1,9 +1,9 @@
 import { chromium, test } from '@playwright/test';
 
 let c = {
-  loops: 100,
+  loops: 400,
   maxDuration: 200,
-  tests: 12,
+  tests: 6,
   timeout: 100000
 }
 
