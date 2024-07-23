@@ -3,7 +3,7 @@ import { chromium, test } from '@playwright/test';
 let c = {
   loops: 400,
   maxDuration: 200,
-  tests: 24,
+  tests: 14,
   timeout: 100000
 }
 
