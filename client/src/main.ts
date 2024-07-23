@@ -1,5 +1,5 @@
 import './style.css'
-import * as THREE from 'three';
+import { Group, } from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
@@ -29,7 +29,7 @@ let cameraTargetX: number | undefined, cameraTargetZ: number | undefined;
 
 hideClassIfTouchDevice('arrow-key-interface')
 // Setup dynamic objects
-let ephemeralsGroup = new THREE.Group()
+let ephemeralsGroup = new Group()
 scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)

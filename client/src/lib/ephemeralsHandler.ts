@@ -1,12 +1,12 @@
 import b from './boardConfig.js'
-import * as THREE from 'three';
+import { Group, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial,  } from 'three';
 import { Entity, Ephs } from './interfaces.js'
 
 class ephemeralsHandler {
   ephs: Ephs
-  target: THREE.Group
+  target: Group
 
-  constructor(target: THREE.Group){
+  constructor(target: Group){
     this.ephs = {}
     this.target = target
   }
@@ -67,9 +67,9 @@ class ephemeralsHandler {
         16, 17, 18, 16, 18, 19  // left
     ]);
 
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    geo.setIndex(new THREE.BufferAttribute(indices, 1));
+    const geo = new BufferGeometry();
+    geo.setAttribute('position', new BufferAttribute(vertices, 3));
+    geo.setIndex(new BufferAttribute(indices, 1));
     geo.computeVertexNormals(); // This is needed if you want to have correct lighting on your box
     return geo
   }
@@ -79,8 +79,8 @@ class ephemeralsHandler {
 
 
     const geo = this.createBoxBufferGeometry(b.squareSize);
-    const mat = new THREE.MeshBasicMaterial({ color: color });
-    const cube = new THREE.Mesh(geo, mat);
+    const mat = new MeshBasicMaterial({ color: color });
+    const cube = new Mesh(geo, mat);
   
     mat.transparent = true;
     mat.opacity = 1;

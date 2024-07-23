@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { BufferGeometry, MeshBasicMaterial, Mesh } from 'three';
 
 export interface LayerState {
   color: string
@@ -9,10 +9,10 @@ export interface LayerState {
 }
 
 export interface Eph {
-  // geo: THREE.BoxGeometry
-  geo: THREE.BufferGeometry
-  mat: THREE.MeshBasicMaterial
-  cube: THREE.Mesh
+  // geo: BoxGeometry
+  geo: BufferGeometry
+  mat: MeshBasicMaterial
+  cube: Mesh
   color: string
   position: { x: number; y: number }
   layer: string

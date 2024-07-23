@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Scene, PerspectiveCamera, WebGLRenderer, AmbientLight, MeshBasicMaterial, PlaneGeometry, Mesh, DoubleSide } from 'three';
 
 // Post processing
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -12,9 +12,9 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
 
   const terrainTiles: any = []
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
-  const renderer = new THREE.WebGLRenderer();
+  const scene = new Scene();
+  const camera = new PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  const renderer = new WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   document.body.appendChild( renderer.domElement );
 
@@ -25,7 +25,7 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   camera.rotation.x = cameraRotation; // Tilt the camera down a bit
 
   // Add light
-  const ambientLight = new THREE.AmbientLight(0x404040);
+  const ambientLight = new AmbientLight(0x404040);
   scene.add(ambientLight);
 
   const rotate90 = Math.PI / 2
@@ -34,9 +34,9 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       index = x * b.gridSize + y;
-      const mat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide })
-      const geo = new THREE.PlaneGeometry(b.squareSize, b.squareSize);
-      const tile = new THREE.Mesh(geo, mat);
+      const mat = new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
+      const geo = new PlaneGeometry(b.squareSize, b.squareSize);
+      const tile = new Mesh(geo, mat);
       tile.rotation.x = rotate90
       tile.position.set((x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2, 0, y * b.squareSize * b.gapSize)
       terrainTiles.push({
