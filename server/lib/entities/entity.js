@@ -42,6 +42,7 @@ export default class Entity {
     this.#changeLocation(nX, nY)
   }
 
+  // TO DO: Check for redundancy between change Location and move and handleInput
   #changeLocation(newX, newY){
     let { x, y } = this.position
     this.cohort[this.id] = { x: newX, y: newY }

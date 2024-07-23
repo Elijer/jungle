@@ -15,7 +15,7 @@ let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
 
 let performanceConfig = {
-  lerpMode: false,
+  lerpMode: true,
   postProcessing: true
 }
 
@@ -71,6 +71,8 @@ function toggleOrbitControls() {
 
 // HANDLE LOCAL STATE
 socket.on("state", (boardState: BoardState) => {
+
+  console.log("state received", boardState)
 
   let index, terrain
   // console.log(boardState)
@@ -148,6 +150,7 @@ function animationThrottler(fps: number, animationFunction: Function) {
 animationThrottler(20, animate)
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
+  console.log("Update received", entity)
   
   if (!entity) return
 

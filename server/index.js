@@ -11,6 +11,7 @@ let changesOnQueue = []
 io.on("connection", (socket) => {
 
   socket.on("player joined", (playerId) => {
+    console.log("player joined with id of: ", playerId)
     if (!isUserLegit(socket)) return
     console.log("player", playerId.substring(0, 4) + '...', "joined")
 
@@ -20,6 +21,7 @@ io.on("connection", (socket) => {
     socket.emit("state", game.getState()) // sends game to player who just joined
 
     socket.on("disconnecting", async(reason) => {
+      console.log("player disconnected with id: ", playerId)
       logOffPrimaryUser(socket)
       const playerEvent = game.playerOffline(playerId)
       if (playerEvent) socket.broadcast.emit("update", playerEvent) // sends disconnect event to all other players
@@ -28,10 +30,7 @@ io.on("connection", (socket) => {
 
   socket.on("input event", (inputEvent) => {
 
-    // two optimizations -
-    // The easiest is probably to emit in batches
-    // - one is to batch handleInput
-    // - another is to only send updates to players who are close to those who moved
+    console.log("Input event received: ", inputEvent)
 
     if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
