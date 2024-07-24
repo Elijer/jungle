@@ -66,7 +66,7 @@ for (let i = 0; i < c.tests; i++) {
     const avgMemoryUsage = memoryUsageData.reduce((a, b) => a + b, 0) / memoryUsageData.length;
     console.log(avgMemoryUsage)
 
-    await fetch('http://localhost:3001/report/', {
+    await fetch('http://localhost:3088/report/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ for (let i = 0; i < c.tests; i++) {
 }
 
 test.afterAll(async () => {
-  const response = await fetch('http://localhost:3001/report/');
+  const response = await fetch('http://localhost:3088/report/');
   const report = await response.text();
   console.log(report);
 });
