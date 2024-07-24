@@ -1,12 +1,14 @@
 import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
+import path from 'path';
 const { io, port, httpServer } = setupServer();
 import gridSize from './lib/gameConfig.js';
 import { isUserLegit, logOffPrimaryUser } from './lib/userManagement.js';
+import Logger from './lib/logger.js';
+import { dirname } from './lib/utilities.js';
 
 let game = new GameInstance(gridSize, gridSize)
-
-let changesOnQueue = []
+const log = new Logger(path.join(dirname(), 'app.log')); 
 
 io.on("connection", (socket) => {
 
