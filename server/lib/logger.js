@@ -1,4 +1,6 @@
 import fs from 'fs';
+import path from 'path';
+import { dirname } from './utilities.js';
 
 class Logger {
   constructor(logFilePath) {
@@ -18,17 +20,12 @@ class Logger {
     });
   }
 
-  info(message) {
-    this.log(message, 'INFO');
-  }
+  info = (message) => this.l(message, 'INFO');
+  warn = (message) => this.l(message, 'WARN');
+  error = (message) => this.l(message, 'ERROR');
 
-  warn(message) {
-    this.log(message, 'WARN');
-  }
-
-  error(message) {
-    this.log(message, 'ERROR');
-  }
 }
 
-export default Logger
+const logger = new Logger(path.join(dirname(), '../../app.log'));
+
+export const log = logger.log.bind(logger);

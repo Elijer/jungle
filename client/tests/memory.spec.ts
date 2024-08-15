@@ -88,9 +88,3 @@ for (let i = 0; i < c.tests; i++) {
     // await browser.close();
   });
 }
-
-test.afterAll(async () => {
-  const response = await fetch('http://localhost:3088/report/');
-  const report = await response.text();
-  console.log(report);
-});
