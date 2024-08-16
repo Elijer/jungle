@@ -1,7 +1,7 @@
 # About this Project
 A 3D multiplayer online game build with Typescript, Node, 3JS, Websockets, and tested with Playwright. Optimization improvements are still under way before the addition of more specific gameplay.
-[The Vision](https://elijer.github.io/garden/Projects/Eco-Mog)
-[Notes on Optimization](https://elijer.github.io/garden/Dev-Notes/Javascript/9-Ways-to-optimize-a-Node-Webapp)
+- [The Vision](https://elijer.github.io/garden/Projects/Eco-Mog)
+- [Notes on Optimization](https://elijer.github.io/garden/Dev-Notes/Javascript/9-Ways-to-optimize-a-Node-Webapp)
 
 # Live App
 [Live Demo](https://jungle.rcdis.co/)
