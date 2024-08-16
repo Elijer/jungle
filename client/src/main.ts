@@ -19,9 +19,8 @@ let performanceConfig = {
   postProcessing: true
 }
 
-const { socket, playerId } = setupClient()
 let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation, performanceConfig)
-// let { scene, camera, renderer, terrainTiles } = sceneSetup(cameraRotation)
+const { socket, playerId } = setupClient()
 let controls: OrbitControls | null
 let orbitMode = false
 
@@ -55,18 +54,19 @@ function toggleOrbitControls() {
   orbitMode = !orbitMode;
   if (orbitMode) {
     enableOrbitControls();
-  } else {
-    disableOrbitControls();
-
-    let playerId = localStorage.getItem("playerId");
-    if (playerId) {
-      let entity = ephemerals.ephs[playerId];
-      let cubePos = entity.cube.position
-      camera.position.set(cubePos.x, cubePos.y + 4.5, cubePos.z + 8)
-      camera.rotation.set(cameraRotation, 0, 0 )
-    }
-
+    return
   }
+  
+  disableOrbitControls();
+
+  let playerId = localStorage.getItem("playerId");
+  if (playerId) {
+    let entity = ephemerals.ephs[playerId];
+    let cubePos = entity.cube.position
+    camera.position.set(cubePos.x, cubePos.y + 4.5, cubePos.z + 8)
+    camera.rotation.set(cameraRotation, 0, 0 )
+  }
+
 }
 
 // HANDLE LOCAL STATE

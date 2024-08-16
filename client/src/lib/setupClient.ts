@@ -19,7 +19,12 @@ const setupClient = () => {
     socket.emit("player joined", playerId)
   });
 
+  socket.on("redundant connection", () => {
+    alert("You are already connected in another tab, or device on this IP address.")
+  })
+
   return { socket, playerId }
 }
+
 
 export default setupClient
