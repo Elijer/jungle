@@ -5,7 +5,7 @@ import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
 import { BoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
-import { hideClassIfTouchDevice, lerp } from './lib/utilities.js'
+import { hideClassIfTouchDevice, lerp, throttle, gid } from './lib/utilities.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let fpsInterval: number, startTime, now, then: number, elapsed
@@ -141,7 +141,6 @@ let animate = () => {
 }
 
 function animationThrottler(fps: number, animationFunction: Function) {
-  // throttlering vars
   fpsInterval = 1000 / fps;
   then = Date.now();
   startTime = then;
@@ -195,17 +194,6 @@ const keyCommandBindings: { [key: string]: string } = {
   d: 'r'
 }
 
-function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
-  let inThrottle: boolean;
-  return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
-    }
-  } as T;
-}
-
 document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keydown', throttle((event: KeyboardEvent) => {
@@ -222,10 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }, config.inputThrottle))
 
   const keyBindings: KeyBindings = {
-    "w": { element: document.getElementById('up-button')!, code: 'u' },
-    "a": { element: document.getElementById('left-button')!, code: 'l' },
-    "s": { element: document.getElementById('down-button')!, code: 'd' },
-    "d": { element: document.getElementById('right-button')!, code: 'r' },
+    "w": { element: gid('up-button')!, code: 'u' },
+    "a": { element: gid('left-button')!, code: 'l' },
+    "s": { element: gid('down-button')!, code: 'd' },
+    "d": { element: gid('right-button')!, code: 'r' },
   };
 
   for (const key in keyBindings) {
@@ -234,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
         keyBinding.element.addEventListener('touchend', () => {
           socket.emit('input event', { playerId: playerId, command: keyBinding.code });
         });
-        // console.log(`Added touchend listener for key ${key} on element ${keyBinding.element.id}`);
     }
   }
 })
