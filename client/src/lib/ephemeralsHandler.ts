@@ -5,10 +5,12 @@ import { Entity, Ephs } from './interfaces.js'
 class ephemeralsHandler {
   ephs: Ephs
   target: Group
+  cube: BufferGeometry
 
   constructor(target: Group){
     this.ephs = {}
     this.target = target
+    this.cube = this.createBoxBufferGeometry(b.squareSize)
   }
 
   createEphemeral = (ephemeral: Entity) => {
@@ -78,7 +80,8 @@ class ephemeralsHandler {
     
 
 
-    const geo = this.createBoxBufferGeometry(b.squareSize);
+    // const geo = this.createBoxBufferGeometry(b.squareSize);
+    const geo = this.cube
     const mat = new MeshBasicMaterial({ color: color });
     const cube = new Mesh(geo, mat);
   

@@ -31,11 +31,11 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   const rotate90 = Math.PI / 2
 
   let index
+  const geo = new PlaneGeometry(b.squareSize, b.squareSize); // can be
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
       index = x * b.gridSize + y;
       const mat = new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
-      const geo = new PlaneGeometry(b.squareSize, b.squareSize);
       const tile = new Mesh(geo, mat);
       tile.rotation.x = rotate90
       tile.position.set((x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2, 0, y * b.squareSize * b.gapSize)

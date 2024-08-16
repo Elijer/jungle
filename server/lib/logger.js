@@ -8,8 +8,10 @@ class Logger {
   }
 
   log(message, level = 'INFO') {
-    const timestamp = new Date().toISOString();
-    const logEntry = `[${timestamp}] [${level}] ${message}\n`;
+    const date = new Date()
+    const timestamp = date.toISOString();
+    const timestamp2 = date.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit', fractionalSecondDigits: 2 });
+    const logEntry = `[${timestamp2}] [${level}] ${message}`;
 
     console.log(logEntry);
 
