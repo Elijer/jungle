@@ -1,14 +1,61 @@
+# About this Project
+A 3D multiplayer online game build with Typescript, Node, 3JS, Websockets, and tested with Playwright. Optimization improvements are still under way before the addition of more specific gameplay.
+[The Vision](https://elijer.github.io/garden/Projects/Eco-Mog)
+[Notes on Optimization](https://elijer.github.io/garden/Dev-Notes/Javascript/9-Ways-to-optimize-a-Node-Webapp)
+
+# Live App
+[Live Demo](https://jungle.rcdis.co/)
+- WASD to move (sorry Devorak, having reached you yet)
+- Check that browser VIM bindings aren't interfering
+
+## Debugging view
+- 0 to toggle 3D debugging view
+- click and drag to change angle
+- click shift drag to pan
+
 # To Run
-For a hotreaload development setup run
-- cd into server and run `npm run server`
-- cd into client and run `npm run dev`
-And navigate to http://localhost:5173/ or whatever is specified in the terminal
 
-Or to preview the deployment build, do
-`npm run start` and go to  `localhost:3000`
+## Quick Setup
+```
+git clone https://github.com/Elijer/jungle; cd jungle; npm start;
+```
+The app should now be running at: [http://localhost:3000/](http://localhost:3000/)
 
-OR
-Do `heroku local` if you have Heroku setup. But you'd have to do that.
+## Dev Setup
+For hot-reloading 
+```
+git clone https://github.com/Elijer/jungle;
+cd jungle;
+npm i;
+```
+
+Run the server:
+```
+cd server;
+npm run serve;
+```
+
+Run the client from `jungle/client`:
+```
+npm i;
+npm run dev;
+```
+
+Welcome to the jungle!
+You should see [http://localhost:5173/](http://localhost:5173/) displayed as the port where the game's frontend is being served
+
+# Testing
+Start at the top-level directory of the project.
+```
+npm run test;
+```
+
+In order to print results from paralell tests,
+```
+cd testServer;
+node index.js
+```
+This runs a testing server that aggregates results from multiple browser instances. I am still looking for a way to do in a more playwright-specific way. Playwright has a `teardown` function that can be implemented that may work for this case.
 
 # Disco
 Disco docs for recursers: disco projects:add --github elijer/jungle --name jumanji --domain jumanji.rcdis.co
@@ -26,9 +73,9 @@ Pain point: running `docker compose up` had permissions issues, but doing `docke
 https://tonejs.github.io/docs/15.0.4/index.html
 
 # Sharing over local network:
-ipconfig getifaddr en0
+VSCode has a tab that makes this easier called `ports`.
 
-" The idea of, let me send the whole state and render it works, but the idea of a little extra complexity to create some divs, is way more efficient"
+ipconfig getifaddr en0
 
 Jeff feature request
 - W & D : be able to able to move diagonally -> for fun mode
