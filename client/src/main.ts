@@ -14,12 +14,15 @@ let zCameraOffset = b.squareSize * 7
 let cameraRotation = -.6
 let cameraX: number, cameraZ: number;
 
-let performanceConfig = {
+let config = {
   lerpMode: true,
-  postProcessing: true
+  postProcessing: true,
+  lerpSpeed: .1,
+  inputThrottle: 90,
+  relativeCameraPos: {x: 0, y: 4.5, z: 8}
 }
 
-let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation, performanceConfig)
+let { scene, camera, renderer, terrainTiles, composer} = sceneSetup(cameraRotation, config)
 const { socket, playerId } = setupClient()
 let controls: OrbitControls | null
 let orbitMode = false
@@ -59,11 +62,16 @@ function toggleOrbitControls() {
   
   disableOrbitControls();
 
+  // Recenter Camera on Player
   let playerId = localStorage.getItem("playerId");
   if (playerId) {
     let entity = ephemerals.ephs[playerId];
     let cubePos = entity.cube.position
-    camera.position.set(cubePos.x, cubePos.y + 4.5, cubePos.z + 8)
+    camera.position.set(
+      cubePos.x + config.relativeCameraPos.x,
+      cubePos.y + config.relativeCameraPos.y,
+      cubePos.z + config.relativeCameraPos.z
+    )
     camera.rotation.set(cameraRotation, 0, 0 )
   }
 
@@ -105,30 +113,23 @@ let animate = () => {
   elapsed = now - then
   if (elapsed > fpsInterval){
 
+    // Handle Camera Centering
     if (cameraTargetX && cameraTargetZ && !orbitMode){
 
-      if (!performanceConfig.lerpMode){
+      if (!config.lerpMode){
         cameraX = cameraTargetX
         cameraZ = cameraTargetZ
       }
 
-      let playerId = localStorage.getItem("playerId");
-      if (playerId) {
-        let entity = ephemerals.ephs[playerId];
-        // console.log("cube", entity.cube.position)
-        // console.log("camera", camera.position)
-        // Cube position to camera translation is x=x, y=y+4.5,z=z+8
-      }
-
-      if (performanceConfig.lerpMode){
-        cameraX = lerp(camera.position.x, cameraTargetX, .06);
-        cameraZ = lerp(camera.position.z, cameraTargetZ, .06);
+      if (config.lerpMode){
+        cameraX = lerp(camera.position.x, cameraTargetX, config.lerpSpeed);
+        cameraZ = lerp(camera.position.z, cameraTargetZ, config.lerpSpeed);
       }
 
       camera.position.set(cameraX, cameraY, cameraZ)
     }
 
-    if (performanceConfig.postProcessing && composer){
+    if (config.postProcessing && composer){
       composer.render();
     } else {
       renderer.render(scene, camera);
@@ -194,22 +195,31 @@ const keyCommandBindings: { [key: string]: string } = {
   d: 'r'
 }
 
+function throttle<T extends (...args: any[]) => void>(func: T, limit: number): T {
+  let inThrottle: boolean;
+  return function(this: ThisParameterType<T>, ...args: Parameters<T>) {
+    if (!inThrottle) {
+      func.apply(this, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  } as T;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
-  document.addEventListener("keyup", (event): any => {
+  document.addEventListener('keydown', throttle((event: KeyboardEvent) => {
+    if (event.code === "Digit0"){
+      toggleOrbitControls()
+      return
+    }
+
     const keyName = event.key.toLowerCase();
     if (keyCommandBindings.hasOwnProperty(keyName)) {
       socket.emit("input event", {playerId: playerId, command: keyCommandBindings[keyName]})
+      return
     }
-  });
-
-  document.addEventListener("keydown", (event): any => {
-    if (event.code === "Digit0"){
-      // console.log("Toggling orbit mode")
-      toggleOrbitControls()
-      // orbitMode = !orbitMode
-    }
-  })
+  }, config.inputThrottle))
 
   const keyBindings: KeyBindings = {
     "w": { element: document.getElementById('up-button')!, code: 'u' },

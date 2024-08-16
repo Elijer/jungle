@@ -3,6 +3,7 @@ import Tile from './entities/tile.js';
 import Terrain from './entities/terrain.js';
 import Player from './entities/player.js';
 import EntityGroup from './entityGroup.js';
+import { log, warn, error } from './logger.js';
 
 class GameInstance {
   constructor(rows, cols) {
@@ -53,8 +54,10 @@ class GameInstance {
     let x = Math.floor(Math.random() * this.rows)
     let y = Math.floor(Math.random() * this.cols)
     if (this.grid[x][y][layer]){
+      log.warn(`No space for player at ${x}:${y}:${layer}, trying again`)
       counter++
       if (counter < limit){
+        log.error(`Tried ${counter}x, no space found`)
         throw new Error('Could not find a spot for the player')
       }
       return this.findRandomSpot(layer, counter)
@@ -69,7 +72,7 @@ class GameInstance {
     if (this.players.ents[playerId]){
       console.log("Player already exists");
       ({ x, y } = this.players.ents[playerId])
-      console.log("Existing player location:", x, y)
+      log(`${playerId.substring(0,4)} already exists at ${x}:${y}`)
       player = this.grid[x][y].spirit ?? this.grid[x][y].space
     }
 

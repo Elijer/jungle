@@ -53,8 +53,6 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   let composer
   if (performanceConfig.postProcessing){
 
-
-
     composer = new EffectComposer( renderer );
   
     const renderPass = new RenderPass( scene, camera );
