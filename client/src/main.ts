@@ -164,30 +164,23 @@ animationThrottler(20, animate)
 
 
 socket.on('localState', (lbs: LocalBoardState) => {
+  // console.log(lbs.grid)
   let tileIndex = new Array(2 * (lbs.radius * 2 + 1))
   let index, terrain
+  console.log("-----------------------")
+  console.log(lbs)
 
   // This is what clears tiles when you move so that you don't have em trailing behind you
-  for (let x of lastTiles){
-    x.visible = false
+  for (let lt of lastTiles){
+    lt.visible = false
   }
 
-  // lastGrid = lbs.grid
-  // console.log(lbs.relativeTo.x, lbs.relativeTo.y, lbs.radius)
-  // Think I have to do this "relativeTo"
-  // 48 - 3 = 45, start there, keep going to 48 + 3 = 51
 
-  // I FOUND THE PROBLEM I THINK
-  // I have a grid of 7x7, but I am doing `lbs.grid[x][y] using the global indexes
-  // Rooky m
-  for (let x = 0; x < lbs.grid.length; x++){
-    let relativeX = lbs.relativeTo.x - lbs.radius + x
-    if (relativeX < 0 || relativeX >= b.gridSize) continue
-    for (let y = 0; y < lbs.relativeTo.y; y++){
+  for (let x = 0; x < lbs.grid.length; x++){ // so we're going through all of the columns here
+    let relativeX = lbs.relativeTo.x - lbs.radius + x // and we're setting relative x, but this isn't really giving us issues
+    for (let y = 0; y < lbs.grid.length; y++){ // what's giving us issues is y. We go through each item of every column, until 
       let relativeY = lbs.relativeTo.y - lbs.radius + y
-      if ( relativeY < 0 || relativeY >= b.gridSize ) continue // this is out of bounds so we should skip it
       let index = relativeX * b.gridSize + relativeY
-      // console.log(index)
       try {
         terrain = lbs.grid[x][y].terrain
         // const mat = new MeshBasicMaterial({color: 'red'})
@@ -243,13 +236,11 @@ socket.on('localState', (lbs: LocalBoardState) => {
 
   // ephemerals.ephs = {...newEphemerals} // in theory this should remove all ephemerals that are no longer in use // No idea how performant this is
 
-  console.log(lbs)
 
 })
 
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
-  console.log("Update received", entity)
   
   if (!entity) return
 
