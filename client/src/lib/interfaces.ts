@@ -35,9 +35,20 @@ export type Entities = {
   [key: string]: Entity;
 };
 
-
+``
 export interface BoardState {
   grid: TileState[][];
+  players: Entities
+}
+
+// Technically the same so far as BoardState,
+// Even though smaller amounts of boardstate will be transmitted
+// And possibly not as many players sent over?
+// Not yet sure what to do about the players
+export interface LocalBoardState {
+  grid: TileState[][]
+  relativeTo: Position
+  radius: number,
   players: Entities
 }
 
