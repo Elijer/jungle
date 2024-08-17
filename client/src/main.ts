@@ -78,6 +78,7 @@ function toggleOrbitControls() {
 }
 
 // HANDLE LOCAL STATE
+// Deprecating this
 socket.on("state", (boardState: BoardState) => {
 
   console.log("state received", boardState)
@@ -104,6 +105,8 @@ socket.on("state", (boardState: BoardState) => {
   }
 
 })
+
+// socket.on('localState', )
 
 // ANIMATION LOOP
 let animate = () => {

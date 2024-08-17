@@ -12,6 +12,7 @@ class GameInstance {
     this.terrain = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
+    this.refreshRadius = 4
 
     this.players = new EntityGroup(this.grid, "players") // must be called after grid
   }
@@ -46,6 +47,42 @@ class GameInstance {
     return {
       grid: tempGrid,
       players: this.players.getEntities()
+    }
+  }
+
+  getLocalState(centerX, centerY){
+    // Modelling after OG initialize grid
+    // But return a grid of this.refreshRadius x this.refreshRadius, center on the x and y of the function
+    // Which will be passed in as a the player's location
+    // The PLAYER isn't going to be out of bound (we hope)
+    // But squares around her may be. I'm trying to handle that case by checking and returning a tile that is just null.
+    // On the frontend, we'll have to write some logic that looks for this
+    // The idea on the frontend is to create and render objects at a location relative to an invisible origin.
+    let tempGrid = []
+    // x = 2, y = 3
+    for (let x = centerX - this.refreshRadius; x <= centerX + this.refreshRadius; x++){
+      const row = []
+      for (let y = centerY - this.refreshRadius; y <= centerY + this.refreshRadius; y++){
+        if (x < 0 || x >= this.rows || y < 0 || y >= this.cols){
+          // To check:
+          // I think x >= this.rows is right, rows = 50,
+          //so the max index of x should be 49, so if x >= rows, it's gone at least one above the index available
+          row.push(null) // Not sure if null is best representation of this
+        }
+        let tile = this.grid[x][y]
+        row.push(tile.getState())
+        // get state for the tile
+      }
+      tempGrid.push(row)
+      // push the row
+    }
+
+    return {
+      grid: tempGrid, // push this local grid
+      players: this.players.getEntities() // push all players...although
+      // Should the local grid be enough?
+      // To Return to
+      // Once I've looked at the frontend code
     }
   }
 

@@ -15,8 +15,13 @@ io.on("connection", (socket) => {
 
   let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
     if (!addedPlayerToGame) return // if there is no space
-    socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players
-    socket.emit("state", game.getState()) // sends game to player who just joined
+    socket.broadcast.emit("update", addedPlayerToGame) //// sends the player joined event to all other players
+    // This should only be sent to players who are currently in whatever radius we have set for state updates
+
+    // socket.emit("state", game.getState()) // sends game to player who just joined
+    // Instead, I want to send over just the players local squares, AND the size of the map.
+    // This can be just slightly different than normal.
+    socket.emit("localState", game.getLocalState())
 
     socket.on("disconnecting", async(reason) => {
       log(`${playerId.substring(0, 4)} [disconnected]: ${reason}`)
