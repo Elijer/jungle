@@ -12,7 +12,7 @@ class GameInstance {
     this.terrain = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
-    this.refreshRadius = 2
+    this.refreshRadius = 4
 
     this.players = new EntityGroup(this.grid, "players") // must be called after grid
   }

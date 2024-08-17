@@ -1,3 +1,3 @@
-const gridSize = 50
+const gridSize = 51
 
 export default gridSize

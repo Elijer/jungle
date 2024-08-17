@@ -1,5 +1,5 @@
 import './style.css'
-import { Group, PlaneGeometry, Mesh, MeshBasicMaterial, DoubleSide, Color} from 'three';
+import { Group, PlaneGeometry, Mesh, MeshBasicMaterial, Color} from 'three';
 import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
@@ -16,7 +16,7 @@ let cameraX: number, cameraZ: number;
 // let lastGrid: any = {}
 
 let config = {
-  lerpMode: false,
+  lerpMode: true,
   postProcessing: true,
   lerpSpeed: .1,
   inputThrottle: 90,
@@ -25,7 +25,8 @@ let config = {
 
 // Might want to move these later
 // They are used to create tiles
-let terrainTiles: any = []
+let terrainTiles: any = new Array(b.gridSize * b.gridSize)
+let lastTiles: any = []
 const geo = new PlaneGeometry(b.squareSize, b.squareSize)
 const rotate90 = -(Math.PI / 2)
 
@@ -163,7 +164,14 @@ animationThrottler(20, animate)
 
 
 socket.on('localState', (lbs: LocalBoardState) => {
+  let tileIndex = new Array(2 * (lbs.radius * 2 + 1))
   let index, terrain
+
+  // This is what clears tiles when you move so that you don't have em trailing behind you
+  for (let x of lastTiles){
+    x.visible = false
+  }
+
   // lastGrid = lbs.grid
   // console.log(lbs.relativeTo.x, lbs.relativeTo.y, lbs.radius)
   // Think I have to do this "relativeTo"
@@ -192,7 +200,8 @@ socket.on('localState', (lbs: LocalBoardState) => {
           relativeY * b.squareSize * b.gapSize
         )
 
-        terrainTiles.push({tile, x, y, mat, geo})
+        terrainTiles[index] = tile
+        lastTiles.push(tile) // save the last tiles so that we can sweep em up next time
         scene.add(tile)
       } catch (e) {
         // console.log("NAH", e)

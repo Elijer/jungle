@@ -1,4 +1,5 @@
-let gridSize = 50
+// Must be odd or there is bug halfway through
+let gridSize = 51
 
 const b: any = {
   gridSize: gridSize,
