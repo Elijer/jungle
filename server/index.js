@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
 
     if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
-    console.log(moveEvent)
+    // console.log(moveEvent)
     let { x, y } = moveEvent.position
     socket.emit("localState", game.getLocalState(x, y))
     socket.broadcast.emit('update', moveEvent)

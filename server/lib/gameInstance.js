@@ -56,11 +56,14 @@ class GameInstance {
     for (let x = centerX - this.refreshRadius; x <= centerX + this.refreshRadius; x++){
       const row = []
       for (let y = centerY - this.refreshRadius; y <= centerY + this.refreshRadius; y++){
-        if (x < 0 || x >= this.rows || y < 0 || y >= this.cols){
-          // To check:
-          // I think x >= this.rows is right, rows = 50,
-          //so the max index of x should be 49, so if x >= rows, it's gone at least one above the index available
+        if (x < 0 || x >= this.rows || y < 0 || y >= this.cols){ // check that tiles are in bounds
           row.push(null) // Not sure if null is best representation of this
+          continue
+        }
+
+        let distanceFromCenter = Math.abs(centerX-x) + Math.abs(centerY-y)
+        if (distanceFromCenter-this.refreshRadius > 1){
+          row.push(null)
           continue
         }
 
