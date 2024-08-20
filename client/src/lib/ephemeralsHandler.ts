@@ -1,6 +1,14 @@
 import b from './boardConfig.js'
-import { Group, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial,  } from 'three';
+import type { Group, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial } from 'three';
 import { Entity, Ephs } from './interfaces.js'
+
+interface BodyReference {
+  cube: Mesh,
+  geo: BufferGeometry,
+  mat: MeshBasicMaterial
+}
+
+let transparentMat = 0.03
 
 class ephemeralsHandler {
   ephs: Ephs
@@ -13,7 +21,7 @@ class ephemeralsHandler {
     this.cube = this.createBoxBufferGeometry(b.squareSize)
   }
 
-  createEphemeral = (ephemeral: Entity) => {
+  createEphemeral = (ephemeral: Entity): void => {
 
     let transparency = ephemeral.layer === "spirit" ? true : false
     const body = this.createCube(ephemeral.position.x, ephemeral.position.y, parseInt(ephemeral.color), transparency)
@@ -26,7 +34,7 @@ class ephemeralsHandler {
     }
   }
 
-  createBoxBufferGeometry = (squareSize: number) => {
+  createBoxBufferGeometry = (squareSize: number): BufferGeometry => {
     const h = squareSize / 2;
 
     const vertices = new Float32Array([
@@ -62,9 +70,9 @@ class ephemeralsHandler {
     ]);
   
     const indices = new Uint16Array([
-        0, 1, 2,  0, 2, 3,    // front
-        4, 5, 6,  4, 6, 7,    // back
-        8, 9, 10, 8, 10, 11,  // top
+        0, 1, 2,  0, 2, 3,      // front
+        4, 5, 6,  4, 6, 7,      // back
+        8, 9, 10, 8, 10, 11,    // top
         12, 13, 14, 12, 14, 15, // right
         16, 17, 18, 16, 18, 19  // left
     ]);
@@ -76,11 +84,8 @@ class ephemeralsHandler {
     return geo
   }
 
-  createCube = (x: number, y: number, color: number, transparent: boolean) => {
+  createCube = (x: number, y: number, color: number, transparent: boolean): BodyReference => {
     
-
-
-    // const geo = this.createBoxBufferGeometry(b.squareSize);
     const geo = this.cube
     const mat = new MeshBasicMaterial({ color: color });
     const cube = new Mesh(geo, mat);
@@ -88,7 +93,7 @@ class ephemeralsHandler {
     mat.transparent = true;
     mat.opacity = 1;
     if (transparent){
-      mat.opacity = 0.5;
+      mat.opacity = transparentMat;
     }
   
     // Calculate the position based on grid size and gap size
@@ -98,18 +103,18 @@ class ephemeralsHandler {
   
     cube.position.set(cubeX, cubeY, cubeZ);
     this.target.add(cube);
-    return {
-      cube, geo, mat
-    }
+
+    return { cube, geo, mat }
+
   }
 
-  moveCube = (id: string, x: number, y: number) => {
+  moveCube = (id: string, x: number, y: number): void => {
     this.ephs[id].cube.position.x = (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2;
     this.ephs[id].cube.position.z = y * b.squareSize * b.gapSize;
   }
 
-  updateCubeTransparency(id: string, transparent: boolean){
-    this.ephs[id].mat.opacity = transparent ? 0.4 : 1
+  updateCubeTransparency = (id: string, transparent: boolean):void => {
+    this.ephs[id].mat.opacity = transparent ? transparentMat : 1
   }
 }
 
