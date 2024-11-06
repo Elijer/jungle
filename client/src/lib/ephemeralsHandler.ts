@@ -1,5 +1,5 @@
 import b from './boardConfig.js'
-import type { Group, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial } from 'three';
+import { Group, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial } from 'three';
 import { Entity, Ephs } from './interfaces.js'
 
 interface BodyReference {
