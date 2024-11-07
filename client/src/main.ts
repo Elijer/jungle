@@ -18,18 +18,18 @@ let timing = {
   elapsed: startingTime
 }
 
-let cam = {
-  y: 5,
+let camconfig = {
+  y: 12,
   x: midmap,
   z: midmap,
-  zOffset: b.squareSize * 7,
+  zOffset: b.squareSize * 20,
   rotation: -.6,
 }
 
 let gameconfig = {
   lerpMode: true, // adds camera smoothing
-  postProcessing: true, // adds pixelation effect
-  lerpSpeed: .04, // 1 is infinitely fast - no lerp. .04 starts getting pretty delayed.
+  postProcessing: false, // adds pixelation effect
+  lerpSpeed: .015, // 1 is infinitely fast - no lerp. .04 starts getting pretty delayed.
   inputColdownTime: 60, // cooldown in ms between inputs. Limits player power and network stress.
   cameraPositionrelativeToPlayer: {x: 0, y: 4.5, z: 8}
 }
@@ -39,13 +39,13 @@ let lastTiles: Mesh[] = []
 const geo = new PlaneGeometry(b.squareSize, b.squareSize)
 const rotate90: number = -(Math.PI / 2)
 
-let { scene, camera, renderer, composer} = sceneSetup(cam.rotation, gameconfig)
+let { scene, camera, renderer, composer} = sceneSetup(camconfig.rotation, gameconfig)
 const { socket, playerId } = setupClient()
 let controls: OrbitControls | null
 let orbitMode = false
 
-let cameraTargetX = cam.x
-let cameraTargetZ = cam.z
+let cameraTargetX = camconfig.x
+let cameraTargetZ = camconfig.z
 
 hideClassIfTouchDevice('arrow-key-interface')
 let ephemeralsGroup = new Group()
@@ -89,7 +89,7 @@ function toggleOrbitControls() {
       cubePos.y + gameconfig.cameraPositionrelativeToPlayer.y,
       cubePos.z + gameconfig.cameraPositionrelativeToPlayer.z
     )
-    camera.rotation.set(cam.rotation, 0, 0 )
+    camera.rotation.set(camconfig.rotation, 0, 0 )
   }
 
 }
@@ -106,16 +106,16 @@ let animate = () => {
     if (cameraTargetX && cameraTargetZ && !orbitMode){
 
       if (!gameconfig.lerpMode){
-        cam.x = cameraTargetX
-        cam.z = cameraTargetZ
+        camconfig.x = cameraTargetX
+        camconfig.z = cameraTargetZ
       }
 
       if (gameconfig.lerpMode){
-        cam.x = lerp(camera.position.x, cameraTargetX, gameconfig.lerpSpeed);
-        cam.z = lerp(camera.position.z, cameraTargetZ, gameconfig.lerpSpeed);
+        camconfig.x = lerp(camera.position.x, cameraTargetX, gameconfig.lerpSpeed);
+        camconfig.z = lerp(camera.position.z, cameraTargetZ, gameconfig.lerpSpeed);
       }
 
-      camera.position.set(cam.x, cam.y, cam.z)
+      camera.position.set(camconfig.x, camconfig.y, camconfig.z)
     }
 
     if (gameconfig.postProcessing && composer){
@@ -145,7 +145,7 @@ socket.on('localState', (lbs: LocalBoardState): void => {
     if (playerId === localStorage.getItem("playerId")){
       let {x, y} = player.position
       cameraTargetX = x * b.squareSize - b.gridSize / 2
-      cameraTargetZ = y * b.squareSize + cam.zOffset
+      cameraTargetZ = y * b.squareSize + camconfig.zOffset
     }
     
     if (ephemerals.ephs[player.id]){
@@ -219,11 +219,11 @@ socket.on("update", (entity: EntityStateEvent) => {
 
   if (entity.action === "move"){
     if (entity.id === localStorage.getItem("playerId")){
-      cam.x = entity.position.x - 10
-      cam.z = entity.position.y
+      camconfig.x = entity.position.x - 10
+      camconfig.z = entity.position.y
       let {x, y} = entity.position
       cameraTargetX = x * b.squareSize - b.gridSize / 2
-      cameraTargetZ = y * b.squareSize + cam.zOffset
+      cameraTargetZ = y * b.squareSize + camconfig.zOffset
     }
     ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
   }

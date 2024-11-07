@@ -2,7 +2,8 @@ import rgbHex from 'rgb-hex';
 import Entity from './entity.js';
 
 export default class Terrain extends Entity {
-  static rgb = [80, 30, 20]
+  // static rgb = [120, 60, 120]
+  static rgb = [90, 120, 200]
   static type = "terrain"
 
   constructor(cohort, position, grid, noise){

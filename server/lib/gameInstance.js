@@ -13,8 +13,16 @@ class GameInstance {
     this.grid = this.initializeGrid()
     this.noiseScale = 10
     this.refreshRadius = 4
-
+    this.signDispenser = 0
     this.players = new EntityGroup(this.grid, "players") // must be called after grid
+
+    this.maxSignVal = 2
+  }
+
+  dispenseSign(){
+    const currentSign = this.signDispenser++
+    if (this.signDispenser > this.maxSignVal) this.signDispenser = 0
+    return currentSign
   }
 
   initializeGrid(){
@@ -121,7 +129,7 @@ class GameInstance {
         return
       }
       console.log("Location generated for newplayer:", x, y)
-      player = new Player(this.players.ents, {x, y}, this.grid, playerId)
+      player = new Player(this.players.ents, {x, y}, this.grid, playerId, this.dispenseSign())
     }
 
     player.online()
