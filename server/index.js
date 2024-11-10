@@ -7,22 +7,47 @@ import { log } from './lib/logger.js';
 
 let game = new GameInstance(gridSize, gridSize)
 
+let defaultDirection = true
+setInterval(_=> {
+  io.local.emit("direction", defaultDirection)
+  console.log
+  defaultDirection = defaultDirection
+}, 3000)
+
+let STREAM_MODE = {
+  LOCAL: "LOCAL",
+  INITIAL_GLOBAL: "INITIAL_GLOBAL_THEN_LOCAL_UPDATES" // <--- THIS IS BETTER FOR DEBUGGING THE ENTIRE MAP
+}
+
+let serverConfig = {
+  // streamMode: STREAM_MODE.INITIAL_GLOBAL
+  streamMode: STREAM_MODE.LOCAL
+}
+
 io.on("connection", (socket) => {
+
+  socket.emit("config", serverConfig)
 
   socket.on("player joined", (playerId) => {
     log(`${playerId.substring(0, 4)} [joined]`)
     if (!isUserLegit(socket)) return
 
-  let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
+    let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
     if (!addedPlayerToGame) return // if there is no space
-    socket.broadcast.emit("update", addedPlayerToGame) //// sends the player joined event to all other players
     // This should only be sent to players who are currently in whatever radius we have set for state updates
 
-    socket.emit("state", game.getState()) // sends game to player who just joined
-    // Instead, I want to send over just the players local squares, AND the size of the map.
-    // This can be just slightly different than normal.
-    let { x, y } = addedPlayerToGame.position
-    socket.emit("localState", game.getLocalState(x, y))
+    switch(serverConfig.streamMode){
+      case(STREAM_MODE.INITIAL_GLOBAL):
+        socket.emit("state", game.getState()) // sends game to player who just joined
+        socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players, only necessary with initial_global I think???
+        break
+      case(STREAM_MODE.LOCAL):
+        // Instead, I want to send over just the players local squares, AND the size of the map.
+        // This can be just slightly different than normal.
+        let { x, y } = addedPlayerToGame.position
+        socket.emit("localState", game.getLocalState(x, y)) // <-- I think this is just the player getting the local state
+        break
+    }
 
     socket.on("disconnecting", async(reason) => {
       log(`${playerId.substring(0, 4)} [disconnected]: ${reason}`)
@@ -39,9 +64,17 @@ io.on("connection", (socket) => {
     let moveEvent = game.handleInput(inputEvent)
     // console.log(moveEvent)
     let { x, y } = moveEvent.position
-    socket.emit("localState", game.getLocalState(x, y))
-    socket.broadcast.emit('update', moveEvent)
-    // io.emit("update", moveEvent) // So this should be batched
+    
+    switch(serverConfig.streamMode){
+      case(STREAM_MODE.INITIAL_GLOBAL):
+        io.emit("update", moveEvent) // So this should be batched <--- this is the thing that sends move events
+        break
+      case(STREAM_MODE.LOCAL):
+        socket.emit("localState", game.getLocalState(x, y))
+        // socket.broadcast.emit('update', moveEvent) // I think this broadcasts to the other players? BUT. I am no longer using update
+        // for the localState stream_mode on the client. I could, but I'm not right now. So I would need to change this.
+        break
+    }
   })
 
 })
@@ -50,5 +83,3 @@ httpServer.listen(port, () => {
   log(`-->>> STARTED SERVER: ${port} <<<--`)
   console.log(`Listening on port ${port}`);
 });
-
-//

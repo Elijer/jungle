@@ -28,6 +28,7 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   const ambientLight = new AmbientLight(0x404040);
   scene.add(ambientLight);
 
+  // TODO <-- Check this code against what I ended up using for the "state" event, or maybe "initialState", which I may rename it to
   // const rotate90 = Math.PI / 2
 
   // const terrainTiles: any = []
@@ -81,7 +82,7 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   });
 
     // return {scene, camera, renderer, terrainTiles, composer }
-    return {scene, camera, renderer, composer }
+    return {scene, camera, renderer, composer}
 }
 
 export default sceneSetup

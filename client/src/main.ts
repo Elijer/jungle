@@ -8,6 +8,28 @@ import { BoardState, LocalBoardState, Entity, EntityStateEvent, KeyBindings } fr
 import { hideClassIfTouchDevice, lerp, throttle, gid } from './lib/utilities.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
+const { socket, playerId } = setupClient()
+
+let STREAM_MODE = {
+  LOCAL: "LOCAL",
+  INITIAL_GLOBAL: "INITIAL_GLOBAL_THEN_LOCAL_UPDATES" // <--- THIS IS BETTER FOR DEBUGGING THE ENTIRE MAP
+}
+
+let gameconfig = {
+  // lerpMode: false, // no camera smoothing
+  lerpMode: true, // adds camera smoothing
+  postProcessing: false, // adds pixelation effect
+  lerpSpeed: .015, // 1 is infinitely fast - no lerp. .04 starts getting pretty delayed.
+  inputColdownTime: 60, // cooldown in ms between inputs. Limits player power and network stress.
+  cameraPositionrelativeToPlayer: {x: 0, y: 4.5, z: 8},
+  streamMode: "Server decides this"
+  // streamMode: STREAM_MODE.LOCAL
+}
+
+socket.on("config", (serverConfig) => {
+  gameconfig.streamMode = serverConfig?.streamMode
+})
+
 let startingTime = Date.now()
 const midmap = b.gridSize / 2 * b.squareSize * b.gapSize
 
@@ -26,21 +48,12 @@ let camconfig = {
   rotation: -.6,
 }
 
-let gameconfig = {
-  lerpMode: true, // adds camera smoothing
-  postProcessing: false, // adds pixelation effect
-  lerpSpeed: .015, // 1 is infinitely fast - no lerp. .04 starts getting pretty delayed.
-  inputColdownTime: 60, // cooldown in ms between inputs. Limits player power and network stress.
-  cameraPositionrelativeToPlayer: {x: 0, y: 4.5, z: 8}
-}
-
 let terrainTiles: Mesh[] = new Array(b.gridSize * b.gridSize)
 let lastTiles: Mesh[] = []
 const geo = new PlaneGeometry(b.squareSize, b.squareSize)
 const rotate90: number = -(Math.PI / 2)
 
-let { scene, camera, renderer, composer} = sceneSetup(camconfig.rotation, gameconfig)
-const { socket, playerId } = setupClient()
+let { scene, camera, renderer, composer } = sceneSetup(camconfig.rotation, gameconfig)
 let controls: OrbitControls | null
 let orbitMode = false
 
@@ -52,6 +65,10 @@ let ephemeralsGroup = new Group()
 scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
+
+socket.on("direction", (msg) => {
+  console.log(msg)
+})
 
 socket.on("redundant connection", () => {
   alert("You are already connected in another tab, or device on this IP address.")
@@ -137,6 +154,9 @@ function animationThrottler(animationFunction: Function) {
 animationThrottler(animate)
 
 socket.on('localState', (lbs: LocalBoardState): void => {
+
+  if (gameconfig.streamMode !== STREAM_MODE.LOCAL) return
+
   let terrain
   console.log("-----------------------")
   for (let playerId in lbs.players) {
@@ -174,7 +194,11 @@ socket.on('localState', (lbs: LocalBoardState): void => {
       try {
         terrain = lbs.grid[x][y].terrain
         // const mat = new MeshBasicMaterial({color: 'red'})
-        const mat = new MeshBasicMaterial({color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16))})
+        const mat = new MeshBasicMaterial({
+          color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
+          precision: "lowp",
+          dithering: true
+        })
         const tile = new Mesh(geo, mat)
         tile.rotation.x = rotate90
         tile.position.set(
@@ -194,8 +218,52 @@ socket.on('localState', (lbs: LocalBoardState): void => {
 
 })
 
+
+// "state" and "update" work together to 
+// 1) Create an initial board state
+// 2) Update any objects that have moved
+
+socket.on("state", (boardState: BoardState) => {
+
+  if (gameconfig.streamMode !== STREAM_MODE.INITIAL_GLOBAL) return
+
+  console.log("state received", boardState)
+
+  let index, terrain
+  // console.log(boardState)
+
+  for (let x = 0; x < b.gridSize; x++) {
+    for (let y = 0; y < b.gridSize; y++) {
+      index = x * b.gridSize + y;
+      terrain = boardState.grid[x][y].terrain
+      const mat = new MeshBasicMaterial({color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16))})
+      const tile = new Mesh(geo, mat)
+      tile.rotation.x = rotate90
+      tile.position.set(
+        (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2,
+        0,
+        y * b.squareSize * b.gapSize
+      )
+      scene.add(tile)
+    }
+  }
+
+  for (let playerId in boardState.players) {
+    let player: Entity = boardState.players[playerId]
+    if (playerId === localStorage.getItem("playerId")){
+      let {x, y} = player.position
+      cameraTargetX = x * b.squareSize - b.gridSize / 2
+      cameraTargetZ = y * b.squareSize + camconfig.zOffset
+    }
+    ephemerals.createEphemeral(player)
+  }
+
+})
+
 // TO DO: get rid of redundant update state interface
 socket.on("update", (entity: EntityStateEvent) => {
+  
+  if (gameconfig.streamMode !== STREAM_MODE.INITIAL_GLOBAL) return
   
   if (!entity) return
 
@@ -268,3 +336,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 })
+
+// })

@@ -1,5 +1,11 @@
 # Jungle lowliftt
 
+# Working on Now
+I am almost done implementing a stream mode feature, which switches between an initial load of all content folowed by updates on just movements of objects,
+OR a local update mode, which is simpler in that it ONLY gives the updates of the world around the player, initially, and with every change.
+However, I haven't really tested this much.
+I ALSO haven't fixed an issue where for the local mode, which I want the game to use, distant objects are still sent to the player when updated, which they shouldn't be.
+
 # Brainstorm
 
 1. everyone is rock paper scissors, but you need to time it correctly to “get” someone
@@ -45,3 +51,13 @@ Let's say when a player goes offline, you CAN'T get got??
 - That although I have this mosaic Line of Sight, the other players who join still show up outside of it
 - it seems that player updates are still going to those who don't need them
 - and I want to change this
+
+## On mobile, instruct people to flip phone on side
+- I want to make it so that the game is played in landscape mode
+
+## Create a home screen
+- Explain to players what they are expereincing and add some artwork
+- Also this screen will be helpful to boot people to when they die
+
+## Improve ergonomics
+- Mom had a lot of trouble controlling the player, maybe make the buttons larger on mobile, or even use the accelerometer to move the player?

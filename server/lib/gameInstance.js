@@ -12,11 +12,13 @@ class GameInstance {
     this.terrain = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
-    this.refreshRadius = 4
+    this.refreshRadius = 8
+    // this.refreshRadius = 40
     this.signDispenser = 0
     this.players = new EntityGroup(this.grid, "players") // must be called after grid
-
+    
     this.maxSignVal = 2
+
   }
 
   dispenseSign(){
