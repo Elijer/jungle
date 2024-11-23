@@ -8,11 +8,11 @@ import { log } from './lib/logger.js';
 let game = new GameInstance(gridSize, gridSize)
 
 let defaultDirection = true
-setInterval(_=> {
-  io.local.emit("direction", defaultDirection)
-  console.log
-  defaultDirection = defaultDirection
-}, 3000)
+// setInterval(_=> {
+//   io.local.emit("direction", defaultDirection)
+//   console.log
+//   defaultDirection = defaultDirection
+// }, 3000)
 
 let STREAM_MODE = {
   LOCAL: "LOCAL",
@@ -62,6 +62,7 @@ io.on("connection", (socket) => {
 
     if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
+    if (!moveEvent) return
     // console.log(moveEvent)
     let { x, y } = moveEvent.position
     

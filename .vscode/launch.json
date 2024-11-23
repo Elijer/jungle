@@ -1,15 +1,46 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Chrome against localhost",
-      "url": "http://localhost:5173",
-      "webRoot": "${workspaceFolder}/client"
-    }
+      {
+          "name": "Launch Server 🚀",
+          "type": "node",
+          "request": "launch",
+          "runtimeExecutable": "npm",
+          "runtimeArgs": ["run", "serve-debug"],
+          "cwd": "${workspaceFolder}/server",
+          "skipFiles": ["<node_internals>/**"],
+          "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+          "env": {
+              "NODE_ENV": "development"
+          }
+      },
+      // This one works great but requires `npm run dev` to have been run already
+      {
+        "name": "Attach Chrome Debugger 🚀",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:5173",
+        "webRoot": "${workspaceFolder}/client",
+        "sourceMaps": true
+      },
+      {
+        "name": "Debug Frontend 🚀",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:5173",
+        "webRoot": "${workspaceFolder}/client",
+        "sourceMaps": true,
+        "preLaunchTask": "Run Frontend Dev Server"
+      },
+  ],
+  "compounds": [
+      {
+          "name": "Full Stack 🚀",
+          "configurations": ["Launch Server 🚀", "Debug Frontend 🚀"]
+      },
+      // {
+      //     "name": "Client Only",
+      //     "configurations": ["Launch Client Dev Server", "Launch Chrome"]
+      // }
   ]
 }

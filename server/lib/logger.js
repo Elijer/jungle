@@ -31,5 +31,5 @@ class Logger {
 const logger = new Logger(path.join(dirname(), '../../app.log'));
 
 export const log = logger.log.bind(logger);
-export const warn = logger.log.bind(logger);
-export const error = logger.log.bind(logger);
+export const warn = logger.warn.bind(logger);
+export const error = logger.error.bind(logger);

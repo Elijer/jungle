@@ -46,7 +46,7 @@ export interface BoardState {
 // And possibly not as many players sent over?
 // Not yet sure what to do about the players
 export interface LocalBoardState {
-  grid: TileState[][]
+  grid: TileState[]
   relativeTo: Position
   radius: number,
   players: Entities

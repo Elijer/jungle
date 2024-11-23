@@ -1,16 +1,19 @@
 import { v4 as uuidv4 } from 'uuid';
 import { stateSchema } from '../schemas.js'
+import gridSize from '../gameConfig.js';
 
 export default class Entity {
-  constructor(cohort, position, grid, id){
+  constructor(cohort, position, grid, id, layer="space"){
     this.id = id ?? uuidv4()
     this.cohort = cohort
     this.position = position
     this.grid = grid
     this.stateSchema = stateSchema
     this.geometry = "default"
-    this.layer = "space"
+    this.layer = layer // TODO: I don't think we even need this
+    // TODO but at the very least it's misleading that this defaults to space
     cohort[this.id] = position
+    this.gridSize = gridSize
   }
 
   getColor(){
@@ -18,10 +21,9 @@ export default class Entity {
   }
 
   checkTileExistsAndIsEmpty(x, y){
-    if (x < 0 || y < 0) return
-    if (x >= this.gridSize || y >= this.gridSize) return
-    let isit = this.grid[x] && this.grid[x][y] && !this.grid[x][y].space
-    return isit
+    if (x < 0 || y < 0 || x >= this.gridSize || y >= this.gridSize) return
+    const tileNumber = y * this.gridSize + x
+    return this.grid[tileNumber] && !this.grid[tileNumber].space
   }
 
   move(direction){
@@ -46,9 +48,12 @@ export default class Entity {
   #changeLocation(newX, newY){
     let { x, y } = this.position
     this.cohort[this.id] = { x: newX, y: newY }
-    this.grid[x][y].space = null
-    this.grid[newX][newY].space = this
-    this.grid[newX][newY].space.position = {x: newX, y: newY}
+    const currentTile = y * this.gridSize + x
+    const newTile = newY * this.gridSize + newX
+    this.grid[currentTile].space = null
+    this.grid[newTile].space = this
+    // this.grid[newTile].space.position = {x: newX, y: newY}
+    this.position = {x: newX, y: newY} // ^ I think this should be the same as above
   }
 
   getState(action = "none"){

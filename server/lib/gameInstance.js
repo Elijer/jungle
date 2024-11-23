@@ -12,15 +12,17 @@ class GameInstance {
     this.terrain = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
-    this.refreshRadius = 8
+    this.refreshRadius = 3
     // this.refreshRadius = 40
     this.signDispenser = 0
-    this.players = new EntityGroup(this.grid, "players") // must be called after grid
+    // TODO - curried functions should be able to embed cols and handle some of the grid manipulation logic
+    this.players = new EntityGroup(this.grid, "players", this.cols) // must be called after grid
     
     this.maxSignVal = 2
 
   }
 
+  // So this was for a sort of rock paper scissors experiment thing I don't really need
   dispenseSign(){
     const currentSign = this.signDispenser++
     if (this.signDispenser > this.maxSignVal) this.signDispenser = 0
@@ -28,61 +30,50 @@ class GameInstance {
   }
 
   initializeGrid(){
-    const grid = []
-    for (let x = 0; x < this.rows; x++){
-      const row = []
-      for (let y = 0; y < this.cols; y++){
-        let noise = simplexPositive(x, y, 20)
-        let newTerrain = new Terrain(this.terrain, {x, y}, this.grid, noise)
-        let newTile = new Tile(newTerrain)
-        row.push(newTile)
-      }
-      grid.push(row)
-    }
+    let grid = [...Array(this.rows*this.cols)]
+    grid = grid.map((_, index)=>{
+      const x = index % this.cols
+      const y = Math.floor(index / this.cols)
+      let noise = simplexPositive(x, y, 20)
+      let newTerrain = new Terrain(this.terrain, {x, y}, this, noise)
+      // in a map, this refers to the mapped element
+      // not the gameInstance instance
+      let newTile = new Tile(newTerrain)
+      return newTile
+    })
+
     return grid
   }
 
   getState(){
-    let tempGrid = []
-    for (let x = 0; x < this.rows; x++){
-      const row = []
-      for (let y = 0; y < this.cols; y++){
-        let tile = this.grid[x][y]
-        row.push(tile.getState())
-      }
-      tempGrid.push(row)
-    }
-
-
     return {
-      grid: tempGrid,
+      grid: this.grid.map(tile=>tile.getState()),
       players: this.players.getEntities()
     }
   }
 
   getLocalState(centerX, centerY){
-    let tempGrid = []
-    // x = 2, y = 3
-    for (let x = centerX - this.refreshRadius; x <= centerX + this.refreshRadius; x++){
-      const row = []
-      for (let y = centerY - this.refreshRadius; y <= centerY + this.refreshRadius; y++){
-        if (x < 0 || x >= this.rows || y < 0 || y >= this.cols){ // check that tiles are in bounds
-          row.push(null) // Not sure if null is best representation of this
-          continue
-        }
 
-        let distanceFromCenter = Math.abs(centerX-x) + Math.abs(centerY-y)
-        if (distanceFromCenter-this.refreshRadius > 1){
-          row.push(null)
-          continue
-        }
-
-        let tile = this.grid[x][y]
-        row.push(tile.getState())
+    const refreshDiameter = this.refreshRadius*2+1
+    let tempGrid = Array.from({length: Math.pow(refreshDiameter, 2)}, (_, index) => {
+      const simpleRow = Math.floor(index / refreshDiameter)
+      const simpleCol = index % refreshDiameter
+      const relativeRow = simpleRow - this.refreshRadius;
+      const relativeCol = simpleCol - this.refreshRadius;
+      
+      const gridY = centerY + relativeRow;
+      const gridX = centerX + relativeCol;
+      
+      if (gridY < 0 || gridY >= this.rows || gridX < 0 || gridX >= this.cols) {
+        return null;
       }
-      tempGrid.push(row)
-      // push the row
-    }
+      
+      const tileNumber = gridY * this.cols + gridX
+      const tile = this.grid[tileNumber]
+      const tileState = tile.getState()
+      // const tileState = this.grid[tileNumber].getState();
+      return tileState
+    });
 
     return {
       grid: tempGrid, // push this local grid
@@ -96,19 +87,24 @@ class GameInstance {
   }
 
   findRandomSpot(layer, counter = 0){
-    const limit = 20
-    let x = Math.floor(Math.random() * this.rows)
-    let y = Math.floor(Math.random() * this.cols)
-    if (this.grid[x][y][layer]){
-      log.warn(`No space for player at ${x}:${y}:${layer}, trying again`)
-      counter++
-      if (counter < limit){
-        log.error(`Tried ${counter}x, no space found`)
-        throw new Error('Could not find a spot for the player')
-      }
-      return this.findRandomSpot(layer, counter)
-    }
-    return {x, y}
+    return {x: 0, y: 0} // for testing, always return the top left tile
+    // console.log("=========LOOKING FOR A RANDOM SPOT")
+    // const limit = 7
+    // const tileNumber = Math.floor(Math.random() * (this.rows * this.cols))
+    // console.log({tileNumber})
+    // const randomTile = this.grid[tileNumber]
+    // const y = Math.floor(tileNumber / this.cols)
+    // const x = tileNumber % this.cols
+    // if (randomTile[layer]){ // sort of a gotcha - if there IS something here at this layer, then try again
+    //   log(`No space for player at ${x}:${y}:${layer}, trying again`)
+    //   counter++
+    //   if (counter < limit){
+    //     log(`Tried ${counter}x, no space found`)
+    //     throw new Error('Could not find a spot for the player')
+    //   }
+    //   return this.findRandomSpot(layer, counter)
+    // }
+    // return {x, y}
   }
 
   playerOnlineOrAddPlayer(playerId){
@@ -118,8 +114,9 @@ class GameInstance {
     if (this.players.ents[playerId]){
       console.log("Player already exists");
       ({ x, y } = this.players.ents[playerId])
+      const tileNumber = y*this.cols+x
       log(`${playerId.substring(0,4)} already exists at ${x}:${y}`)
-      player = this.grid[x][y].spirit ?? this.grid[x][y].space
+      player = this.grid[tileNumber].spirit ?? this.grid[tileNumber].space
     }
 
     if (!this.players.ents[playerId]){
@@ -134,6 +131,7 @@ class GameInstance {
       player = new Player(this.players.ents, {x, y}, this.grid, playerId, this.dispenseSign())
     }
 
+    // WARNING: I have observed a bug where player was undefined here
     player.online()
     // this.grid[x][y].space = player
     // this.grid[x][y].spirit = null
@@ -149,7 +147,8 @@ class GameInstance {
     }
 
     let { x, y } = this.players.ents[playerId]
-    let player = this.grid[x][y].space
+    const tileNumber = y * this.cols + x
+    let player = this.grid[tileNumber].space
     if (!player){
       console.log(`Failed to remove player ${playerId}: they are not in the game`)
       return
@@ -161,8 +160,9 @@ class GameInstance {
   handleInput(inputEvent){
     if (!this.players.ents[inputEvent.playerId]) return
     let {x, y} = this.players.ents[inputEvent.playerId]
-    let player = this.grid[x][y].space
-    if (!player) return // this happens sometimes?
+    const tileNumber = y * this.cols + x
+    let player = this.grid[tileNumber].space
+    if (!player) return false // this happens sometimes?
     player.move(inputEvent.command)
     return player.getState("move")
   }

@@ -8,6 +8,7 @@
     "build-client": "cd client && npm i && npm run build",
     "server": "cd server && npm i && node index.js",
     "serve": "cd server && npm i && nodemon index.js",
+    "serve-debug": "cd server && npm i && nodemon index.js --inspect",
     "deploy": "git push heroku main",
     "tunnel1": "lt --port 5173 --subdomain thornberry2",
     "tunnel2": "lt --port 3000 --subdomain thornberry",
@@ -36,8 +37,11 @@
     "node": "v22.1.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@types/three": "^0.165.0",
     "@types/uuid": "^10.0.0",
+    "eslint": "^9.15.0",
+    "globals": "^15.12.0",
     "localtunnel": "^2.0.2"
   }
 }

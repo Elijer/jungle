@@ -66,9 +66,9 @@ scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
 
-socket.on("direction", (msg) => {
-  console.log(msg)
-})
+// socket.on("direction", (msg) => {
+//   console.log(msg)
+// })
 
 socket.on("redundant connection", () => {
   alert("You are already connected in another tab, or device on this IP address.")
@@ -185,36 +185,81 @@ socket.on('localState', (lbs: LocalBoardState): void => {
     lt.visible = false
   }
 
-
-  for (let x = 0; x < lbs.grid.length; x++){ // so we're going through all of the columns here
-    let relativeX = lbs.relativeTo.x - lbs.radius + x // and we're setting relative x, but this isn't really giving us issues
-    for (let y = 0; y < lbs.grid.length; y++){ // what's giving us issues is y. We go through each item of every column, until 
-      let relativeY = lbs.relativeTo.y - lbs.radius + y
-      let index = relativeX * b.gridSize + relativeY
-      try {
-        terrain = lbs.grid[x][y].terrain
-        // const mat = new MeshBasicMaterial({color: 'red'})
-        const mat = new MeshBasicMaterial({
-          color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
-          precision: "lowp",
-          dithering: true
-        })
-        const tile = new Mesh(geo, mat)
-        tile.rotation.x = rotate90
-        tile.position.set(
-          (relativeX * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2,
-          0,
-          relativeY * b.squareSize * b.gapSize
-        )
-
-        terrainTiles[index] = tile
-        lastTiles.push(tile) // save the last tiles so that we can sweep em up next time
-        scene.add(tile)
-      } catch (e) {
-        // console.log("NAH", e)
-      }
+  const width = lbs.radius * 2 + 1
+  for (let i = 0; i < lbs.grid.length; i++){
+    const yOffset = Math.floor(i / width)
+    const xOffset = i % width
+    const y = lbs.relativeTo.y + yOffset - lbs.radius
+    const x = lbs.relativeTo.x + xOffset - lbs.radius
+    const tile = lbs.grid[i]
+    if (!tile || y < 0 || y >= b.gridSize || x < 0 || x >= b.gridSize) continue
+    try {
+      terrain = tile.terrain
+      // const mat = new MeshBasicMaterial({color: 'red'})
+      const mat = new MeshBasicMaterial({
+        color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
+        precision: "lowp",
+        dithering: true
+      })
+      const terracotta = new Mesh(geo, mat)
+      terracotta.rotation.x = rotate90
+      terracotta.position.set(
+        (x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2,
+        0,
+        y * b.squareSize * b.gapSize
+      )
+      terrainTiles[i] = terracotta
+      lastTiles.push(terracotta) // save the last tiles so that we can sweep em up next time
+      scene.add(terracotta)
+    } catch (e) {
+      // console.log("NAH", e)
     }
   }
+
+  // for (let i = 0; i < lbs.grid.length; i++){
+  //   let yOffset = -lbs.radius
+  //   let xOffset = -lbs.radius
+  //   while (yOffset < lbs.radius){
+  //     xOffset = -lbs.radius
+  //     const y = lbs.relativeTo.y + yOffset
+  //     while (xOffset < lbs.radius){
+  //       const x = lbs.relativeTo.y + xOffset
+  //       xOffset++
+  //     }
+  //     yOffset++
+  //   }
+  //   // 0, relativeY = 
+  // }
+
+  // for (let x = 0; x < lbs.grid.length; x++){ // so we're going through all of the columns here
+  //   let relativeX = lbs.relativeTo.x - lbs.radius + x // and we're setting relative x, but this isn't really giving us issues
+  //   for (let y = 0; y < lbs.grid.length; y++){ // what's giving us issues is y. We go through each item of every column, until 
+  //     let relativeY = lbs.relativeTo.y - lbs.radius + y
+  //     let index = relativeX * b.gridSize + relativeY
+  //     try {
+  //       terrain = lbs.grid[x][y].terrain
+  //       // const mat = new MeshBasicMaterial({color: 'red'})
+  //       const mat = new MeshBasicMaterial({
+  //         color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
+  //         precision: "lowp",
+  //         dithering: true
+  //       })
+  //       const tile = new Mesh(geo, mat)
+  //       tile.rotation.x = rotate90
+  //       tile.position.set(
+  //         (relativeX * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2,
+  //         0,
+  //         relativeY * b.squareSize * b.gapSize
+  //       )
+
+  //       terrainTiles[index] = tile
+  //       lastTiles.push(tile) // save the last tiles so that we can sweep em up next time
+  //       scene.add(tile)
+  //     } catch (e) {
+  //       // console.log("NAH", e)
+  //     }
+  //   }
+  // }
 
 })
 

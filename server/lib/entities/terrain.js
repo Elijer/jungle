@@ -7,7 +7,7 @@ export default class Terrain extends Entity {
   static type = "terrain"
 
   constructor(cohort, position, grid, noise){
-    super(cohort, position, grid, null)
+    super(cohort, position, grid, null, "terrain")
     this.noise = noise
     this.geometry = "square"
   }
