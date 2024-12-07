@@ -14,6 +14,18 @@
               "NODE_ENV": "development"
           }
       },
+      {
+        "name": "test stuff",
+        "type": "node",
+        "request": "launch",
+        "runtimeExecutable": "npm",
+        "runtimeArgs": ["run", "unit_tests"],
+        "cwd": "${workspaceFolder}",
+        "skipFiles": ["<node_internals>/**"],
+        "env": {
+            "NODE_ENV": "development"
+        }
+    },
       // This one works great but requires `npm run dev` to have been run already
       {
         "name": "Attach Chrome Debugger 🚀",
@@ -32,6 +44,7 @@
         "sourceMaps": true,
         "preLaunchTask": "Run Frontend Dev Server"
       },
+      
   ],
   "compounds": [
       {

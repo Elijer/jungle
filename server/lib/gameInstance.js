@@ -6,13 +6,13 @@ import EntityGroup from './entityGroup.js';
 import { log, warn, error } from './logger.js';
 
 class GameInstance {
-  constructor(rows, cols) {
+  constructor(rows, cols, refreshRadius) {
     this.rows = rows
     this.cols = cols
     this.terrain = {}
     this.grid = this.initializeGrid()
     this.noiseScale = 10
-    this.refreshRadius = 3
+    this.refreshRadius = refreshRadius
     // this.refreshRadius = 40
     this.signDispenser = 0
     // TODO - curried functions should be able to embed cols and handle some of the grid manipulation logic

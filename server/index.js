@@ -1,11 +1,11 @@
 import setupServer from './lib/setupServer.js';
 import GameInstance from './lib/gameInstance.js';
 const { io, port, httpServer } = setupServer();
-import gridSize from './lib/gameConfig.js';
+import { gridSize, refreshRadius } from './lib/gameConfig.js';
 import { isUserLegit, logOffPrimaryUser } from './lib/userManagement.js';
 import { log } from './lib/logger.js';
 
-let game = new GameInstance(gridSize, gridSize)
+let game = new GameInstance(gridSize, gridSize, refreshRadius)
 
 let defaultDirection = true
 // setInterval(_=> {

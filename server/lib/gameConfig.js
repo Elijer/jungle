@@ -1,3 +1,2 @@
-const gridSize = 51
-
-export default gridSize
+export const gridSize = 51
+export const refreshRadius = 3

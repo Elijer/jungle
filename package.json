@@ -16,7 +16,8 @@
     "build-image": "docker build -t mygame:latest .",
     "local": "heroku local -p 3000",
     "disco": "disco projects:remove jungle; disco projects:add --github elijer/jungle --name jungle --domain jungle.rcdis.co",
-    "test": "cd client; npx playwright test --headed"
+    "test": "cd client; npx playwright test --headed",
+    "unit_tests": "node customTests/game.test.js"
   },
   "keywords": [],
   "author": "",
@@ -25,8 +26,6 @@
   "dependencies": {
     "express": "^4.19.2",
     "rgb-hex": "^4.1.0",
-    "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5",
     "typescript": "^5.4.5",
     "uuid": "^10.0.0",
     "uuid4": "^2.0.3",
@@ -40,8 +39,12 @@
     "@eslint/js": "^9.15.0",
     "@types/three": "^0.165.0",
     "@types/uuid": "^10.0.0",
+    "chai": "^5.1.2",
     "eslint": "^9.15.0",
     "globals": "^15.12.0",
-    "localtunnel": "^2.0.2"
+    "localtunnel": "^2.0.2",
+    "mocha": "^10.8.2",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }
