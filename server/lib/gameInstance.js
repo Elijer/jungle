@@ -19,7 +19,6 @@ class GameInstance {
     this.players = new EntityGroup(this.grid, "players", this.cols) // must be called after grid
     
     this.maxSignVal = 2
-
   }
 
   // So this was for a sort of rock paper scissors experiment thing I don't really need
@@ -87,24 +86,24 @@ class GameInstance {
   }
 
   findRandomSpot(layer, counter = 0){
-    return {x: 0, y: 0} // for testing, always return the top left tile
-    // console.log("=========LOOKING FOR A RANDOM SPOT")
-    // const limit = 7
-    // const tileNumber = Math.floor(Math.random() * (this.rows * this.cols))
-    // console.log({tileNumber})
-    // const randomTile = this.grid[tileNumber]
-    // const y = Math.floor(tileNumber / this.cols)
-    // const x = tileNumber % this.cols
-    // if (randomTile[layer]){ // sort of a gotcha - if there IS something here at this layer, then try again
-    //   log(`No space for player at ${x}:${y}:${layer}, trying again`)
-    //   counter++
-    //   if (counter < limit){
-    //     log(`Tried ${counter}x, no space found`)
-    //     throw new Error('Could not find a spot for the player')
-    //   }
-    //   return this.findRandomSpot(layer, counter)
-    // }
-    // return {x, y}
+    // return {x: 0, y: 0} // for testing, always return the top left tile
+    console.log("=========LOOKING FOR A RANDOM SPOT")
+    const limit = 7
+    const tileNumber = Math.floor(Math.random() * (this.rows * this.cols))
+    console.log({tileNumber})
+    const randomTile = this.grid[tileNumber]
+    const y = Math.floor(tileNumber / this.cols)
+    const x = tileNumber % this.cols
+    if (randomTile[layer]){ // sort of a gotcha - if there IS something here at this layer, then try again
+      log(`No space for player at ${x}:${y}:${layer}, trying again`)
+      counter++
+      if (counter < limit){
+        log(`Tried ${counter}x, no space found`)
+        throw new Error('Could not find a spot for the player')
+      }
+      return this.findRandomSpot(layer, counter)
+    }
+    return {x, y}
   }
 
   playerOnlineOrAddPlayer(playerId){

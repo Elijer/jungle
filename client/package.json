@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "npx playwright test ./playwright_tests/memory.spec.ts --project=chromium --headed",
-    "test-headless": "npx playwright test ./playwright_tests/memory.spec.ts --project=chromium"
+    "preview": "vite preview"
   },
   "dependencies": {
     "gsap": "^3.12.5",
@@ -18,7 +16,6 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.1",
     "@types/node": "^20.14.10",
     "@types/three": "^0.165.0",
     "@types/uuid": "^10.0.0"

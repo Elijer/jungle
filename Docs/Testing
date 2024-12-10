@@ -1,0 +1,31 @@
+# Where to find notes on testing in my blog
+/devnotes/VSCode-Debugging
+
+# Jest
+
+## Jest Playwright conflicts.
+I have set up Jest in the backend just now, but in order to prevent it from trying to run playwright files, I changed the ./client/playwright file to make `file.spec.[jt]s` files read by playwright and `file.test.[jt]s` files fun by Jest.
+
+I also plan on setting up Jest for unit testing for both the server and for the client.
+
+Jest's configuration is currently stored at `./jest.config.js`, but Jest docs say that it could also be specified in the package.json files.
+
+Note that I have two different package.json files. File matching for Playwright files can be controlled with the testDir, testMatch and testIgnore properties in the playwright.config.ts file in ./client.
+
+Because in my server code (using javascript not ts for now) I am using ECMA modules instead of CommonJS (import...from syntax instead of const va = require() syntax), I apparently need to pass jest a special flag `--experimental-vm-modules`, or rather node itself, in order for the tests to pass.
+
+```
+node --experimental-vm-modules node_modules/jest/bin/jest.js
+```
+Tes
+
+# Progress
+- I'm seeing some weird things when it comes to generating a location for a player while developing tests
+- I'm going to do a deep dive and look into that
+- For some reason I commented out the location generation, and I just made x and y 0 and 0 for "testng",
+- but didn't write in the commands for that to be only the case for testing
+- OR write why that was my strategy for testing
+- so...I'll follow it back and see what's up
+- From a character being created all the way through
+- And also see if X and Y still make sense or if that's a weird thing to maintain when there's a tile number now
+- (I refactored the backend to be operating off of tile numbers instead of x and y because the performance was better)

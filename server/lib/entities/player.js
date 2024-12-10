@@ -11,11 +11,14 @@ export default class Player extends Entity {
   }
 
   tileNumber(){
+    console.log(`y position: ${this.position.y}, x position: ${this.position.x}`)
     return this.position.y * this.gridSize + this.position.x
   }
 
   online(){
     const currentTileNumber = this.tileNumber()
+    console.log("grid length", this.grid.length)
+    console.log("current tile number", currentTileNumber)
     this.grid[currentTileNumber].space = this
     this.grid[currentTileNumber].spirit = null
     this.layer = "space" 

@@ -7,19 +7,12 @@ import { log } from './lib/logger.js';
 
 let game = new GameInstance(gridSize, gridSize, refreshRadius)
 
-let defaultDirection = true
-// setInterval(_=> {
-//   io.local.emit("direction", defaultDirection)
-//   console.log
-//   defaultDirection = defaultDirection
-// }, 3000)
-
-let STREAM_MODE = {
+export const STREAM_MODE = {
   LOCAL: "LOCAL",
   INITIAL_GLOBAL: "INITIAL_GLOBAL_THEN_LOCAL_UPDATES" // <--- THIS IS BETTER FOR DEBUGGING THE ENTIRE MAP
 }
 
-let serverConfig = {
+export const serverConfig = {
   // streamMode: STREAM_MODE.INITIAL_GLOBAL
   streamMode: STREAM_MODE.LOCAL
 }

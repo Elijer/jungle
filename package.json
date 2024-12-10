@@ -16,14 +16,18 @@
     "build-image": "docker build -t mygame:latest .",
     "local": "heroku local -p 3000",
     "disco": "disco projects:remove jungle; disco projects:add --github elijer/jungle --name jungle --domain jungle.rcdis.co",
-    "test": "cd client; npx playwright test --headed",
-    "unit_tests": "node customTests/game.test.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:w": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "unit_tests": "node customTests/gametest.js",
+    "pw_test": "npx playwright test ./playwright_tests/memory.spec.ts --project=chromium --headed",
+    "pw_test_headless": "npx playwright test ./playwright_tests/memory.spec.ts --project=chromium"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@playwright/test": "^1.49.1",
     "express": "^4.19.2",
     "rgb-hex": "^4.1.0",
     "typescript": "^5.4.5",
@@ -45,6 +49,7 @@
     "jest": "^29.7.0",
     "localtunnel": "^2.0.2",
     "mocha": "^10.8.2",
+    "playwright": "^1.49.0",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1"
   }
