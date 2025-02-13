@@ -23,7 +23,6 @@ export interface Ephs {
 }
 
 export interface Entity extends LayerState {
-  layer: string;
   position: Position;
 }
 
