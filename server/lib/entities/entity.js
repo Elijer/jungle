@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { stateSchema } from '../schemas.js'
 import { gridSize } from '../gameConfig.js';
+import { getTileNumberForCoords } from '../utilities.js';
 
 export default class Entity {
   constructor(cohort, position, grid, id, layer="space"){
@@ -42,6 +43,7 @@ export default class Entity {
     let nX = x + movement.x
     let nY = y + movement.y
     this.#changeLocation(nX, nY)
+    return getTileNumberForCoords(nX, nY, this.gridSize)
   }
 
   // TO DO: Check for redundancy between change Location and move and handleInput

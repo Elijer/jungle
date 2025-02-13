@@ -195,12 +195,6 @@ socket.on('localState', (lbs: LocalBoardState): void => {
         cameraTargetX = x * b.squareSize - b.gridSize / 2
         cameraTargetZ = y * b.squareSize + camconfig.zOffset
       }
-      
-      // In order to clean up ephemerals though,
-      // I can update existing ones, sure,
-      // but at the end if there are ephemerals we haven't seen - some sort of set -
-      // I should remove them from view
-
       if (ephemerals.ephs[player.id]){
         ephemerals.moveCube(player.id, player.position.x, player.position.y)
         ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false)
@@ -219,6 +213,22 @@ socket.on('localState', (lbs: LocalBoardState): void => {
     }
   }
 
+})
+
+socket.on("tileUpdate", (update)=>{
+  if (update.event === "removed"){
+    ephemerals.removeEphemeral(update.id)
+  } else if (update.event === "added"){
+
+    const x = update.tileNumber % b.gridSize
+    const y = Math.floor(update.tileNumber / b.gridSize)
+
+    if (ephemerals.ephs[update.id]){
+      ephemerals.moveCube(update.id, x, y)
+    } else {
+      ephemerals.createEphemeral(update.item.space)
+    }
+  }
 })
 
 socket.on("state", (boardState: BoardState) => {

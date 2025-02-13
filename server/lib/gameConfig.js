@@ -1,2 +1,2 @@
-export const gridSize = 51
+export const gridSize = 16
 export const refreshRadius = 3

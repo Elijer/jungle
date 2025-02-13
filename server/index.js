@@ -17,7 +17,25 @@ export const serverConfig = {
   streamMode: STREAM_MODE.LOCAL
 }
 
+function updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions) {
+  const roomsToLeave = [...existingSubscriptionsSet].filter(tile=>!newSubscriptions.includes(tile))
+  const roomsToJoin = newSubscriptions.filter(tile=> !existingSubscriptionsSet.has(tile))
+
+  roomsToLeave.forEach(tile =>{
+    existingSubscriptionsSet.delete(tile)
+    socket.leave(`tile-${tile}`)
+  })
+
+  roomsToJoin.forEach(tile => {
+    existingSubscriptionsSet.add(tile)
+    socket.join(`tile-${tile}`)
+  })
+  
+}
+
 io.on("connection", (socket) => {
+
+  const existingSubscriptionsSet = new Set()
 
   socket.emit("config", serverConfig)
 
@@ -35,11 +53,12 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players, only necessary with initial_global I think???
         break
       case(STREAM_MODE.LOCAL):
-        // Instead, I want to send over just the players local squares, AND the size of the map.
-        // This can be just slightly different than normal.
+
         {
           let { x, y } = addedPlayerToGame.position
-          socket.emit("localState", game.getLocalState(x, y)) // <-- I think this is just the player getting the local state
+          const { tileNumbers: newSubscriptions, payload: localState } =  game.getLocalState(x, y)
+          updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions)
+          socket.emit("localState", localState) // <-- I think this is just the player getting the local state
           break
       }
     }
@@ -65,10 +84,19 @@ io.on("connection", (socket) => {
         io.emit("update", moveEvent) // So this should be batched <--- this is the thing that sends move events
         break
       case(STREAM_MODE.LOCAL):
-        socket.emit("localState", game.getLocalState(x, y))
-        // socket.broadcast.emit('update', moveEvent) // I think this broadcasts to the other players? BUT. I am no longer using update
-        // for the localState stream_mode on the client. I could, but I'm not right now. So I would need to change this.
+        {
+        const { tileNumbers: newSubscriptions, payload: localState } =  game.getLocalState(x, y)
+        updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions)
+
+        // send out individual tile updates to any other sockets currently subscribed to them
+        for (const update of moveEvent.updates){
+          socket.broadcast.to(`tile-${update.tileNumber}`).emit("tileUpdate", update)
+        }
+
+        socket.emit("localState", localState)
+
         break
+        }
     }
   })
 

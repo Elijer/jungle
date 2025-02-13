@@ -46,6 +46,8 @@ class GameInstance {
 
   getLocalState(centerX, centerY){
 
+    const tileNumbers = []
+
     const refreshDiameter = this.refreshRadius*2+1
     let tempGrid = Array.from({length: Math.pow(refreshDiameter, 2)}, (_, index) => {
       const simpleRow = Math.floor(index / refreshDiameter)
@@ -61,17 +63,19 @@ class GameInstance {
       }
       
       const tileNumber = gridY * this.cols + gridX
+      tileNumbers.push(tileNumber)
       const tile = this.grid[tileNumber]
       const tileState = tile.getState()
-      // const tileState = this.grid[tileNumber].getState();
       return tileState
     });
 
     return {
-      grid: tempGrid, // push this local grid
-      relativeTo: {x: centerX, y: centerY},
-      radius: this.refreshRadius,
-      // players: this.players.getEntities() // just sloppily gets all entities
+      tileNumbers,
+      payload: {
+        grid: tempGrid, // push this local grid
+        relativeTo: {x: centerX, y: centerY},
+        radius: this.refreshRadius,
+      }
     }
   }
 
@@ -156,13 +160,39 @@ class GameInstance {
   }
 
   handleInput(inputEvent){
+
     if (!this.players.ents[inputEvent.playerId]) return
     let {x, y} = this.players.ents[inputEvent.playerId]
     const tileNumber = y * this.cols + x
+
+    const updates = []
+
     let player = this.grid[tileNumber].space
     if (!player) return false // this happens sometimes?
-    player.move(inputEvent.command)
-    return player.getState("move")
+    const newTileNumber = player.move(inputEvent.command)
+
+    // Unless the newTileNumber is undefined (caused byhitting an object and not succesfully moving)
+    // push to list of updates to push to their individual socket rooms
+    if (newTileNumber){
+      updates.push({
+        tileNumber: tileNumber,
+        id: inputEvent.playerId,
+        event: "removed", // added, removed (this is why I need to switch to typescript)
+        item: this.grid[tileNumber]?.getState()
+      })
+  
+      updates.push({
+        tileNumber: newTileNumber,
+        id: inputEvent.playerId,
+        event: "added",
+        item: this.grid[newTileNumber]?.getState()
+      })
+    }
+
+    return {
+      updates,
+      ...player.getState("move")
+    }
   }
 }
 

@@ -4,8 +4,8 @@ export interface LayerState {
   color: string
   geometry: string
   id: string
-  // layer
-  // position
+  position: Position
+  layer: "spirit" | "space" | "terrain"
 }
 
 export interface Eph {

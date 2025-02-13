@@ -9,3 +9,7 @@ export const dirname = (() => {
   const __filename = fileURLToPath(import.meta.url);
   return path.dirname(__filename);
 })
+
+export function getTileNumberForCoords(x, y, gridSize){
+  return y * gridSize + x
+}
