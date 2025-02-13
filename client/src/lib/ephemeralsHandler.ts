@@ -21,6 +21,17 @@ class ephemeralsHandler {
     this.cube = this.createBoxBufferGeometry(b.squareSize)
   }
 
+  removeEphemeral = (id: string) => {
+    const eph = this.ephs[id]
+    const { cube, geo, mat } = eph;
+    if (cube) {
+      this.target.remove(cube); // Remove from scene
+      geo.dispose(); // Dispose of geometry
+      mat.dispose(); // Dispose of material
+    }
+    delete this.ephs[id]
+  }
+
   createEphemeral = (ephemeral: Entity): void => {
 
     let transparency = ephemeral.layer === "spirit" ? true : false

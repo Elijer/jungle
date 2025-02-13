@@ -37,9 +37,11 @@ io.on("connection", (socket) => {
       case(STREAM_MODE.LOCAL):
         // Instead, I want to send over just the players local squares, AND the size of the map.
         // This can be just slightly different than normal.
-        let { x, y } = addedPlayerToGame.position
-        socket.emit("localState", game.getLocalState(x, y)) // <-- I think this is just the player getting the local state
-        break
+        {
+          let { x, y } = addedPlayerToGame.position
+          socket.emit("localState", game.getLocalState(x, y)) // <-- I think this is just the player getting the local state
+          break
+      }
     }
 
     socket.on("disconnecting", async(reason) => {
@@ -56,7 +58,6 @@ io.on("connection", (socket) => {
     if (!isUserLegit(socket)) return
     let moveEvent = game.handleInput(inputEvent)
     if (!moveEvent) return
-    // console.log(moveEvent)
     let { x, y } = moveEvent.position
     
     switch(serverConfig.streamMode){

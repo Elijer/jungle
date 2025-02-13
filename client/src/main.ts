@@ -4,7 +4,7 @@ import setupClient from './lib/setupClient.js'
 import sceneSetup from './lib/setupScene.js'
 import b from './lib/boardConfig.js'
 import emphemeralsHandler from './lib/ephemeralsHandler.js'
-import { BoardState, LocalBoardState, Entity, EntityStateEvent, KeyBindings } from './lib/interfaces.js'
+import { BoardState, LocalBoardState, Entity, EntityStateEvent, KeyBindings, LayerState } from './lib/interfaces.js'
 import { hideClassIfTouchDevice, lerp, throttle, gid } from './lib/utilities.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
@@ -65,10 +65,6 @@ let ephemeralsGroup = new Group()
 scene.add(ephemeralsGroup)
 
 let ephemerals = new emphemeralsHandler(ephemeralsGroup)
-
-// socket.on("direction", (msg) => {
-//   console.log(msg)
-// })
 
 socket.on("redundant connection", () => {
   alert("You are already connected in another tab, or device on this IP address.")
@@ -154,36 +150,14 @@ function animationThrottler(animationFunction: Function) {
 animationThrottler(animate)
 
 socket.on('localState', (lbs: LocalBoardState): void => {
-
   if (gameconfig.streamMode !== STREAM_MODE.LOCAL) return
 
-  let terrain
+  let terrain, player: LayerState | null
   console.log("-----------------------")
-  for (let playerId in lbs.players) {
-
-    let player: Entity = lbs.players[playerId]
-    if (playerId === localStorage.getItem("playerId")){
-      let {x, y} = player.position
-      cameraTargetX = x * b.squareSize - b.gridSize / 2
-      cameraTargetZ = y * b.squareSize + camconfig.zOffset
-    }
-    
-    if (ephemerals.ephs[player.id]){
-      // TO DO: These should be a single updating method
-      // NOTE: I DO HAVE player information in the space layer I could do this from, but I am choosing to do it from the players information
-      // I think that the players is a separate list because it's more likely to change
-      // It might be simpler to just do everything from the grid though, and drop the players object - the camera should still be able to figure out the user's player body
-      ephemerals.moveCube(player.id, player.position.x, player.position.y)
-      ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false)
-    } else {
-      ephemerals.createEphemeral(player)
-    }
-  }
 
   // This is what clears tiles when you move so that you don't have em trailing behind you
-  for (let lt of lastTiles){
-    lt.visible = false
-  }
+  for (let lt of lastTiles)lt.visible = false
+  const staleEphs = new Set([...Object.keys(ephemerals.ephs)])
 
   const width = lbs.radius * 2 + 1
   for (let i = 0; i < lbs.grid.length; i++){
@@ -211,62 +185,41 @@ socket.on('localState', (lbs: LocalBoardState): void => {
       terrainTiles[i] = terracotta
       lastTiles.push(terracotta) // save the last tiles so that we can sweep em up next time
       scene.add(terracotta)
+
+      player = tile.space
+      if (!player) continue
+      if (playerId === localStorage.getItem("playerId")){
+
+        // TODO - fix type issues
+        let {x, y} = player.position
+        cameraTargetX = x * b.squareSize - b.gridSize / 2
+        cameraTargetZ = y * b.squareSize + camconfig.zOffset
+      }
+      
+      // In order to clean up ephemerals though,
+      // I can update existing ones, sure,
+      // but at the end if there are ephemerals we haven't seen - some sort of set -
+      // I should remove them from view
+
+      if (ephemerals.ephs[player.id]){
+        ephemerals.moveCube(player.id, player.position.x, player.position.y)
+        ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false)
+        staleEphs.delete(player.id)
+      } else {
+        ephemerals.createEphemeral(player)
+        staleEphs.delete(player.id)
+      }
+
+      for (const eph of staleEphs){
+        ephemerals.removeEphemeral(eph)
+      }
+
     } catch (e) {
       // console.log("NAH", e)
     }
   }
 
-  // for (let i = 0; i < lbs.grid.length; i++){
-  //   let yOffset = -lbs.radius
-  //   let xOffset = -lbs.radius
-  //   while (yOffset < lbs.radius){
-  //     xOffset = -lbs.radius
-  //     const y = lbs.relativeTo.y + yOffset
-  //     while (xOffset < lbs.radius){
-  //       const x = lbs.relativeTo.y + xOffset
-  //       xOffset++
-  //     }
-  //     yOffset++
-  //   }
-  //   // 0, relativeY = 
-  // }
-
-  // for (let x = 0; x < lbs.grid.length; x++){ // so we're going through all of the columns here
-  //   let relativeX = lbs.relativeTo.x - lbs.radius + x // and we're setting relative x, but this isn't really giving us issues
-  //   for (let y = 0; y < lbs.grid.length; y++){ // what's giving us issues is y. We go through each item of every column, until 
-  //     let relativeY = lbs.relativeTo.y - lbs.radius + y
-  //     let index = relativeX * b.gridSize + relativeY
-  //     try {
-  //       terrain = lbs.grid[x][y].terrain
-  //       // const mat = new MeshBasicMaterial({color: 'red'})
-  //       const mat = new MeshBasicMaterial({
-  //         color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
-  //         precision: "lowp",
-  //         dithering: true
-  //       })
-  //       const tile = new Mesh(geo, mat)
-  //       tile.rotation.x = rotate90
-  //       tile.position.set(
-  //         (relativeX * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2,
-  //         0,
-  //         relativeY * b.squareSize * b.gapSize
-  //       )
-
-  //       terrainTiles[index] = tile
-  //       lastTiles.push(tile) // save the last tiles so that we can sweep em up next time
-  //       scene.add(tile)
-  //     } catch (e) {
-  //       // console.log("NAH", e)
-  //     }
-  //   }
-  // }
-
 })
-
-
-// "state" and "update" work together to 
-// 1) Create an initial board state
-// 2) Update any objects that have moved
 
 socket.on("state", (boardState: BoardState) => {
 

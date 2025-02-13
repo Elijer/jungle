@@ -3,7 +3,7 @@ import Tile from './entities/tile.js';
 import Terrain from './entities/terrain.js';
 import Player from './entities/player.js';
 import EntityGroup from './entityGroup.js';
-import { log, warn, error } from './logger.js';
+import { log } from './logger.js';
 
 class GameInstance {
   constructor(rows, cols, refreshRadius) {
@@ -71,10 +71,16 @@ class GameInstance {
       grid: tempGrid, // push this local grid
       relativeTo: {x: centerX, y: centerY},
       radius: this.refreshRadius,
-      players: this.players.getEntities(), // push all players...although
-      // Should the local grid be enough?
-      // To Return to
-      // Once I've looked at the frontend code
+      // players: this.players.getEntities() // just sloppily gets all entities
+    }
+  }
+
+  // Saving this version of getting local state I had before
+  // Even those its wrong, and should be deleted.
+  getLocalStateWithPlayers(centerX, centerY){
+    return {
+      ...this.getLocalState(centerX, centerY),
+      players: this.players.getEntities() // just sloppily gets all entities
     }
   }
 
