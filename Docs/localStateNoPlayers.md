@@ -4,12 +4,10 @@ Here was the code:
 
 ```ts
 socket.on('localState', (lbs: LocalBoardState): void => {
-  console.log(lbs)
 
   if (gameconfig.streamMode !== STREAM_MODE.LOCAL) return
 
   let terrain
-  console.log("-----------------------")
   for (let playerId in lbs.players) {
 
     let player: Entity = lbs.players[playerId]

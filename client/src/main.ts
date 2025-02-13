@@ -153,7 +153,6 @@ socket.on('localState', (lbs: LocalBoardState): void => {
   if (gameconfig.streamMode !== STREAM_MODE.LOCAL) return
 
   let terrain, player: LayerState | null
-  console.log("-----------------------")
 
   // This is what clears tiles when you move so that you don't have em trailing behind you
   for (let lt of lastTiles)lt.visible = false
@@ -235,10 +234,7 @@ socket.on("state", (boardState: BoardState) => {
 
   if (gameconfig.streamMode !== STREAM_MODE.INITIAL_GLOBAL) return
 
-  console.log("state received", boardState)
-
   let index, terrain
-  // console.log(boardState)
 
   for (let x = 0; x < b.gridSize; x++) {
     for (let y = 0; y < b.gridSize; y++) {
