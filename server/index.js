@@ -35,11 +35,19 @@ function updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions)
 
 io.on("connection", (socket) => {
 
+  // send initial data
+  socket.emit("initialData", {
+    playerId: game.createLightweightId(),
+    streamMode: serverConfig.streamMode
+  })
+
+  // now wait for the response to the initial data in the connection to do everything else
+
   const existingSubscriptionsSet = new Set()
 
-  socket.emit("assign playerId", game.createLightweightId())
+  // socket.emit("assign playerId", game.createLightweightId())
 
-  socket.emit("config", serverConfig)
+  // socket.emit("config", serverConfig)
 
   socket.on("player joined", (playerId) => {
 

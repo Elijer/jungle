@@ -173,6 +173,11 @@ class GameInstance {
     }
 
     // WARNING: I have observed a bug where player was undefined here
+    // Yup, found it again
+    if (!player){
+      log(`Couldn't find player ${playerId}`)
+      return
+    }
     player.online()
     // this.grid[x][y].space = player
     // this.grid[x][y].spirit = null
@@ -210,7 +215,7 @@ class GameInstance {
     if (!player) return false // this happens sometimes?
     const newTileNumber = player.move(inputEvent.command)
 
-    // Unless the newTileNumber is undefined (caused byhitting an object and not succesfully moving)
+    // Unless the newTileNumber is undefined (caused by hitting an object and not succesfully moving)
     // push to list of updates to push to their individual socket rooms
     if (newTileNumber){
       updates.push({
