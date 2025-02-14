@@ -1,11 +1,9 @@
 import { io } from "socket.io-client";
-import { v4 as uuidv4 } from 'uuid';
+import type { Socket } from "socket.io-client"
 
-const setupClient = () => {
+const setupClient: Promise<{ socket: Socket; storedPlayerId: string }> = new Promise((resolve) => {
 
-  if (!localStorage.getItem('playerId')) localStorage.setItem('playerId', uuidv4())
-  const playerId = localStorage.getItem('playerId')
-
+  // Get socket
   const herokuUrl = "https://thornberry-jungle-461255bc451e.herokuapp.com/"
   const tunnelUrl = "https://thornberry.loca.lt"
   let socketAddress = window.location.hostname === "localhost" ? "ws://localhost:3000" : herokuUrl
@@ -13,18 +11,31 @@ const setupClient = () => {
   if (window.location.hostname.includes("jungle.rcdis.co")) socketAddress = "https://jungle.rcdis.co"
   if (window.location.hostname.includes("fg8ck7rs")) socketAddress = "https://fg8ck7rs-3000.use.devtunnels.ms/"
   const socket = io(socketAddress)
-  
-  socket.on("connect", () => {
-    console.log("Connected as player", playerId?.substring(0, 4))
-    socket.emit("player joined", playerId)
-  });
+  let storedPlayerId: string | null = localStorage.getItem("lightweightId")
 
-  socket.on("redundant connection", () => {
-    alert("You are already connected in another tab, or device on this IP address.")
+  // socket.on("connect", ()=>{
+  if (storedPlayerId){
+    socket.emit("player joined", storedPlayerId)
+    resolve({socket, storedPlayerId});
+    return
+  }
+
+  // Handle reconnections
+  socket.on("connect", () => {
+    if (storedPlayerId) {
+      socket.emit("player joined", storedPlayerId)
+    }
   })
 
-  return { socket, playerId }
-}
+  socket.on("assign playerId", (serverAssignedId: string) => {
+    storedPlayerId = serverAssignedId
+    localStorage.setItem("lightweightId", serverAssignedId)
+    socket.emit("player joined", serverAssignedId)
+    resolve({socket, storedPlayerId})
+  })
+
+  
+})
 
 
 export default setupClient

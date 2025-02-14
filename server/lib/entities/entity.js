@@ -1,11 +1,10 @@
-import { v4 as uuidv4 } from 'uuid';
 import { stateSchema } from '../schemas.js'
 import { gridSize } from '../gameConfig.js';
 import { getTileNumberForCoords } from '../utilities.js';
 
 export default class Entity {
   constructor(cohort, position, grid, id, layer="space"){
-    this.id = id ?? uuidv4()
+    this.id = id
     this.cohort = cohort
     this.position = position
     this.grid = grid

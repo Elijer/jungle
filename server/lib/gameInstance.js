@@ -5,8 +5,18 @@ import Player from './entities/player.js';
 import EntityGroup from './entityGroup.js';
 import { log } from './logger.js';
 
+function getMonthBeginningTimestamp(){
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const elapsed = Math.floor(Math.floor(now.getTime()/1000)- startOfMonth.getTime() / 1000) / 10;
+  return elapsed
+}
+
 class GameInstance {
   constructor(rows, cols, refreshRadius) {
+    this.serverEpoch = getMonthBeginningTimestamp()
+    this.playerCounter = 0
+    this.objectCounter = 0
     this.rows = rows
     this.cols = cols
     this.terrain = {}
@@ -21,13 +31,42 @@ class GameInstance {
     this.maxSignVal = 2
   }
 
+  generateItemId(){
+    const id = this.objectCounter
+    this.objectCounter++
+    return id
+  }
+
+  createLightweightId(){
+    // This id relies on a month having at most less than 3 million  seconds (2^22: ecodeable with 22 bits)
+    // But dividing that up into groups of 10 seconds, for a max of 267,480, encodeable with 2^19 instead
+    // And there not being more than 8K players, (2^13, encodeable with 13 bits)
+    // total: 32 bits, or 8 bytes
+    const counterBits = 13
+    // Shift the timestamp left by 17 bits to make space for the counter
+    const result = (this.serverEpoch << counterBits) | this.playerCounter
+    this.playerCounter++
+
+    // reset counter if it gets too large
+    if (this.playerCounter >= (1 << counterBits)) {
+      this.playerCounter = 0;
+    }
+    return result
+  }
+
+  // createUniqueLighweightId(){
+  //   const result = BigInt(this.serverEpoch) << 32n | BigInt(this.playerCounter)
+  //   this.playerCounter++
+  //   return result
+  // }
+
   initializeGrid(){
     let grid = [...Array(this.rows*this.cols)]
     grid = grid.map((_, index)=>{
       const x = index % this.cols
       const y = Math.floor(index / this.cols)
       let noise = simplexPositive(x, y, 20)
-      let newTerrain = new Terrain(this.terrain, {x, y}, this, noise)
+      let newTerrain = new Terrain(this.terrain, {x, y}, this, this.generateItemId(), noise)
       // in a map, this refers to the mapped element
       // not the gameInstance instance
       let newTile = new Tile(newTerrain)

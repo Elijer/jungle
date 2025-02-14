@@ -37,10 +37,13 @@ io.on("connection", (socket) => {
 
   const existingSubscriptionsSet = new Set()
 
+  socket.emit("assign playerId", game.createLightweightId())
+
   socket.emit("config", serverConfig)
 
   socket.on("player joined", (playerId) => {
-    log(`${playerId.substring(0, 4)} [joined]`)
+
+    log(`${playerId} [joined]`)
     if (!isUserLegit(socket)) return
 
     let addedPlayerToGame = game.playerOnlineOrAddPlayer(playerId)
@@ -64,40 +67,40 @@ io.on("connection", (socket) => {
     }
 
     socket.on("disconnecting", async(reason) => {
-      log(`${playerId.substring(0, 4)} [disconnected]: ${reason}`)
+      log(`${playerId} [disconnected]: ${reason}`)
       logOffPrimaryUser(socket)
       const playerEvent = game.playerOffline(playerId)
       if (playerEvent) socket.broadcast.emit("update", playerEvent) // sends disconnect event to all other players
     })
-  })
 
-  socket.on("input event", (inputEvent) => {
-    log(`${inputEvent.playerId.substring(0, 4)} [input]: ${inputEvent.command}`)
-
-    if (!isUserLegit(socket)) return
-    let moveEvent = game.handleInput(inputEvent)
-    if (!moveEvent) return
-    let { x, y } = moveEvent.position
-    
-    switch(serverConfig.streamMode){
-      case(STREAM_MODE.INITIAL_GLOBAL):
-        io.emit("update", moveEvent) // So this should be batched <--- this is the thing that sends move events
-        break
-      case(STREAM_MODE.LOCAL):
-        {
-        const { tileNumbers: newSubscriptions, payload: localState } =  game.getLocalState(x, y)
-        updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions)
-
-        // send out individual tile updates to any other sockets currently subscribed to them
-        for (const update of moveEvent.updates){
-          socket.broadcast.to(`tile-${update.tileNumber}`).emit("tileUpdate", update)
-        }
-
-        socket.emit("localState", localState)
-
-        break
-        }
-    }
+    socket.on("input event", (inputEvent) => {
+      log(`${inputEvent.playerId} [input]: ${inputEvent.command}`)
+  
+      if (!isUserLegit(socket)) return
+      let moveEvent = game.handleInput(inputEvent)
+      if (!moveEvent) return
+      let { x, y } = moveEvent.position
+      
+      switch(serverConfig.streamMode){
+        case(STREAM_MODE.INITIAL_GLOBAL):
+          io.emit("update", moveEvent) // So this should be batched <--- this is the thing that sends move events
+          break
+        case(STREAM_MODE.LOCAL):
+          {
+          const { tileNumbers: newSubscriptions, payload: localState } =  game.getLocalState(x, y)
+          updateSubscriptions(socket, existingSubscriptionsSet, newSubscriptions)
+  
+          // send out individual tile updates to any other sockets currently subscribed to them
+          for (const update of moveEvent.updates){
+            socket.broadcast.to(`tile-${update.tileNumber}`).emit("tileUpdate", update)
+          }
+  
+          socket.emit("localState", localState)
+  
+          break
+          }
+      }
+    })
   })
 
 })
