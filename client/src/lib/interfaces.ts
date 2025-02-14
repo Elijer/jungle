@@ -2,7 +2,6 @@ import { BufferGeometry, MeshBasicMaterial, Mesh } from 'three';
 
 export interface LayerState {
   color: string
-  geometry: string
   id: string
   position: Position
   layer: "spirit" | "space" | "terrain"
@@ -80,16 +79,6 @@ interface ElementCodePair {
 export interface KeyBindings {
   [key: string]: ElementCodePair;
 }
-
-// This is actually the same interface as the Entity interface - can merge them later!! They are sort of different concepts...?
-// export interface UpdateState {
-//   id: string
-//   color: string
-//   layer: string
-//   geometry: string
-//   position: Position
-// }
-
 export interface Position {
   x: number;
   y: number;

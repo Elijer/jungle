@@ -9,7 +9,6 @@ export default class Terrain extends Entity {
   constructor(cohort, position, grid, noise){
     super(cohort, position, grid, null, "terrain")
     this.noise = noise
-    this.geometry = "square"
   }
 
   getColor(){
@@ -20,7 +19,6 @@ export default class Terrain extends Entity {
     let payload =  {
       ...super.getState(action),
       color: this.getColor(),
-      geometry: this.geometry
     }
     this.stateSchema.validateSync(payload)
     return payload

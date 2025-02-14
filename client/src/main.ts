@@ -170,7 +170,7 @@ socket.on('localState', (lbs: LocalBoardState): void => {
       terrain = tile.terrain
       // const mat = new MeshBasicMaterial({color: 'red'})
       const mat = new MeshBasicMaterial({
-        color: new Color(parseInt(terrain?.color ?? 'FFFFFF', 16)),
+        color: new Color(parseInt(terrain?.color ?? '131321', 16)),
         precision: "lowp",
         dithering: true
       })

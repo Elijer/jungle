@@ -10,15 +10,10 @@ export default class Entity {
     this.position = position
     this.grid = grid
     this.stateSchema = stateSchema
-    this.geometry = "default"
     this.layer = layer // TODO: I don't think we even need this
     // TODO but at the very least it's misleading that this defaults to space
     cohort[this.id] = position
     this.gridSize = gridSize
-  }
-
-  getColor(){
-    return "0x" + this.color
   }
 
   checkTileExistsAndIsEmpty(x, y){
@@ -62,7 +57,6 @@ export default class Entity {
     let payload = {
       id: this.id,
       position: this.position,
-      geometry: this.geometry,
       layer: this.layer,
       action: action
     }

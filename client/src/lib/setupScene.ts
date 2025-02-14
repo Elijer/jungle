@@ -28,32 +28,6 @@ const sceneSetup = (cameraRotation: number, performanceConfig: any) => {
   const ambientLight = new AmbientLight(0x404040);
   scene.add(ambientLight);
 
-  // TODO <-- Check this code against what I ended up using for the "state" event, or maybe "initialState", which I may rename it to
-  // const rotate90 = Math.PI / 2
-
-  // const terrainTiles: any = []
-
-  // Getting rid of all this tile prepopulation business. We'll just create them when we get the info.
-  // let index
-  // const geo = new PlaneGeometry(b.squareSize, b.squareSize);
-  // for (let x = 0; x < b.gridSize; x++) {
-  //   for (let y = 0; y < b.gridSize; y++) {
-  //     index = x * b.gridSize + y;
-  //     const mat = new MeshBasicMaterial({ color: 0x000000, side: DoubleSide })
-  //     const tile = new Mesh(geo, mat);
-  //     tile.rotation.x = rotate90
-  //     tile.position.set((x * b.squareSize * b.gapSize) - b.gridSize * b.squareSize * b.gapSize / 2, 0, y * b.squareSize * b.gapSize)
-  //     terrainTiles.push({
-  //       tile,
-  //       x,
-  //       y,
-  //       mat,
-  //       geo
-  //     })
-  //     scene.add(tile)
-  //   }
-  // }
-
   let composer
   if (performanceConfig.postProcessing){
 

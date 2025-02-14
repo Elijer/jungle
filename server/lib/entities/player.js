@@ -1,11 +1,11 @@
 import Entity from "./entity.js"
-import { generateRandomColor } from "../utilities.js"
+// import { generateRandomColorNumber } from "../compressedProperties.js"
 
 export default class Player extends Entity {
   constructor(cohort, position, grid, id) {
     super(cohort, position, grid, id)
-    this.color = generateRandomColor()
-    this.geometry = "cube"
+    // this.color = generateRandomColorNumber()
+    this.color = 0
     console.log(`Player created @ ${this.position} with id ${this.id} and sign`)
   }
 
@@ -32,8 +32,7 @@ export default class Player extends Entity {
   getState(action){
     let payload = {
       ...super.getState(action),
-      color: this.getColor(),
-      geometry: this.geometry
+      color: this.color,
     }
     this.stateSchema.validateSync(payload)
     return payload
