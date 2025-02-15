@@ -61,7 +61,8 @@ io.on("connection", (socket) => {
     switch(serverConfig.streamMode){
       case(STREAM_MODE.INITIAL_GLOBAL):
         socket.emit("state", game.getState()) // sends game to player who just joined
-        socket.broadcast.emit("update", addedPlayerToGame) // sends the player joined event to all other players, only necessary with initial_global I think???
+        // TODO handle this info:
+        socket.broadcast.emit("update", addedPlayerToGame)
         break
       case(STREAM_MODE.LOCAL):
 
