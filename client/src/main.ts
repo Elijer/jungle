@@ -24,14 +24,13 @@ let STREAM_MODE = {
 
 socket.on("connect", ()=> {
 
-  let storedPlayerId: string | null = localStorage.getItem("lightweightId")
-
   const listenerController = new AbortController();
   const { signal } = listenerController;
   
   socket.off("initialData")
   socket.on("initialData", (initialData)=>{
 
+    let storedPlayerId: string | null = localStorage.getItem("lightweightId")
     let { playerId, streamMode } = initialData
 
     // if the client has a user id saved, we can respond with that
@@ -116,17 +115,14 @@ socket.on("connect", ()=> {
       disableOrbitControls();
 
       // Recenter Camera on Player
-      let playerId = localStorage.getItem("lightweightId");
-      if (playerId) {
-        let entity = ephemerals.ephs[playerId];
-        let cubePos = entity.cube.position
-        camera.position.set(
-          cubePos.x + gameconfig.cameraPositionrelativeToPlayer.x,
-          cubePos.y + gameconfig.cameraPositionrelativeToPlayer.y,
-          cubePos.z + gameconfig.cameraPositionrelativeToPlayer.z
-        )
-        camera.rotation.set(camconfig.rotation, 0, 0 )
-      }
+      let entity = ephemerals.ephs[playerId];
+      let cubePos = entity.cube.position
+      camera.position.set(
+        cubePos.x + gameconfig.cameraPositionrelativeToPlayer.x,
+        cubePos.y + gameconfig.cameraPositionrelativeToPlayer.y,
+        cubePos.z + gameconfig.cameraPositionrelativeToPlayer.z
+      )
+      camera.rotation.set(camconfig.rotation, 0, 0 )
 
     }
 
@@ -210,13 +206,12 @@ socket.on("connect", ()=> {
 
           player = tile.space
           if (!player) continue
-          if (playerId === localStorage.getItem("lightweightId")){
 
-            // TODO - fix type issues
-            let {x, y} = player.position
-            cameraTargetX = x * b.squareSize - b.gridSize / 2
-            cameraTargetZ = y * b.squareSize + camconfig.zOffset
-          }
+          // TODO - fix type issues
+          let {x: playerX, y: playerY} = player.position
+          cameraTargetX = playerX * b.squareSize - b.gridSize / 2
+          cameraTargetZ = playerY * b.squareSize + camconfig.zOffset
+          
           if (ephemerals.ephs[player.id]){
             ephemerals.moveCube(player.id, player.position.x, player.position.y)
             ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false)
@@ -276,9 +271,9 @@ socket.on("connect", ()=> {
         }
       }
 
-      for (let playerId in boardState.players) {
-        let player: Entity = boardState.players[playerId]
-        if (playerId === localStorage.getItem("lightweightId")){
+      for (let otherplayerId in boardState.players) {
+        let player: Entity = boardState.players[otherplayerId]
+        if (otherplayerId === playerId){
           let {x, y} = player.position
           cameraTargetX = x * b.squareSize - b.gridSize / 2
           cameraTargetZ = y * b.squareSize + camconfig.zOffset
@@ -314,14 +309,12 @@ socket.on("connect", ()=> {
       }
 
       if (entity.action === "move"){
-        if (entity.id === localStorage.getItem("lightweightId")){
-          camconfig.x = entity.position.x - 10
-          camconfig.z = entity.position.y
-          let {x, y} = entity.position
-          cameraTargetX = x * b.squareSize - b.gridSize / 2
-          cameraTargetZ = y * b.squareSize + camconfig.zOffset
-        }
-        ephemerals.moveCube(entity.id, entity.position.x, entity.position.y)
+        let {x: eX, y: eY} = entity.position
+          camconfig.x = eX - 10
+          camconfig.z = eY
+          cameraTargetX = eX * b.squareSize - b.gridSize / 2
+          cameraTargetZ = eY * b.squareSize + camconfig.zOffset
+        ephemerals.moveCube(entity.id, eX, eY)
       }
 
     })

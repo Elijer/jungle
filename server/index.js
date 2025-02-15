@@ -41,13 +41,7 @@ io.on("connection", (socket) => {
     streamMode: serverConfig.streamMode
   })
 
-  // now wait for the response to the initial data in the connection to do everything else
-
   const existingSubscriptionsSet = new Set()
-
-  // socket.emit("assign playerId", game.createLightweightId())
-
-  // socket.emit("config", serverConfig)
 
   socket.on("player joined", (playerId) => {
 
@@ -61,7 +55,7 @@ io.on("connection", (socket) => {
     switch(serverConfig.streamMode){
       case(STREAM_MODE.INITIAL_GLOBAL):
         socket.emit("state", game.getState()) // sends game to player who just joined
-        // TODO handle this info:
+        // TODO handle this
         socket.broadcast.emit("update", addedPlayerToGame)
         break
       case(STREAM_MODE.LOCAL):
