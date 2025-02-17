@@ -98,7 +98,8 @@ class ephemeralsHandler {
   createCube = (x: number, y: number, color: number, transparent: boolean): BodyReference => {
     
     const geo = this.cube
-    const mat = new MeshBasicMaterial({ color: color });
+    // const mat = new MeshBasicMaterial({ color: 0xFFB20B }); // gold
+    const mat = new MeshBasicMaterial({ color });
     const cube = new Mesh(geo, mat);
   
     mat.transparent = true;

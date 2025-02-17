@@ -174,7 +174,7 @@ socket.on("connect", ()=> {
       let terrain, player: LayerState | null
 
       // This is what clears tiles when you move so that you don't have em trailing behind you
-      for (let lt of lastTiles)lt.visible = false
+      for (let lt of lastTiles) lt.visible = false // commenting this out leads to cool painting and stuff
       const staleEphs = new Set([...Object.keys(ephemerals.ephs)])
 
       const width = lbs.radius * 2 + 1
@@ -211,18 +211,20 @@ socket.on("connect", ()=> {
           let {x: playerX, y: playerY} = player.position
           cameraTargetX = playerX * b.squareSize - b.gridSize / 2
           cameraTargetZ = playerY * b.squareSize + camconfig.zOffset
+
+          console.log("Player id is", player.id)
           
           if (ephemerals.ephs[player.id]){
             ephemerals.moveCube(player.id, player.position.x, player.position.y)
-            ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false)
-            staleEphs.delete(player.id)
+            // ephemerals.updateCubeTransparency(player.id, player.layer === "spirit" ? true : false) // not really needed without spirit stuff
+            staleEphs.delete(player.id.toString())
           } else {
             ephemerals.createEphemeral(player)
-            staleEphs.delete(player.id)
+            staleEphs.delete(player.id.toString())
           }
 
           for (const eph of staleEphs){
-            ephemerals.removeEphemeral(eph)
+              ephemerals.removeEphemeral(eph)
           }
 
         } catch (e) {
@@ -233,7 +235,6 @@ socket.on("connect", ()=> {
     })
 
     socket.on("tileUpdate", (update)=>{
-      console.log(update.event)
       if (update.event === "removed"){
         ephemerals.removeEphemeral(update.id)
       } else if (update.event === "added"){
@@ -327,7 +328,6 @@ socket.on("connect", ()=> {
     }
 
     const controlsListener = throttle((event: KeyboardEvent) => {
-      console.log("hey")
       if (event.code === "Digit0"){
         toggleOrbitControls()
         return

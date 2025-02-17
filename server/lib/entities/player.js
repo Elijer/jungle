@@ -1,11 +1,11 @@
 import Entity from "./entity.js"
-// import { generateRandomColorNumber } from "../compressedProperties.js"
+import { generateRandomColorNumber } from "../compressedProperties.js"
 
 export default class Player extends Entity {
   constructor(cohort, position, grid, id) {
     super(cohort, position, grid, id)
-    // this.color = generateRandomColorNumber()
-    this.color = 0
+    this.color = generateRandomColorNumber()
+    // this.color = 0
     console.log(`Player created @ ${this.position} with id ${this.id} and sign`)
   }
 
