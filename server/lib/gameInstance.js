@@ -83,6 +83,10 @@ class GameInstance {
     }
   }
 
+  getTileNumber(x, y){
+    return y * this.cols + x
+  }
+
   getLocalState(centerX, centerY){
 
     const tileNumbers = []
@@ -101,7 +105,26 @@ class GameInstance {
         return null;
       }
       
-      const tileNumber = gridY * this.cols + gridX
+      // const tileNumber = gridY * this.cols + gridX
+      const tileNumber = this.getTileNumber(gridX, gridY)
+
+      // Is there
+      // if (this.grid[tileNumber].space){
+      //   if (
+      //     (Math.abs(gridX-centerX)===1 && centerY === gridY)
+      //     ||
+      //     (Math.abs(gridY-centerY)===1 && centerX === gridX)
+      //   ){
+      //     this.grid[tileNumber].space.color = "0xFFFFFF"
+      //     this.grid[playerTile].space.color = "0xFFFFFF"
+      //   } else {
+      //     this.grid[playerTile].space.color = "0x000000"
+      //     this.grid[tileNumber].space.color = "0x000000"
+      //   }
+      //   // this.grid[tileNumber].space.color = "0xFFFFFF"
+      //   console.log(this.grid[tileNumber].space.id)
+      // }
+
       tileNumbers.push(tileNumber)
       const tile = this.grid[tileNumber]
       const tileState = tile.getState()
@@ -115,15 +138,6 @@ class GameInstance {
         relativeTo: {x: centerX, y: centerY},
         radius: this.refreshRadius,
       }
-    }
-  }
-
-  // Saving this version of getting local state I had before
-  // Even those its wrong, and should be deleted.
-  getLocalStateWithPlayers(centerX, centerY){
-    return {
-      ...this.getLocalState(centerX, centerY),
-      players: this.players.getEntities() // just sloppily gets all entities
     }
   }
 
@@ -202,6 +216,19 @@ class GameInstance {
     player.offline()
     return player.getState("offline")
   }
+
+  // getCrossNeighbors(tileNumber){
+  //   const nums = []
+  //   if (tileNumber % this.rows >= 0) nums.push(tileNumber-1)
+  //   if (tileNumber % this.rows < this.rows ) nums.push(tileNumber+1)
+  //   if (Math.floor(tileNumber / this.cols))
+  //   return [
+  //     tileNumber - 1,
+  //     tileNumber + 1,
+  //     tileNumber - this.cols,
+  //     tileNumber + this.cols
+  //   ]
+  // }
 
   handleInput(inputEvent){
 
