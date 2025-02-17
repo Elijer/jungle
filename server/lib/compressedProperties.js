@@ -5,22 +5,14 @@ export const generateRandomColorNumber = () => {
 }
 
 export const colorKey = [
-  "0x131321",
-  "0x173059",
-  "0x1E355E",
-  "0x58515F",
-  "0x806146",
-  "0xBD8052",
-  "0x#E0B495",
-  "0xE901EF",
-  "0xEF6DAC",
-  "0xFFFFFE",
-  "0x02C6B2",
-  "0x0287F2",
-  "0x02745C",
-  "0x024B48",
-  "0x01A292",
-  "0x0000F7"
+  "0x806146", // beige, it's okay
+  "0xBD8052", // nicer beige
+  // "0xEF6DAC", // not a terrible pink
+  // "0xFFFFFE", // weird white
+  "0x02C6B2", // nice green
+  "0x0287F2", // nice blue, maybe a bit intense though
+  "0x02745C", // hell yeah, great subdued green
+  "0x01A292", // yet another beautiful green
 ]
 
 export function getColor(key){
